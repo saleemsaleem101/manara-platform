@@ -15,7 +15,7 @@ export const RegisterPage: React.FC = () => {
     major: '',
     password: '',
     confirmPassword: '',
-    agreeTerms: true,
+    agreeTerms: false,
   })
 
   const [error, setError] = useState('')
@@ -262,8 +262,12 @@ export const RegisterPage: React.FC = () => {
                 {/* CTA Button */}
                 <button
                   type="submit"
-                  disabled={isLoading}
-                  className="w-full h-[52px] bg-[#F59E0B] hover:bg-amber-600 disabled:opacity-60 text-[#0F1E36] text-[16px] font-black rounded-[14px] shadow-sm transition transform active:scale-[0.99] cursor-pointer mt-2 flex items-center justify-center gap-2"
+                  disabled={isLoading || !formData.agreeTerms}
+                  className={`w-full h-[52px] rounded-[14px] shadow-sm transition-all duration-200 mt-2 flex items-center justify-center gap-2 text-[16px] font-black ${
+                    formData.agreeTerms && !isLoading
+                      ? 'bg-[#F59E0B] hover:bg-amber-600 text-[#0F1E36] cursor-pointer shadow-amber-500/20 shadow-md active:scale-[0.99]'
+                      : 'bg-[#CBD5E1] text-[#64748B] cursor-not-allowed opacity-70'
+                  }`}
                 >
                   {isLoading ? (
                     <>

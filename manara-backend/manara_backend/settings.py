@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ==============================================================
 SECRET_KEY: str       = config('SECRET_KEY')  # type: ignore[assignment]
 DEBUG: bool           = config('DEBUG', default=False, cast=bool)  # type: ignore[assignment]
-ALLOWED_HOSTS: list   = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())  # type: ignore[assignment]
+ALLOWED_HOSTS: list   = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver', cast=Csv())  # type: ignore[assignment]
 
 # Application definition
 INSTALLED_APPS = [
