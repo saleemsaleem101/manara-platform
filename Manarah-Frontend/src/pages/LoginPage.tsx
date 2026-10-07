@@ -7,14 +7,31 @@ export const LoginPage: React.FC = () => {
   const navigate = useNavigate()
   const { login } = useProfile()
 
-  const [email, setEmail] = useState('jalal.matluq@gmail.com')
-  const [password, setPassword] = useState('••••••••••••')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(true)
+  const [error, setError] = useState('')
+  const [isUnverified, setIsUnverified] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    login(email)
-    navigate('/profile')
+    setError('')
+    setIsUnverified(false)
+    setIsLoading(true)
+
+    try {
+      await login(email, password)
+      navigate('/profile')
+    } catch (err: any) {
+      const msg = err.message || 'بيانات الاعتماد غير صحيحة. يرجى التحقق من البريد وكلمة المرور.'
+      setError(msg)
+      if (err.status === 403 || msg.includes('تأكيد بريدك') || msg.includes('تفعيل')) {
+        setIsUnverified(true)
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -72,6 +89,26 @@ export const LoginPage: React.FC = () => {
                 </p>
               </div>
 
+              {/* Error Alert Banner (MNRA-56) */}
+              {error && (
+                <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-[14px] text-xs font-bold leading-relaxed text-right space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">⚠️</span>
+                    <span>{error}</span>
+                  </div>
+                  {isUnverified && (
+                    <div className="pt-2 border-t border-rose-200 flex justify-end">
+                      <Link
+                        to="/verify-email"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-600 text-white font-bold text-xs hover:bg-rose-700 transition"
+                      >
+                        <span>الانتقال لصفحة تفعيل الحساب بالرمز ←</span>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-4 pt-2">
                 {/* Email */}
                 <div>
@@ -83,7 +120,7 @@ export const LoginPage: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="jalal.matluq@gmail.com"
+                    placeholder="student@example.com"
                     className="w-full h-[46px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-right"
                   />
                 </div>
@@ -123,9 +160,17 @@ export const LoginPage: React.FC = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full h-[52px] bg-[#0F1E36] hover:bg-[#1E293B] text-white text-[16px] font-bold rounded-[14px] shadow-sm transition transform active:scale-[0.99] cursor-pointer mt-3"
+                  disabled={isLoading}
+                  className="w-full h-[52px] bg-[#0F1E36] hover:bg-[#1E293B] disabled:opacity-60 text-white text-[16px] font-bold rounded-[14px] shadow-sm transition transform active:scale-[0.99] cursor-pointer mt-3 flex items-center justify-center gap-2"
                 >
-                  تسجيل الدخول
+                  {isLoading ? (
+                    <>
+                      <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>جاري التحقق وتسجيل الدخول...</span>
+                    </>
+                  ) : (
+                    <span>تسجيل الدخول</span>
+                  )}
                 </button>
               </form>
 

@@ -21,6 +21,8 @@ media/cvs/*
 media/profiles/*
 !media/cvs/.gitkeep
 !media/profiles/.gitkeep
+*.zip
+*.xlsx
 
 # OS / Editor
 .DS_Store

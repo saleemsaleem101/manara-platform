@@ -2,30 +2,65 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logoImg from '../assets/logo_transparent.png'
 import { useProfile } from '../context/ProfileContext'
+import { api } from '../services/api'
 
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate()
   const { updateProfile } = useProfile()
 
   const [formData, setFormData] = useState({
-    name: 'جلال عبد الملك الصوفي',
-    email: 'jalal.matluq@gmail.com',
-    university: 'جامعة العلوم والتكنولوجيا',
-    major: 'هندسة البرمجيات',
-    password: 'Password@2026',
-    confirmPassword: 'Password@2026',
+    name: '',
+    email: '',
+    university: '',
+    major: '',
+    password: '',
+    confirmPassword: '',
     agreeTerms: true,
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    updateProfile({
-      name: formData.name,
-      email: formData.email,
-      university: formData.university,
-      major: formData.major,
-    })
-    navigate('/verify-email')
+    setError('')
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('كلمة المرور وتأكيد كلمة المرور غير متطابقتين.')
+      return
+    }
+
+    if (formData.password.length < 8) {
+      setError('يجب ألا تقل كلمة المرور عن 8 خانات وتحتوي على أحرف وأرقام.')
+      return
+    }
+
+    if (!formData.agreeTerms) {
+      setError('يرجى الموافقة على الشروط والأحكام للمتابعة.')
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      await api.register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      })
+
+      await updateProfile({
+        name: formData.name,
+        email: formData.email,
+        university: formData.university,
+        major: formData.major,
+      })
+
+      navigate('/verify-email')
+    } catch (err: any) {
+      setError(err.message || 'فشل إنشاء الحساب. يرجى التأكد من صحة البيانات.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -108,6 +143,14 @@ export const RegisterPage: React.FC = () => {
                   الخطوة الأولى للربط المهني والتحقق الأكاديمي المباشر
                 </p>
               </div>
+
+              {/* Error Alert (MNRA-49) */}
+              {error && (
+                <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-[12px] text-xs font-bold leading-relaxed text-right flex items-center gap-2">
+                  <span>⚠️</span>
+                  <span>{error}</span>
+                </div>
+              )}
 
               <form onSubmit={handleSubmit} className="space-y-3.5 pt-1">
                 {/* Full Name */}
@@ -211,9 +254,17 @@ export const RegisterPage: React.FC = () => {
                 {/* CTA Button */}
                 <button
                   type="submit"
-                  className="w-full h-[52px] bg-[#F59E0B] hover:bg-amber-600 text-[#0F1E36] text-[16px] font-black rounded-[14px] shadow-sm transition transform active:scale-[0.99] cursor-pointer mt-2"
+                  disabled={isLoading}
+                  className="w-full h-[52px] bg-[#F59E0B] hover:bg-amber-600 disabled:opacity-60 text-[#0F1E36] text-[16px] font-black rounded-[14px] shadow-sm transition transform active:scale-[0.99] cursor-pointer mt-2 flex items-center justify-center gap-2"
                 >
-                  إنشاء الحساب وبدء التوثيق
+                  {isLoading ? (
+                    <>
+                      <span className="w-5 h-5 border-2 border-[#0F1E36] border-t-transparent rounded-full animate-spin" />
+                      <span>جاري إنشاء الحساب والتحقق...</span>
+                    </>
+                  ) : (
+                    <span>إنشاء الحساب وبدء التوثيق</span>
+                  )}
                 </button>
               </form>
 

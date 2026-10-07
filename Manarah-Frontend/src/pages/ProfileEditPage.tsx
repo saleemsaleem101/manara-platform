@@ -23,16 +23,26 @@ export const ProfileEditPage: React.FC = () => {
   })
 
   const [savedSuccess, setSavedSuccess] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState('')
 
   const wordCount = form.bio.trim() ? form.bio.trim().split(/\s+/).length : 0
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    updateProfile(form)
-    setSavedSuccess(true)
-    setTimeout(() => {
-      navigate('/profile')
-    }, 800)
+    setIsSaving(true)
+    setError('')
+    try {
+      await updateProfile(form)
+      setSavedSuccess(true)
+      setTimeout(() => {
+        navigate('/profile')
+      }, 800)
+    } catch (err: any) {
+      setError(err.message || 'فشل حفظ وتحديث البيانات الأساسية للخريج.')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -44,6 +54,14 @@ export const ProfileEditPage: React.FC = () => {
         {savedSuccess && (
           <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-between shadow-sm animate-in fade-in duration-200">
             <span>✓ تم حفظ وتحديث بيانات الملف المهني بنجاح! جاري تحويلك...</span>
+          </div>
+        )}
+
+        {/* Error Banner (MNRA-68) */}
+        {error && (
+          <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-sm">
+            <span>⚠️</span>
+            <span>{error}</span>
           </div>
         )}
 
@@ -253,10 +271,20 @@ export const ProfileEditPage: React.FC = () => {
             <button
               type="submit"
               id="submit-save-profile"
-              className="px-6 py-3 rounded-[12px] bg-[#F59E0B] hover:bg-amber-600 text-[#0F1E36] text-[13px] font-black shadow-sm transition transform active:scale-[0.99] cursor-pointer flex items-center gap-2"
+              disabled={isSaving}
+              className="px-6 py-3 rounded-[12px] bg-[#F59E0B] hover:bg-amber-600 disabled:opacity-60 text-[#0F1E36] text-[13px] font-black shadow-sm transition transform active:scale-[0.99] cursor-pointer flex items-center gap-2"
             >
-              <span>حفظ البيانات الأساسية</span>
-              <span>✓</span>
+              {isSaving ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-[#0F1E36] border-t-transparent rounded-full animate-spin" />
+                  <span>جاري الحفظ في الخادم...</span>
+                </>
+              ) : (
+                <>
+                  <span>حفظ البيانات الأساسية</span>
+                  <span>✓</span>
+                </>
+              )}
             </button>
             <Link
               to="/profile"

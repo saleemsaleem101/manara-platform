@@ -45,22 +45,31 @@ export const Navbar: React.FC = () => {
             ملفي المهني
           </Link>
 
-          <span className="text-slate-500 hover:text-slate-700 cursor-pointer font-semibold transition">
-            الفرص المتاحة
+          <span
+            className="text-slate-400 cursor-not-allowed font-medium transition flex items-center gap-1.5"
+            title="ميزة الشواغر والفرص الوظيفية متاحة في السبرنت القادم"
+          >
+            <span>الفرص المتاحة</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 font-normal">قريباً</span>
           </span>
 
-          <span className="text-slate-500 hover:text-slate-700 cursor-pointer font-semibold transition">
-            الشركات الشريكة
+          <span
+            className="text-slate-400 cursor-not-allowed font-medium transition flex items-center gap-1.5"
+            title="دليل الشركات الشريكة متاح في السبرنت القادم"
+          >
+            <span>الشركات الشريكة</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 font-normal">قريباً</span>
           </span>
         </nav>
 
         {/* Left in RTL: User Controls & Notification */}
         <div className="flex items-center gap-3">
-          {/* Notification Bell */}
+          {/* Notification Bell (Sprint 3) */}
           <button
             type="button"
-            className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm transition cursor-pointer"
-            title="الإشعارات"
+            className="w-9 h-9 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-sm cursor-not-allowed opacity-80"
+            title="نظام الإشعارات الفورية (سبرنت 3 - قريباً)"
+            disabled
           >
             🔔
           </button>

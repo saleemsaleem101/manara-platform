@@ -1,16 +1,37 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Navbar } from '../components/Navbar'
 import { useProfile } from '../context/ProfileContext'
 
 export const ProfileViewPage: React.FC = () => {
-  const { profile } = useProfile()
+  const { profile, isLoading, refreshProfile } = useProfile()
+
+  useEffect(() => {
+    refreshProfile()
+  }, [])
+
+  const initials = profile.name
+    ? profile.name
+        .trim()
+        .split(' ')
+        .slice(0, 2)
+        .map((w) => w[0])
+        .join('.')
+    : 'خ.م'
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
       <Navbar />
 
       <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-1">
+        {/* Loading Skeleton if backend fetching */}
+        {isLoading && (
+          <div className="w-full bg-amber-50 border border-amber-200 text-amber-900 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+            <span className="w-4 h-4 border-2 border-amber-800 border-t-transparent rounded-full animate-spin" />
+            <span>جاري مزامنة بيانات الملف المهني من الخادم...</span>
+          </div>
+        )}
+
         {/* ================= HERO PROFILE CARD ================= */}
         <div className="bg-white border border-[#E2E8F0] rounded-[24px] p-6 sm:p-8 shadow-[0_4px_12px_rgba(15,30,54,0.05)] relative overflow-hidden">
           {/* Subtle Top Gradient Banner */}
@@ -21,36 +42,38 @@ export const ProfileViewPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center sm:items-center gap-5">
               <div className="relative shrink-0">
                 <div className="w-[85px] h-[85px] rounded-[20px] bg-[#0F1E36] text-white text-[28px] font-black flex items-center justify-center shadow-sm">
-                  ج.ص
+                  {initials}
                 </div>
                 {/* Verified Badge */}
-                <span
-                  className="absolute -bottom-1 -left-1 w-[26px] h-[26px] rounded-full bg-[#10B981] border-[3px] border-white text-white text-[11px] font-bold flex items-center justify-center shadow-sm"
-                  title="سجل موثق رسمياً"
-                >
-                  ✓
-                </span>
+                {profile.isVerified && (
+                  <span
+                    className="absolute -bottom-1 -left-1 w-[26px] h-[26px] rounded-full bg-[#10B981] border-[3px] border-white text-white text-[11px] font-bold flex items-center justify-center shadow-sm"
+                    title="سجل موثق رسمياً"
+                  >
+                    ✓
+                  </span>
+                )}
               </div>
 
               <div className="text-center sm:text-right space-y-2">
                 {/* Line 1: Name */}
                 <h1 className="text-[22px] font-black text-[#0F1E36] leading-tight">
-                  {profile.name}
+                  {profile.name || 'خريج جديد'}
                 </h1>
 
                 {/* Line 2: Role Badge & University */}
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
                   <span className="px-3 py-1 rounded-[6px] bg-[#FEF3C7] border border-[#FDE68A] text-[#92400E] text-[11px] font-bold">
-                    مهندس برمجيات
+                    {profile.major || 'هندسة البرمجيات'}
                   </span>
                   <span className="text-[12px] font-semibold text-[#475569]">
-                    {profile.university} • كلية الحاسبات وتكنولوجيا المعلومات
+                    {profile.university || 'جامعة العلوم والتكنولوجيا'} • كلية الحاسبات وتكنولوجيا المعلومات
                   </span>
                 </div>
 
                 {/* Line 3: Meta Details */}
                 <p className="text-[12px] font-medium text-[#64748B]">
-                  صنعاء، اليمن  •  دفعة {profile.graduationYear}  •  المعدل التراكمي: {profile.gpa}  •  الخبرة: {profile.experienceYears}
+                  {profile.city || 'صنعاء، اليمن'}  •  دفعة {profile.graduationYear || 2026}  •  المعدل التراكمي: {profile.gpa || '92%'}  •  الخبرة: {profile.experienceYears || '0 - 1 سنة'}
                 </p>
               </div>
             </div>
@@ -99,10 +122,8 @@ export const ProfileViewPage: React.FC = () => {
                 </span>
               </div>
 
-              <div className="text-[12px] font-medium text-[#334155] leading-relaxed space-y-1 text-right">
-                <p>مهندس برمجيات خريج جامعة العلوم والتكنولوجيا لعام 2026 بمعدل ممتاز (92%).</p>
-                <p>متخصص في بناء وتطوير تطبيقات الويب الحديثة وحلول الأعمال الرقمية، أمتلك شغفاً</p>
-                <p>كبيراً بالابتكار البرمجي والعمل ضمن بيئات تقنية رائدة تسعى لإحداث أثر حقيقي في سوق العمل.</p>
+              <div className="text-[12px] font-medium text-[#334155] leading-relaxed text-right">
+                <p className="whitespace-pre-line">{profile.bio || 'لم يتم إضافة نبذة مهنية بعد. يمكنك إضافة نبذة تعريفية من صفحة تعديل الملف.'}</p>
               </div>
 
               {/* Key Focus Tags */}
@@ -141,10 +162,10 @@ export const ProfileViewPage: React.FC = () => {
 
               <div className="text-right">
                 <div className="text-[14px] font-bold text-[#0F1E36]">
-                  بكالوريوس هندسة البرمجيات — مرتبة الشرف
+                  بكالوريوس {profile.major || 'هندسة البرمجيات'}
                 </div>
                 <div className="text-[12px] text-[#64748B] mt-0.5">
-                  {profile.university} • كلية الحاسبات وتكنولوجيا المعلومات
+                  {profile.university || 'جامعة العلوم والتكنولوجيا'} • كلية الحاسبات وتكنولوجيا المعلومات
                 </div>
               </div>
 
@@ -152,17 +173,17 @@ export const ProfileViewPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="p-2.5 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] text-right">
                   <span className="text-[11px] text-[#64748B] font-semibold">سنة التخرج: </span>
-                  <span className="text-[12px] text-[#0F1E36] font-bold">{profile.graduationYear}</span>
+                  <span className="text-[12px] text-[#0F1E36] font-bold">{profile.graduationYear || 2026}</span>
                 </div>
 
                 <div className="p-2.5 rounded-[10px] bg-[#FEF3C7] border border-[#FDE68A] text-right">
                   <span className="text-[11px] text-[#92400E] font-bold">المعدل التراكمي: </span>
-                  <span className="text-[12px] text-[#B45309] font-black">{profile.gpa}</span>
+                  <span className="text-[12px] text-[#B45309] font-black">{profile.gpa || '92%'}</span>
                 </div>
 
                 <div className="p-2.5 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] text-right">
                   <span className="text-[11px] text-[#64748B] font-semibold">الخبرة: </span>
-                  <span className="text-[12px] text-[#0F1E36] font-bold">0 - 1 سنة</span>
+                  <span className="text-[12px] text-[#0F1E36] font-bold">{profile.experienceYears || '0 - 1 سنة'}</span>
                 </div>
               </div>
 
@@ -170,7 +191,7 @@ export const ProfileViewPage: React.FC = () => {
               <div className="p-3.5 rounded-[12px] bg-[#F8FAFC] border border-[#E2E8F0] text-right space-y-0.5">
                 <div className="text-[11px] font-bold text-[#B45309]">مشروع التخرج المعتمد (1):</div>
                 <div className="text-[12px] font-bold text-[#0F1E36]">
-                  منصة منارة لربط الخريجين بسوق العمل — قسم هندسة البرمجيات
+                  منصة منارة لربط الخريجين بسوق العمل — قسم {profile.major || 'هندسة البرمجيات'}
                 </div>
               </div>
             </div>
@@ -196,18 +217,20 @@ export const ProfileViewPage: React.FC = () => {
                 <div className="p-2.5 px-3.5 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <span className="text-[13px] font-bold text-[#0F1E36]">@</span>
-                    <span className="text-[12px] font-semibold text-[#0F1E36] font-mono">{profile.email}</span>
+                    <span className="text-[12px] font-semibold text-[#0F1E36] font-mono">{profile.email || 'لم يسجل بريد'}</span>
                   </div>
-                  <span className="px-2 py-0.5 rounded-[6px] bg-[#ECFDF5] text-[#059669] text-[10px] font-bold">
-                    موثق ✓
-                  </span>
+                  {profile.isVerified && (
+                    <span className="px-2 py-0.5 rounded-[6px] bg-[#ECFDF5] text-[#059669] text-[10px] font-bold">
+                      موثق ✓
+                    </span>
+                  )}
                 </div>
 
                 {/* Row 2: Phone */}
                 <div className="p-2.5 px-3.5 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <span className="text-[13px] font-bold text-[#0F1E36]">📞</span>
-                    <span className="text-[12px] font-semibold text-[#0F1E36] font-mono" dir="ltr">{profile.phone}</span>
+                    <span className="text-[12px] font-semibold text-[#0F1E36] font-mono" dir="ltr">{profile.phone || '+967 770 000 000'}</span>
                   </div>
                   <span className="px-2 py-0.5 rounded-[6px] bg-[#EFF6FF] text-[#2563EB] text-[10px] font-bold">
                     واتساب نشط
@@ -217,7 +240,7 @@ export const ProfileViewPage: React.FC = () => {
                 {/* Row 3: City */}
                 <div className="p-2.5 px-3.5 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] flex items-center gap-2.5">
                   <span className="text-[13px] font-bold text-[#0F1E36]">📍</span>
-                  <span className="text-[12px] font-semibold text-[#0F1E36]">صنعاء — الجمهورية اليمنية</span>
+                  <span className="text-[12px] font-semibold text-[#0F1E36]">{profile.city || 'اليمن - صنعاء'}</span>
                 </div>
               </div>
 
@@ -247,12 +270,12 @@ export const ProfileViewPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <div className="p-3 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] flex items-center gap-2.5">
                   <span className="text-[12px] font-bold text-[#059669]">✓</span>
-                  <span className="text-[11px] font-bold text-[#0F1E36]">البيانات الشخصية: مكتملة ومدققة</span>
+                  <span className="text-[11px] font-bold text-[#0F1E36]">البيانات الشخصية: {profile.name ? 'مكتملة' : 'قيد الإدخال'}</span>
                 </div>
 
                 <div className="p-3 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] flex items-center gap-2.5">
                   <span className="text-[12px] font-bold text-[#059669]">✓</span>
-                  <span className="text-[11px] font-bold text-[#0F1E36]">بيانات الاتصال: موثقة عبر البريد والهاتف</span>
+                  <span className="text-[11px] font-bold text-[#0F1E36]">بيانات الاتصال: {profile.isVerified ? 'موثقة رسمياً' : 'بانتظار التوثيق'}</span>
                 </div>
 
                 <div className="p-3 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] flex items-center gap-2.5">
@@ -262,7 +285,7 @@ export const ProfileViewPage: React.FC = () => {
 
                 <div className="p-3 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] flex items-center gap-2.5">
                   <span className="text-[12px] font-bold text-[#059669]">✓</span>
-                  <span className="text-[11px] font-bold text-[#0F1E36]">النبذة المهنية: مستوفية للمعايير المهنية</span>
+                  <span className="text-[11px] font-bold text-[#0F1E36]">النبذة المهنية: {profile.bio ? 'مستوفية للمعايير' : 'يرجى استكمالها'}</span>
                 </div>
               </div>
             </div>

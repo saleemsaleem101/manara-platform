@@ -52,7 +52,20 @@ export const api = {
     })
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}))
-      throw new Error(errorData.detail || errorData.error || Object.values(errorData).flat().join(', ') || 'فشل إنشاء الحساب')
+      let errorMsg = errorData.detail || errorData.error
+      if (!errorMsg && typeof errorData === 'object') {
+        const parts: string[] = []
+        for (const [key, val] of Object.entries(errorData)) {
+          const fieldLabel = key === 'email' ? 'البريد الإلكتروني' : key === 'password' ? 'كلمة المرور' : key === 'name' ? 'الاسم' : key
+          if (Array.isArray(val)) {
+            parts.push(`${fieldLabel}: ${val.join(' ')}`)
+          } else if (typeof val === 'string') {
+            parts.push(`${fieldLabel}: ${val}`)
+          }
+        }
+        if (parts.length > 0) errorMsg = parts.join(' • ')
+      }
+      throw new Error(errorMsg || 'فشل إنشاء الحساب. يرجى مراجعة البيانات المدخلة.')
     }
     const result: AuthResponse = await res.json()
     if (result.token) {
@@ -70,7 +83,10 @@ export const api = {
     })
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}))
-      throw new Error(errorData.error || errorData.detail || 'بيانات الدخول غير صحيحة')
+      const err = new Error(errorData.error || errorData.detail || 'بيانات الدخول غير صحيحة')
+      ;(err as any).status = res.status
+      ;(err as any).data = errorData
+      throw err
     }
     const result: AuthResponse = await res.json()
     if (result.token) {
@@ -96,21 +112,25 @@ export const api = {
     }
   },
 
-  // 4. تأكيد البريد الإلكتروني (US-01)
-  async verifyEmail(code: string): Promise<boolean> {
-    try {
-      const res = await fetch(`${API_BASE_URL}/auth/verify-email/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...getAuthHeader(),
-        },
-        body: JSON.stringify({ code }),
-      })
-      return res.ok
-    } catch {
-      return true
+  // 4. تأكيد البريد الإلكتروني (US-01 / FR-26)
+  async verifyEmail(code: string, email?: string): Promise<{ success: boolean; token?: string; user?: any; message?: string }> {
+    const res = await fetch(`${API_BASE_URL}/auth/verify-email/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify({ code, email }),
+    })
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      throw new Error(errorData.error || errorData.detail || 'رمز التحقق غير صحيح أو منتهي الصلاحية')
     }
+    const data = await res.json()
+    if (data.token) {
+      localStorage.setItem('manarah_token', data.token)
+    }
+    return { success: true, token: data.token, user: data.user, message: data.message }
   },
 
   // 5. استرجاع الملف المهني الأساسي (MNRA-64, MNRA-71)

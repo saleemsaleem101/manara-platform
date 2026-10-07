@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logoImg from '../assets/logo_transparent.png'
 import { useProfile } from '../context/ProfileContext'
+import { api } from '../services/api'
 
 export const VerifyEmailPage: React.FC = () => {
   const navigate = useNavigate()
@@ -47,7 +48,7 @@ export const VerifyEmailPage: React.FC = () => {
     }
   }
 
-  const handleVerify = (e: React.FormEvent) => {
+  const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault()
     const code = otp.join('')
     if (code.length < 6 || otp.some((d) => d === '')) {
@@ -58,14 +59,18 @@ export const VerifyEmailPage: React.FC = () => {
     setIsVerifying(true)
     setError('')
 
-    setTimeout(() => {
-      verifyEmail()
-      setIsVerifying(false)
+    try {
+      const res = await api.verifyEmail(code, profile.email)
+      verifyEmail(res.user)
       setIsSuccess(true)
       setTimeout(() => {
         navigate('/profile')
-      }, 800)
-    }, 500)
+      }, 1000)
+    } catch (err: any) {
+      setError(err.message || 'رمز التحقق غير صحيح. يرجى إدخال الرمز المكون من 6 أرقام.')
+    } finally {
+      setIsVerifying(false)
+    }
   }
 
   const handleResend = () => {
