@@ -1,0 +1,29 @@
+# Environment & Secrets
+.env
+.env.production
+.env.local
+
+# Python / Virtual Environment
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.sqlite3
+
+# Node / Frontend
+node_modules/
+dist/
+.vercel/
+
+# Media / Uploads
+media/cvs/*
+media/profiles/*
+!media/cvs/.gitkeep
+!media/profiles/.gitkeep
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

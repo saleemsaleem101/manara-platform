@@ -1,0 +1,15 @@
+# متغيرات البيئة والأسرار
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+*.sqlite3
+
+# Django
+/staticfiles/
+/media/
