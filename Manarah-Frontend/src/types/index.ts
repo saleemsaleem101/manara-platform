@@ -1,9 +1,7 @@
-export interface GraduateFile {
-  name: string
-  size: string
-  uploadedAt: string
-  type: string
-}
+/**
+ * Manara Platform - Types Definition (Sprint 1)
+ * الحقول المعتمدة لسبرنت 1 (US-01 / FR-01, FR-03, FR-24, FR-26)
+ */
 
 export interface GraduateProfile {
   name: string
@@ -18,13 +16,9 @@ export interface GraduateProfile {
   bio: string
   isVerified: boolean
   completionPercentage: number
-  skills: string[]
-  avatarUrl?: string
-  cvFile?: GraduateFile | null
 }
 
 export interface AuthState {
   isAuthenticated: boolean
   user: GraduateProfile | null
 }
-

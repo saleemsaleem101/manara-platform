@@ -66,7 +66,7 @@ export const LoginPage: React.FC = () => {
                   تسجيل الدخول إلى منارة
                 </h2>
                 <p className="text-[14px] sm:text-[15px] font-bold text-[#D97706]">
-                  بوابة الخريجين والشركات وسوق العمل
+                  بوابة الخريجين والملف المهني الأكاديمي
                 </p>
               </div>
             </div>
@@ -85,7 +85,7 @@ export const LoginPage: React.FC = () => {
                   مرحباً بعودتك إلى منارة
                 </h1>
                 <p className="text-[13px] text-[#64748B] leading-relaxed">
-                  أدخل بيانات اعتماد حسابك للوصول إلى لوحة التحكم والفرص الوظيفية
+                  أدخل بيانات اعتماد حسابك للوصول إلى الملف المهني وبياناتك الأكاديمية
                 </p>
               </div>
 
@@ -129,9 +129,6 @@ export const LoginPage: React.FC = () => {
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-[12px] font-bold text-[#0F1E36]">كلمة المرور</label>
-                    <a href="#" className="text-[12px] font-bold text-[#D97706] hover:underline">
-                      نسيت كلمة المرور؟
-                    </a>
                   </div>
                   <input
                     type="password"

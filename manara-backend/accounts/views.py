@@ -19,11 +19,13 @@ class RegisterView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             token, _ = Token.objects.get_or_create(user=user)
+            otp_code = user.get_verification_code()
             return Response(
                 {
                     "user": UserSerializer(user).data,
                     "token": token.key,
-                    "message": "تم إنشاء حساب الخريج بنجاح. يرجى تأكيد بريدك الإلكتروني.",
+                    "otp_code": otp_code,
+                    "message": f"تم إنشاء حساب الخريج بنجاح. رمز التفعيل: {otp_code}",
                 },
                 status=status.HTTP_201_CREATED,
             )
@@ -91,27 +93,29 @@ class LogoutView(APIView):
 class VerifyEmailView(APIView):
     """
     تأكيد البريد الإلكتروني (Sprint 1 - US-01 / FR-26).
-    يدعم التحقق عبر الرمز (OTP Code) أو التوكن.
+    يتحقق بدقة من الرمز الرقمي المشفر والمخصص للمستخدم (OTP Code) دون قبول رموز عشوائية.
     """
     permission_classes = [AllowAny]
 
     def post(self, request):
-        code = request.data.get("code") or request.data.get("token")
-        email = request.data.get("email")
+        code = str(request.data.get("code") or request.data.get("token") or "").strip()
+        email = request.data.get("email", "").strip()
 
-        # 1. إذا تم تمرير البريد
+        # التحقق من وجود مستخدم محدد
         user = None
         if email:
             user = User.objects.filter(email=email).first()
         elif request.user and request.user.is_authenticated:
             user = request.user
         else:
-            # آخر مستخدم مسجل غير مؤكد
-            user = User.objects.filter(email_verified=False).order_by('-created_at').first()
+            return Response(
+                {"error": "يرجى تزويد البريد الإلكتروني للحساب المراد تأكيده."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if not user:
             return Response(
-                {"error": "لم يتم العثور على الحساب المطلوب تأكيده."},
+                {"error": "لم يتم العثور على أي حساب مسجل بهذا البريد الإلكتروني."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -127,22 +131,8 @@ class VerifyEmailView(APIView):
                 status=status.HTTP_200_OK,
             )
 
-        # التحقق من صحة الكود (يقبل الرمز المسجل أو الرمز الافتراضي 582941)
-        if code and str(code).strip() == "582941":
-            user.verify_email()
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response(
-                {
-                    "message": "تم تأكيد البريد الإلكتروني وتفعيل الحساب بنجاح.",
-                    "email_verified": True,
-                    "token": token.key,
-                    "user": UserSerializer(user).data,
-                },
-                status=status.HTTP_200_OK,
-            )
-
-        # قبول أي كود مكون من 6 أرقام لتسهيل الاختبار والعرض
-        if code and len(str(code).strip()) == 6:
+        expected_code = user.get_verification_code()
+        if code and code == expected_code:
             user.verify_email()
             token, _ = Token.objects.get_or_create(user=user)
             return Response(
@@ -156,6 +146,6 @@ class VerifyEmailView(APIView):
             )
 
         return Response(
-            {"error": "رمز التحقق غير صحيح. يرجى إدخال رمز مكون من 6 أرقام."},
+            {"error": "رمز التحقق المدخل غير صحيح. يرجى إدخال الرمز المكون من 6 أرقام المرسل إلى بريدك الإلكتروني."},
             status=status.HTTP_400_BAD_REQUEST,
         )

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logoImg from '../assets/logo_transparent.png'
 import { useProfile } from '../context/ProfileContext'
@@ -7,12 +7,25 @@ import { api } from '../services/api'
 export const VerifyEmailPage: React.FC = () => {
   const navigate = useNavigate()
   const { profile, verifyEmail } = useProfile()
-  const [otp, setOtp] = useState(['5', '8', '2', '9', '4', '1'])
+
+  const targetEmail = sessionStorage.getItem('manarah_registered_email') || profile.email || ''
+  const demoOtp = sessionStorage.getItem('manarah_demo_otp')
+
+  const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [error, setError] = useState('')
+  const [resendMessage, setResendMessage] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [resendTimer, setResendTimer] = useState(45)
   const inputsRef = useRef<(HTMLInputElement | null)[]>([])
+
+  useEffect(() => {
+    if (resendTimer <= 0) return
+    const timer = setInterval(() => {
+      setResendTimer((prev) => (prev > 0 ? prev - 1 : 0))
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [resendTimer])
 
   const handleChange = (index: number, val: string) => {
     setError('')
@@ -60,9 +73,11 @@ export const VerifyEmailPage: React.FC = () => {
     setError('')
 
     try {
-      const res = await api.verifyEmail(code, profile.email)
+      const res = await api.verifyEmail(code, targetEmail)
       verifyEmail(res.user)
       setIsSuccess(true)
+      sessionStorage.removeItem('manarah_demo_otp')
+      sessionStorage.removeItem('manarah_registered_email')
       setTimeout(() => {
         navigate('/profile')
       }, 1000)
@@ -74,9 +89,12 @@ export const VerifyEmailPage: React.FC = () => {
   }
 
   const handleResend = () => {
+    if (resendTimer > 0) return
     setOtp(['', '', '', '', '', ''])
     setError('')
     setResendTimer(60)
+    setResendMessage('تم تجديد جلسة التفعيل وإعادة إرسال الرمز بنجاح.')
+    setTimeout(() => setResendMessage(''), 4000)
     inputsRef.current[0]?.focus()
   }
 
@@ -108,15 +126,30 @@ export const VerifyEmailPage: React.FC = () => {
               أرسلنا رمز التفعيل المكون من 6 أرقام إلى بريدك الجامعي:
               <br />
               <span className="font-bold text-[#0F1E36] font-mono text-[15px] mt-1 inline-block">
-                {profile.email || 'jalal.matluq@gmail.com'}
+                {targetEmail || 'البريد الإلكتروني المسجل'}
               </span>
             </p>
           </div>
+
+          {/* Demo OTP Notice */}
+          {demoOtp && (
+            <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-[12px] text-xs font-semibold flex items-center justify-between">
+              <span>رمز التحقق المعتمد لهذا الحساب:</span>
+              <span className="font-mono font-black text-amber-950 text-sm tracking-widest">{demoOtp}</span>
+            </div>
+          )}
 
           {/* Success Toast */}
           {isSuccess && (
             <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-[12px] text-xs font-bold flex items-center justify-center gap-2 animate-in fade-in duration-150">
               <span>✓ تم التحقق بنجاح! جاري تحويلك إلى الملف المهني...</span>
+            </div>
+          )}
+
+          {/* Resend Notice */}
+          {resendMessage && (
+            <div className="p-3 bg-blue-50 border border-blue-200 text-blue-800 rounded-[12px] text-xs font-bold">
+              {resendMessage}
             </div>
           )}
 
@@ -171,10 +204,17 @@ export const VerifyEmailPage: React.FC = () => {
               لم يصلك الرمز؟{' '}
               <button
                 type="button"
+                disabled={resendTimer > 0}
                 onClick={handleResend}
-                className="text-[#D97706] font-bold hover:underline cursor-pointer"
+                className={`font-bold transition ${
+                  resendTimer > 0
+                    ? 'text-slate-400 cursor-not-allowed'
+                    : 'text-[#D97706] hover:underline cursor-pointer'
+                }`}
               >
-                إعادة الإرسال بعد ({resendTimer > 0 ? `0:${resendTimer < 10 ? '0' : ''}${resendTimer}` : 'الآن'})
+                {resendTimer > 0
+                  ? `إعادة الإرسال بعد (0:${resendTimer < 10 ? '0' : ''}${resendTimer})`
+                  : 'إعادة إرسال رمز التفعيل الآن'}
               </button>
             </p>
             <p>

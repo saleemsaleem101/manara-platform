@@ -72,7 +72,7 @@ class AccountsSprint1TestCase(TestCase):
         self.assertFalse(response.data.get('email_verified'))
 
     def test_verify_email_and_login_success(self):
-        """اختبار تأكيد البريد وتسجيل الدخول بعد التفعيل."""
+        """FR-26: اختبار تأكيد البريد بالرمز الرقمي وتسجيل الدخول بعد التفعيل."""
         user = User.objects.create_user(
             email='verify_test@manara.edu.ye',
             name='Verify User',
@@ -80,10 +80,11 @@ class AccountsSprint1TestCase(TestCase):
             password='SecurePassword@2026',
             email_verified=False
         )
-        # تأكيد البريد عبر الرمز
+        # تأكيد البريد عبر الرمز المشتق للمستخدم
+        expected_code = user.get_verification_code()
         verify_resp = self.client.post('/api/auth/verify-email/', {
             'email': 'verify_test@manara.edu.ye',
-            'code': '582941'
+            'code': expected_code
         })
         self.assertEqual(verify_resp.status_code, 200)
         user.refresh_from_db()
@@ -96,6 +97,21 @@ class AccountsSprint1TestCase(TestCase):
         })
         self.assertEqual(login_resp.status_code, 200)
         self.assertIn('token', login_resp.data)
+
+    def test_verify_email_rejects_invalid_code(self):
+        """FR-26 / NFR-01: رفض تأكيد البريد عند إدخال رمز خاطئ."""
+        User.objects.create_user(
+            email='wrong_code@manara.edu.ye',
+            name='Wrong Code User',
+            role='GRADUATE',
+            password='SecurePassword@2026',
+            email_verified=False
+        )
+        verify_resp = self.client.post('/api/auth/verify-email/', {
+            'email': 'wrong_code@manara.edu.ye',
+            'code': '000000'
+        })
+        self.assertEqual(verify_resp.status_code, 400)
 
     def test_logout_and_token_revocation(self):
         """MNRA-57, MNRA-60, MNRA-61: تسجيل الخروج وإبطال التوكن وحماية المسارات."""

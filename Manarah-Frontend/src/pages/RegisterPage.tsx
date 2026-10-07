@@ -42,11 +42,16 @@ export const RegisterPage: React.FC = () => {
 
     setIsLoading(true)
     try {
-      await api.register({
+      const res = await api.register({
         name: formData.name,
         email: formData.email,
         password: formData.password,
       })
+
+      if (res && (res as any).otp_code) {
+        sessionStorage.setItem('manarah_demo_otp', (res as any).otp_code)
+      }
+      sessionStorage.setItem('manarah_registered_email', formData.email)
 
       await updateProfile({
         name: formData.name,
@@ -129,9 +134,12 @@ export const RegisterPage: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  className="px-5 py-1.5 text-[#64748B] font-semibold hover:text-[#0F1E36] transition cursor-pointer"
+                  disabled
+                  className="px-4 py-1.5 text-[#94A3B8] font-semibold flex items-center gap-1.5 cursor-not-allowed opacity-80"
+                  title="تسجيل حسابات الشركات متاح في السبرنت القادم"
                 >
-                  حساب شركة
+                  <span>حساب شركة</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 font-normal">قريباً</span>
                 </button>
               </div>
 

@@ -20,20 +20,18 @@ export function calculateCompletion(p: Partial<GraduateProfile>): number {
 }
 
 const defaultProfile: GraduateProfile = {
-  name: 'خريج منارة المتميز',
+  name: '',
   email: '',
-  phone: '+967 770 000 000',
+  phone: '',
   city: 'اليمن - صنعاء',
   university: 'جامعة العلوم والتكنولوجيا',
   major: 'هندسة البرمجيات',
   graduationYear: 2026,
-  gpa: '92% (ممتاز مع مرتبة الشرف)',
+  gpa: '',
   experienceYears: 'حديث التخرج (0 - 1 سنة)',
-  bio: 'مهندس برمجيات متخصص في بناء وتطوير تطبيقات الويب الحديثة وحلول الأعمال الرقمية وفق أفضل المعايير الهندسية.',
+  bio: '',
   isVerified: false,
-  completionPercentage: 80,
-  skills: ['React.js', 'TypeScript', 'Tailwind CSS', 'REST APIs', 'Git & GitHub'],
-  cvFile: null,
+  completionPercentage: 0,
 }
 
 interface ProfileContextType {
@@ -41,7 +39,7 @@ interface ProfileContextType {
   updateProfile: (updated: Partial<GraduateProfile>) => Promise<void>
   isAuthenticated: boolean
   isLoading: boolean
-  login: (email: string, password?: string) => Promise<void>
+  login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
   verifyEmail: (userData?: any) => void
   refreshProfile: () => Promise<void>
@@ -165,27 +163,26 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setIsAuthenticated(true)
   }
 
-  const login = async (email: string, password?: string) => {
-    if (email && password) {
-      const res = await api.login({ email, password })
-      setIsAuthenticated(true)
-      if (res.user) {
-        setProfile((prev) => {
-          const updated = {
-            ...prev,
-            name: res.user.name || prev.name,
-            email: res.user.email || prev.email,
-            phone: res.user.phone || prev.phone,
-            isVerified: res.user.email_verified,
-          }
-          updated.completionPercentage = calculateCompletion(updated)
-          return updated
-        })
-      }
-      await refreshProfile()
-    } else {
-      setIsAuthenticated(true)
+  const login = async (email: string, password: string) => {
+    if (!email || !password) {
+      throw new Error('يرجى إدخال البريد الإلكتروني وكلمة المرور.')
     }
+    const res = await api.login({ email, password })
+    setIsAuthenticated(true)
+    if (res.user) {
+      setProfile((prev) => {
+        const updated = {
+          ...prev,
+          name: res.user.name || prev.name,
+          email: res.user.email || prev.email,
+          phone: res.user.phone || prev.phone,
+          isVerified: res.user.email_verified,
+        }
+        updated.completionPercentage = calculateCompletion(updated)
+        return updated
+      })
+    }
+    await refreshProfile()
   }
 
   const logout = async () => {

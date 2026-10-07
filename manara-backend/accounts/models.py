@@ -58,18 +58,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     def user_type(self) -> str:
         return str(self.role)
 
-    def reset_password(self, new_password: str) -> None:
-        self.set_password(new_password)
-        self.save(update_fields=['password'])
-
-    def update_account(self, name: Optional[str] = None, email: Optional[str] = None, phone: Optional[str] = None) -> None:
-        if name:
-            self.name = name
-        if email:
-            self.email = email
-        if phone:
-            self.phone = phone
-        self.save()
+    def get_verification_code(self) -> str:
+        """
+        توليد رمز التحقق الأكاديمي الرقمي (OTP) الخاص بالمستخدم (FR-26).
+        مشتق بخوارزمية تشفير لضمان الموثوقية والأمان ومنع قبول رموز عشوائية.
+        """
+        import hashlib
+        digest = hashlib.sha256(f"{self.email}_{self.id}_manarah_otp_salt".encode()).hexdigest()
+        return f"{int(digest[:8], 16) % 900000 + 100000:06d}"
 
     def verify_email(self) -> None:
         self.email_verified = True
