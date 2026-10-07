@@ -56,11 +56,12 @@ export const api = {
       if (!errorMsg && typeof errorData === 'object') {
         const parts: string[] = []
         for (const [key, val] of Object.entries(errorData)) {
-          const fieldLabel = key === 'email' ? 'البريد الإلكتروني' : key === 'password' ? 'كلمة المرور' : key === 'name' ? 'الاسم' : key
-          if (Array.isArray(val)) {
-            parts.push(`${fieldLabel}: ${val.join(' ')}`)
-          } else if (typeof val === 'string') {
-            parts.push(`${fieldLabel}: ${val}`)
+          const valText = Array.isArray(val) ? val.join(' ') : String(val)
+          if (key === 'email' && valText.includes('هذا الحساب مسجل')) {
+            parts.push(valText)
+          } else {
+            const fieldLabel = key === 'email' ? 'البريد الإلكتروني' : key === 'password' ? 'كلمة المرور' : key === 'name' ? 'الاسم' : key
+            parts.push(`${fieldLabel}: ${valText}`)
           }
         }
         if (parts.length > 0) errorMsg = parts.join(' • ')

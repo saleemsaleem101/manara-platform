@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password as django_validate_password
 from .models import User
 from profiles.models import GraduateProfile
@@ -9,6 +10,14 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     سيريالايزر إنشاء حساب الخريج (Sprint 1 - US-01 / MNRA-12 / MNRA-46).
     يقبل حسابات الخريجين فقط (GRADUATE).
     """
+    email = serializers.EmailField(
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message='هذا الحساب مسجل بالفعل.'
+            )
+        ]
+    )
     password = serializers.CharField(write_only=True)
     phone = serializers.CharField(required=False, allow_blank=True, default='')
 
