@@ -63,19 +63,36 @@ TEMPLATES = [
 WSGI_APPLICATION = 'manara_backend.wsgi.application'
 
 # ==============================================================
-# قاعدة البيانات — تُقرأ من ملف .env (NFR-01)
+# قاعدة البيانات — تُقرأ من ملف .env أو DATABASE_URL في Render (NFR-01)
 # ==============================================================
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME':     config('DB_NAME',     default='manara_db'),
-        'USER':     config('DB_USER',     default='postgres'),
-        'PASSWORD': config('DB_PASSWORD', default=''),
-        'HOST':     config('DB_HOST',     default='localhost'),
-        'PORT':     config('DB_PORT',     default='5432'),
-        'CONN_MAX_AGE': config('DB_CONN_MAX_AGE', default=60, cast=int),
+from urllib.parse import urlparse
+
+DATABASE_URL = config('DATABASE_URL', default='')
+if DATABASE_URL:
+    _db_url = urlparse(DATABASE_URL)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': _db_url.path[1:],
+            'USER': _db_url.username,
+            'PASSWORD': _db_url.password,
+            'HOST': _db_url.hostname,
+            'PORT': _db_url.port or 5432,
+            'CONN_MAX_AGE': config('DB_CONN_MAX_AGE', default=60, cast=int),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME':     config('DB_NAME',     default='manara_db'),
+            'USER':     config('DB_USER',     default='postgres'),
+            'PASSWORD': config('DB_PASSWORD', default=''),
+            'HOST':     config('DB_HOST',     default='localhost'),
+            'PORT':     config('DB_PORT',     default='5432'),
+            'CONN_MAX_AGE': config('DB_CONN_MAX_AGE', default=60, cast=int),
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
