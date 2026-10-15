@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import logoImg from '../assets/logo_transparent.png'
 import { useProfile } from '../context/ProfileContext'
 import { api } from '../services/api'
-import { validatePassword } from '../utils/validators'
+import { validatePassword, validateQuadrupleName } from '../utils/validators'
 
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate()
@@ -12,8 +12,8 @@ export const RegisterPage: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    university: 'جامعة العلوم والتكنولوجيا',
-    major: 'هندسة البرمجيات',
+    university: '',
+    major: '',
     password: '',
     confirmPassword: '',
     agreeTerms: false,
@@ -24,8 +24,11 @@ export const RegisterPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
+  const nameCheck = validateQuadrupleName(formData.name)
+
   const isFormValid = Boolean(
     formData.name.trim() &&
+    nameCheck.isValid &&
     formData.email.trim() &&
     formData.university.trim() &&
     formData.major.trim() &&
@@ -37,6 +40,22 @@ export const RegisterPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+
+    const nameValidation = validateQuadrupleName(formData.name)
+    if (!nameValidation.isValid) {
+      setError(nameValidation.errorMessage || 'يجب إدخال الاسم الرباعي كاملاً على الأقل.')
+      return
+    }
+
+    if (!formData.university.trim()) {
+      setError('يرجى اختيار الجامعة.')
+      return
+    }
+
+    if (!formData.major.trim()) {
+      setError('يرجى اختيار التخصص الأكاديمي.')
+      return
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError('كلمة المرور وتأكيد كلمة المرور غير متطابقتين.')
@@ -57,24 +76,24 @@ export const RegisterPage: React.FC = () => {
     setIsLoading(true)
     try {
       const res = await api.register({
-        name: formData.name,
-        email: formData.email,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
         password: formData.password,
       })
 
       if (res && (res as any).otp_code) {
         sessionStorage.setItem('manarah_demo_otp', (res as any).otp_code)
       }
-      sessionStorage.setItem('manarah_registered_email', formData.email)
+      sessionStorage.setItem('manarah_registered_email', formData.email.trim())
 
       await updateProfile({
-        name: formData.name,
-        email: formData.email,
-        university: formData.university,
-        major: formData.major,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        university: formData.university.trim(),
+        major: formData.major.trim(),
       })
 
-      navigate('/verify-email', { state: { email: formData.email } })
+      navigate('/verify-email', { state: { email: formData.email.trim() } })
     } catch (err: unknown) {
       const errorObj = err as { message?: string } | undefined
       setError(errorObj?.message || 'فشل إنشاء الحساب. يرجى التأكد من صحة البيانات.')
@@ -138,17 +157,30 @@ export const RegisterPage: React.FC = () => {
               <form onSubmit={handleSubmit} className="space-y-3.5">
                 {/* Full Name */}
                 <div>
-                  <label className="block text-[12px] font-bold text-[#0F1E36] mb-1 text-start">
-                    الاسم الكامل (رباعي) *
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-[12px] font-bold text-[#0F1E36] text-start">
+                      الاسم الكامل (رباعي على الأقل) *
+                    </label>
+                    {formData.name.trim() && (
+                      <span className={`text-[11px] font-bold ${nameCheck.isValid ? 'text-emerald-600' : 'text-amber-600'}`}>
+                        {nameCheck.isValid ? '✓ اسم رباعي مكتمل' : `${nameCheck.partCount} من 4 أسماء`}
+                      </span>
+                    )}
+                  </div>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="سليم شايف سليمان"
-                    className="w-full h-[44px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
+                    className={`w-full h-[44px] px-4 rounded-[12px] border text-[13px] font-semibold text-[#0F1E36] focus:outline-none transition text-start ${
+                      formData.name.trim() && !nameCheck.isValid
+                        ? 'border-amber-400 bg-amber-50/30 focus:border-amber-500 focus:bg-white'
+                        : 'border-[#CBD5E1] bg-[#F8FAFC] focus:border-[#F59E0B] focus:bg-white'
+                    }`}
                   />
+                  <p className="text-[11px] text-[#64748B] mt-1 text-start">
+                    يتطلب النظام إدخال 4 أسماء على الأقل لتوثيق ملف الخريج بسوق العمل
+                  </p>
                 </div>
 
                 {/* Email */}
@@ -161,38 +193,53 @@ export const RegisterPage: React.FC = () => {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="student@manara.edu.ye"
-                    className="w-full h-[44px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
+                    className="w-full h-[44px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start font-mono"
                   />
                 </div>
 
-                {/* Academic Row */}
+                {/* University & Major Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[12px] font-bold text-[#0F1E36] mb-1 text-start">
                       الجامعة *
                     </label>
-                    <input
-                      type="text"
+                    <select
                       required
                       value={formData.university}
                       onChange={(e) => setFormData({ ...formData, university: e.target.value })}
-                      placeholder="جامعة العلوم والتكنولوجيا"
-                      className="w-full h-[44px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
-                    />
+                      className="w-full h-[44px] px-3 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[12px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start cursor-pointer"
+                    >
+                      <option value="">اختر الجامعة...</option>
+                      <option value="جامعة العلوم والتكنولوجيا">جامعة العلوم والتكنولوجيا</option>
+                      <option value="جامعة صنعاء">جامعة صنعاء</option>
+                      <option value="الجامعة اللبنانية الدولية">الجامعة اللبنانية الدولية</option>
+                      <option value="جامعة الرازي">جامعة الرازي</option>
+                      <option value="جامعة سبأ">جامعة سبأ</option>
+                      <option value="جامعة ذمار">جامعة ذمار</option>
+                      <option value="جامعة عدن">جامعة عدن</option>
+                      <option value="أخرى">جامعة أخرى</option>
+                    </select>
                   </div>
                   <div>
                     <label className="block text-[12px] font-bold text-[#0F1E36] mb-1 text-start">
                       التخصص الأكاديمي *
                     </label>
-                    <input
-                      type="text"
+                    <select
                       required
                       value={formData.major}
                       onChange={(e) => setFormData({ ...formData, major: e.target.value })}
-                      placeholder="هندسة البرمجيات"
-                      className="w-full h-[44px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
-                    />
+                      className="w-full h-[44px] px-3 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[12px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start cursor-pointer"
+                    >
+                      <option value="">اختر التخصص...</option>
+                      <option value="هندسة البرمجيات">هندسة البرمجيات (Software Eng)</option>
+                      <option value="علوم الحاسوب">علوم الحاسوب (Computer Science)</option>
+                      <option value="تقنية المعلومات">تقنية المعلومات (IT)</option>
+                      <option value="الأمن السيبراني">الأمن السيبراني (Cybersecurity)</option>
+                      <option value="نظم المعلومات الحاسوبية">نظم المعلومات الحاسوبية (CIS)</option>
+                      <option value="هندسة الشبكات والاتصالات">هندسة الشبكات والاتصالات (Networks)</option>
+                      <option value="ذكاء الأعمال وتحليل البيانات">ذكاء الأعمال وتحليل البيانات (Data Analytics)</option>
+                      <option value="أخرى">تخصص آخر</option>
+                    </select>
                   </div>
                 </div>
 
@@ -208,7 +255,6 @@ export const RegisterPage: React.FC = () => {
                         required
                         value={formData.password}
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        placeholder="••••••••••••"
                         className="w-full h-[44px] px-4 pe-11 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[14px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
                       />
                       <button
@@ -242,7 +288,6 @@ export const RegisterPage: React.FC = () => {
                         required
                         value={formData.confirmPassword}
                         onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                        placeholder="••••••••••••"
                         className="w-full h-[44px] px-4 pe-11 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[14px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
                       />
                       <button

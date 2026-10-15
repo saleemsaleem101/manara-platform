@@ -31,3 +31,34 @@ export function validatePassword(password: string): PasswordValidationResult {
     errorMessage,
   }
 }
+
+export interface NameValidationResult {
+  isValid: boolean
+  partCount: number
+  errorMessage?: string
+}
+
+export function validateQuadrupleName(name: string): NameValidationResult {
+  const trimmed = (name || '').trim()
+  if (!trimmed) {
+    return {
+      isValid: false,
+      partCount: 0,
+      errorMessage: 'يرجى إدخال الاسم الرباعي كاملاً.',
+    }
+  }
+
+  const parts = trimmed.split(/\s+/).filter(Boolean)
+  if (parts.length < 4) {
+    return {
+      isValid: false,
+      partCount: parts.length,
+      errorMessage: 'يجب إدخال الاسم الرباعي كاملاً على الأقل (أربعة أسماء مفصولة بمسافات، مثال: سليم شايف علي سليمان).',
+    }
+  }
+
+  return {
+    isValid: true,
+    partCount: parts.length,
+  }
+}

@@ -198,20 +198,6 @@ export const ProfileViewPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Card 4: Sprint 1 Next Steps Notice */}
-            <div className="bg-gradient-to-br from-[#0F1E36] to-[#1E293B] text-white rounded-[22px] p-6 shadow-sm space-y-3 text-start">
-              <div className="flex items-center gap-2">
-                <span className="text-amber-400 text-base">✨</span>
-                <h3 className="text-sm font-black text-amber-300">مخرجات سبرنت 1 جاهزة بالكامل</h3>
-              </div>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                تم استكمال بناء وتوثيق حساب الخريج والملف المهني الأساسي وربطهما بقاعدة البيانات <code className="bg-white/10 px-1.5 py-0.5 rounded text-amber-300">manarah_db1</code>.
-              </p>
-              <div className="pt-2 flex items-center justify-between text-[11px] text-slate-400 border-t border-white/10">
-                <span>جامعة العلوم والتكنولوجيا • 2026</span>
-                <span className="text-emerald-400 font-bold">✔ نظام موثق ومختبر</span>
-              </div>
-            </div>
           </div>
         </div>
       </main>

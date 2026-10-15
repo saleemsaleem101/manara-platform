@@ -6,6 +6,8 @@ import { VerifyEmailPage } from './pages/VerifyEmailPage'
 import { LoginPage } from './pages/LoginPage'
 import { ProfileViewPage } from './pages/ProfileViewPage'
 import { ProfileEditPage } from './pages/ProfileEditPage'
+import { AuthPasswordResetRequestPage } from './pages/AuthPasswordResetRequestPage'
+import { AuthPasswordResetConfirmPage } from './pages/AuthPasswordResetConfirmPage'
 
 /**
  * حماية مسارات الخريج والملف الشخصي (MNRA-54, MNRA-55, MNRA-60)
@@ -86,6 +88,22 @@ export function App() {
             }
           />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route
+            path="/forgot-password"
+            element={
+              <PublicOnlyRoute>
+                <AuthPasswordResetRequestPage />
+              </PublicOnlyRoute>
+            }
+          />
+          <Route
+            path="/password-reset"
+            element={
+              <PublicOnlyRoute>
+                <AuthPasswordResetConfirmPage />
+              </PublicOnlyRoute>
+            }
+          />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

@@ -1,22 +1,34 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import logoImg from '../assets/logo_transparent.png'
 import { useProfile } from '../context/ProfileContext'
 import { api } from '../services/api'
 
 export const VerifyEmailPage: React.FC = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const [searchParams] = useSearchParams()
   const { profile, verifyEmail } = useProfile()
 
-  const targetEmail = sessionStorage.getItem('manarah_registered_email') || profile.email || ''
-  const demoOtp = sessionStorage.getItem('manarah_demo_otp')
+  const urlEmail = searchParams.get('email') || ''
+  const locationEmail = (location.state as { email?: string })?.email || ''
+  const sessionEmail = sessionStorage.getItem('manarah_registered_email') || ''
+  const targetEmail = urlEmail || locationEmail || sessionEmail || profile.email || ''
 
-  const [otp, setOtp] = useState(['', '', '', '', '', ''])
+  const urlCode = searchParams.get('code') || searchParams.get('token') || ''
+  const demoOtp = sessionStorage.getItem('manarah_demo_otp') || (urlCode && urlCode.length === 6 ? urlCode : null)
+
+  const [otp, setOtp] = useState<string[]>(() => {
+    if (urlCode && urlCode.length === 6) {
+      return urlCode.split('')
+    }
+    return ['', '', '', '', '', '']
+  })
   const [error, setError] = useState('')
   const [resendMessage, setResendMessage] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  const [resendTimer, setResendTimer] = useState(45)
+  const [resendTimer, setResendTimer] = useState(60)
   const inputsRef = useRef<(HTMLInputElement | null)[]>([])
 
   useEffect(() => {
@@ -26,6 +38,35 @@ export const VerifyEmailPage: React.FC = () => {
     }, 1000)
     return () => clearInterval(timer)
   }, [resendTimer])
+
+  const executeVerification = useCallback(async (codeToVerify: string, emailToVerify: string) => {
+    if (codeToVerify.length !== 6 || !emailToVerify) return
+    setIsVerifying(true)
+    setError('')
+    try {
+      const res = await api.verifyEmail(codeToVerify, emailToVerify)
+      if (res.user) {
+        verifyEmail(res.user)
+      }
+      setIsSuccess(true)
+      sessionStorage.removeItem('manarah_demo_otp')
+      sessionStorage.removeItem('manarah_registered_email')
+      setTimeout(() => {
+        navigate('/profile')
+      }, 1200)
+    } catch (err: any) {
+      setError(err.message || 'رمز التحقق غير صحيح أو انتهت صلاحيته (صلاحية الرمز 10 دقائق).')
+    } finally {
+      setIsVerifying(false)
+    }
+  }, [navigate, verifyEmail])
+
+  // إذا وصل المستخدم عبر نقر الرابط المباشر في البريد (email + code)
+  useEffect(() => {
+    if (urlCode && urlCode.length === 6 && urlEmail && !isSuccess && !isVerifying) {
+      executeVerification(urlCode, urlEmail)
+    }
+  }, [urlCode, urlEmail, isSuccess, isVerifying, executeVerification])
 
   const handleChange = (index: number, val: string) => {
     setError('')
@@ -69,32 +110,33 @@ export const VerifyEmailPage: React.FC = () => {
       return
     }
 
-    setIsVerifying(true)
-    setError('')
-
-    try {
-      const res = await api.verifyEmail(code, targetEmail)
-      verifyEmail(res.user)
-      setIsSuccess(true)
-      sessionStorage.removeItem('manarah_demo_otp')
-      sessionStorage.removeItem('manarah_registered_email')
-      setTimeout(() => {
-        navigate('/profile')
-      }, 1000)
-    } catch (err: any) {
-      setError(err.message || 'رمز التحقق غير صحيح. يرجى إدخال الرمز المكون من 6 أرقام.')
-    } finally {
-      setIsVerifying(false)
+    const emailToUse = targetEmail || sessionStorage.getItem('manarah_registered_email') || profile.email
+    if (!emailToUse) {
+      setError('يرجى تحديد البريد الإلكتروني للمتابعة.')
+      return
     }
+
+    await executeVerification(code, emailToUse)
   }
 
-  const handleResend = () => {
+  const handleResend = async () => {
     if (resendTimer > 0) return
     setOtp(['', '', '', '', '', ''])
     setError('')
     setResendTimer(60)
-    setResendMessage('تم تجديد جلسة التفعيل وإعادة إرسال الرمز بنجاح.')
-    setTimeout(() => setResendMessage(''), 4000)
+    try {
+      const emailToUse = targetEmail || sessionStorage.getItem('manarah_registered_email') || profile.email
+      if (emailToUse) {
+        const res = await api.resendOTP(emailToUse)
+        if (res && res.dev_otp) {
+          sessionStorage.setItem('manarah_demo_otp', res.dev_otp)
+        }
+      }
+      setResendMessage('تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني بنجاح.')
+    } catch (err: any) {
+      setError(err.message || 'فشل إعادة إرسال الرمز.')
+    }
+    setTimeout(() => setResendMessage(''), 5000)
     inputsRef.current[0]?.focus()
   }
 
@@ -134,7 +176,7 @@ export const VerifyEmailPage: React.FC = () => {
           {/* Demo OTP Notice */}
           {demoOtp && (
             <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-[12px] text-xs font-semibold flex items-center justify-between">
-              <span>رمز التحقق المعتمد لهذا الحساب:</span>
+              <span>رمز التحقق المؤقت لهذا الحساب:</span>
               <span className="font-mono font-black text-amber-950 text-sm tracking-widest">{demoOtp}</span>
             </div>
           )}

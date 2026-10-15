@@ -122,8 +122,7 @@ export const LoginPage: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="student@example.com"
-                    className="w-full h-[46px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
+                    className="w-full h-[46px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start font-mono"
                   />
                 </div>
 
@@ -131,12 +130,12 @@ export const LoginPage: React.FC = () => {
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-[12px] font-bold text-[#0F1E36]">كلمة المرور</label>
-                    <span
-                      className="text-[11px] font-bold text-slate-400 cursor-not-allowed"
-                      title="ميزة استعادة كلمة المرور متاحة في السبرنت القادم"
+                    <Link
+                      to="/forgot-password"
+                      className="text-[11px] font-bold text-amber-600 hover:text-amber-700 transition"
                     >
                       نسيت كلمة المرور؟
-                    </span>
+                    </Link>
                   </div>
                   <div className="relative">
                     <input
@@ -144,7 +143,6 @@ export const LoginPage: React.FC = () => {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••••••"
                       className="w-full h-[46px] px-4 pe-11 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[14px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
                     />
                     <button
