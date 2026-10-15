@@ -25,6 +25,17 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'name', 'email', 'phone', 'role', 'password')
 
+    def validate_name(self, value):
+        name = (value or '').strip()
+        if not name:
+            raise serializers.ValidationError('حقل الاسم مطلوب.')
+        parts = [p for p in name.split() if p]
+        if len(parts) < 4:
+            raise serializers.ValidationError(
+                'يجب إدخال الاسم الرباعي كاملاً على الأقل (أربعة أسماء مفصولة بمسافات، مثال: سليم شايف علي سليمان).'
+            )
+        return name
+
     def validate_role(self, value):
         if value != 'GRADUATE':
             raise serializers.ValidationError('التسجيل متاح لحسابات الخريجين فقط في سبرنت 1.')
@@ -43,8 +54,9 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             phone=validated_data.get('phone', '')
         )
         # توليد الملف المهني الأساسي للخريج فورياً
-        first_name = user.name.split(' ')[0] if user.name else ''
-        last_name = user.name.split(' ', 1)[1] if ' ' in user.name else ''
+        parts = user.name.split()
+        first_name = parts[0] if parts else ''
+        last_name = ' '.join(parts[1:]) if len(parts) > 1 else ''
         GraduateProfile.objects.get_or_create(
             user=user,
             defaults={

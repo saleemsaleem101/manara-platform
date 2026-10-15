@@ -63,7 +63,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'manara_backend.wsgi.application'
 
 # ==============================================================
-# قاعدة البيانات — تُقرأ من ملف .env أو DATABASE_URL في Render (NFR-01)
+# قاعدة البيانات — تُقرأ من ملف .env أو DATABASE_URL (NFR-01)
 # ==============================================================
 from urllib.parse import urlparse
 
@@ -85,7 +85,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME':     config('DB_NAME',     default='manara_db'),
+            'NAME':     config('DB_NAME',     default='manarah_db1'),
             'USER':     config('DB_USER',     default='postgres'),
             'PASSWORD': config('DB_PASSWORD', default=''),
             'HOST':     config('DB_HOST',     default='localhost'),
@@ -111,7 +111,7 @@ USE_TZ = True
 # Static files
 STATIC_URL = 'static/'
 
-# Media files — لرفع الفيديو التعريفي (FR-08)
+# Media files — لملفات وسائط وصور الملف الشخصي (NFR-01)
 MEDIA_URL  = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -121,7 +121,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
 
 # CORS Settings — تضييق من ALLOW_ALL إلى مصادر محددة (NFR-01)
-CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,https://manarah-frontend-eight.vercel.app', cast=Csv())
+CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173', cast=Csv())
 CORS_ALLOW_CREDENTIALS = True
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
@@ -178,7 +178,5 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=False, cast=bool)
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@manara.edu.ye')
-
-
-
-
+EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=20, cast=int)
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')

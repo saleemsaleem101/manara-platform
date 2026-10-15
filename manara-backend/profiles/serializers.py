@@ -36,6 +36,24 @@ class GraduateProfileSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'email', 'email_verified', 'created_at', 'updated_at']
 
+    def to_internal_value(self, data):
+        if hasattr(data, 'copy'):
+            data = data.copy()
+        else:
+            data = dict(data)
+        if 'major' in data and 'specialization' not in data:
+            data['specialization'] = data['major']
+        if 'graduationYear' in data and 'graduation_year' not in data:
+            data['graduation_year'] = data['graduationYear']
+        if 'experienceYears' in data and 'years_of_experience' not in data:
+            data['years_of_experience'] = data['experienceYears']
+        if 'experience_years' in data and 'years_of_experience' not in data:
+            data['years_of_experience'] = data['experience_years']
+        name_val = data.get('full_name') or data.get('name')
+        if name_val:
+            data['full_name'] = str(name_val).strip()
+        return super().to_internal_value(data)
+
     def update(self, instance, validated_data):
         full_name = validated_data.pop('full_name', None)
         if full_name:
