@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ==============================================================
 SECRET_KEY: str       = config('SECRET_KEY')  # type: ignore[assignment]
 DEBUG: bool           = config('DEBUG', default=False, cast=bool)  # type: ignore[assignment]
-ALLOWED_HOSTS: list   = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver', cast=Csv())  # type: ignore[assignment]
+ALLOWED_HOSTS: list   = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver,.vercel.app', cast=Csv())  # type: ignore[assignment]
 
 # Application definition
 INSTALLED_APPS = [
@@ -110,6 +110,7 @@ USE_TZ = True
 
 # Static files
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles_build' / 'static'
 
 # Media files — لملفات وسائط وصور الملف الشخصي (NFR-01)
 MEDIA_URL  = '/media/'
@@ -122,6 +123,14 @@ AUTH_USER_MODEL = 'accounts.User'
 
 # CORS Settings — تضييق من ALLOW_ALL إلى مصادر محددة (NFR-01)
 CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173', cast=Csv())
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https:\/\/.*\.vercel\.app$",
+]
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='https://*.vercel.app,http://localhost:5173,http://localhost:3000',
+    cast=Csv()
+)
 CORS_ALLOW_CREDENTIALS = True
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
