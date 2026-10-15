@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Navbar } from '../components/Navbar'
 import { useProfile } from '../context/ProfileContext'
@@ -6,15 +6,22 @@ import { useProfile } from '../context/ProfileContext'
 export const ProfileEditPage: React.FC = () => {
   const navigate = useNavigate()
   const { profile, updateProfile } = useProfile()
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, [])
 
   const [form, setForm] = useState({
     name: profile.name,
     email: profile.email,
     phone: profile.phone,
-    city: profile.city,
-    university: profile.university,
-    major: profile.major,
-    graduationYear: profile.graduationYear,
+    city: profile.city || 'اليمن - صنعاء',
+    university: profile.university || 'جامعة العلوم والتكنولوجيا',
+    major: profile.major || 'هندسة البرمجيات',
+    graduationYear: profile.graduationYear || 2026,
     gpa: profile.gpa || '92% (ممتاز مع مرتبة الشرف)',
     experienceYears: profile.experienceYears || 'حديث التخرج (0 - 1 سنة)',
     bio:
@@ -35,11 +42,12 @@ export const ProfileEditPage: React.FC = () => {
     try {
       await updateProfile(form)
       setSavedSuccess(true)
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         navigate('/profile')
       }, 800)
-    } catch (err: any) {
-      setError(err.message || 'فشل حفظ وتحديث البيانات الأساسية للخريج.')
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string } | undefined
+      setError(errorObj?.message || 'فشل حفظ وتحديث البيانات الأساسية للخريج.')
     } finally {
       setIsSaving(false)
     }
@@ -87,14 +95,13 @@ export const ProfileEditPage: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {/* Name */}
-              <div className="text-right">
+              <div className="text-start">
                 <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">
                   الاسم الكامل (رباعي) *
                 </label>
                 <input
                   type="text"
                   required
-                  id="input-fullname"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-bold text-[#0F1E36] focus:outline-none focus:border-amber-500 focus:bg-white transition"
@@ -102,199 +109,180 @@ export const ProfileEditPage: React.FC = () => {
               </div>
 
               {/* Email (Readonly) */}
-              <div className="text-right">
-                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">
-                  البريد الإلكتروني (محمي وموثق) 🔒
-                </label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    disabled
-                    value={form.email}
-                    className="w-full px-4 py-2.5 rounded-[10px] border border-[#E2E8F0] bg-[#F1F5F9] text-[13px] font-semibold text-[#64748B] font-mono cursor-not-allowed"
-                  />
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 px-2.5 py-0.5 rounded-[6px] bg-[#ECFDF5] text-[#059669] text-[10px] font-bold">
-                    موثق ✓
+              <div className="text-start">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-[12px] font-bold text-[#0F1E36]">البريد الإلكتروني</label>
+                  <span className="text-[10px] text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded">
+                    حساب موثق
                   </span>
                 </div>
+                <input
+                  type="email"
+                  disabled
+                  value={form.email}
+                  className="w-full px-4 py-2.5 rounded-[10px] border border-[#E2E8F0] bg-slate-50 text-[13px] font-semibold text-slate-500 cursor-not-allowed"
+                />
               </div>
 
               {/* Phone */}
-              <div className="text-right">
+              <div className="text-start">
                 <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">
-                  رقم الهاتف / واتساب *
+                  رقم الهاتف / واتساب
                 </label>
                 <input
-                  type="text"
-                  required
-                  id="input-phone"
+                  type="tel"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] font-mono focus:outline-none focus:border-amber-500 focus:bg-white transition"
+                  placeholder="+967 770 000 000"
+                  className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-bold text-[#0F1E36] focus:outline-none focus:border-amber-500 focus:bg-white transition"
                 />
               </div>
 
               {/* City */}
-              <div className="text-right">
+              <div className="text-start">
                 <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">
-                  المدينة والإقامة الحالية *
+                  المدينة والإقامة الحالية
                 </label>
                 <input
                   type="text"
-                  required
-                  id="input-city"
                   value={form.city}
                   onChange={(e) => setForm({ ...form, city: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-amber-500 focus:bg-white transition"
+                  placeholder="صنعاء، اليمن"
+                  className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-bold text-[#0F1E36] focus:outline-none focus:border-amber-500 focus:bg-white transition"
                 />
               </div>
             </div>
           </div>
 
-          {/* ================= SECTION 2: ACADEMIC QUALIFICATIONS ================= */}
+          {/* ================= SECTION 2: ACADEMIC DETAILS ================= */}
           <div className="bg-white border border-[#E2E8F0] rounded-[22px] p-6 sm:p-8 shadow-[0_4px_12px_rgba(15,30,54,0.05)] space-y-5">
             <div className="flex items-center gap-2 border-b border-[#F1F5F9] pb-3.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#0F1E36]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]" />
               <h2 className="text-[15px] font-black text-[#0F1E36]">
                 2. المؤهل الأكاديمي والجامعة
               </h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div className="text-right">
+              {/* University */}
+              <div className="text-start">
                 <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">الجامعة *</label>
                 <input
                   type="text"
                   required
-                  id="input-university"
                   value={form.university}
                   onChange={(e) => setForm({ ...form, university: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-bold text-[#0F1E36] focus:outline-none focus:border-amber-500 focus:bg-white transition"
                 />
               </div>
 
-              <div className="text-right">
-                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">
-                  التخصص الأكاديمي *
-                </label>
+              {/* Major */}
+              <div className="text-start">
+                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">التخصص الأكاديمي *</label>
                 <input
                   type="text"
                   required
-                  id="input-major"
                   value={form.major}
                   onChange={(e) => setForm({ ...form, major: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-bold text-[#0F1E36] focus:outline-none focus:border-amber-500 focus:bg-white transition"
                 />
               </div>
-            </div>
 
-            {/* 3 Columns */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-1">
-              <div className="text-right">
+              {/* Graduation Year */}
+              <div className="text-start">
                 <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">سنة التخرج *</label>
                 <input
                   type="number"
                   required
-                  id="input-gradyear"
+                  min={1990}
+                  max={2035}
                   value={form.graduationYear}
-                  onChange={(e) =>
-                    setForm({ ...form, graduationYear: parseInt(e.target.value) || 2026 })
-                  }
-                  className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-bold text-[#0F1E36] font-mono focus:outline-none focus:border-amber-500 focus:bg-white transition"
-                />
-              </div>
-
-              <div className="text-right">
-                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">
-                  المعدل التراكمي *
-                </label>
-                <input
-                  type="text"
-                  required
-                  id="input-gpa"
-                  value={form.gpa}
-                  onChange={(e) => setForm({ ...form, gpa: e.target.value })}
+                  onChange={(e) => setForm({ ...form, graduationYear: Number(e.target.value) })}
                   className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-bold text-[#0F1E36] focus:outline-none focus:border-amber-500 focus:bg-white transition"
                 />
               </div>
 
-              <div className="text-right">
-                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">
-                  سنوات الخبرة المهنية *
-                </label>
+              {/* GPA */}
+              <div className="text-start">
+                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">المعدل التراكمي والتقدير</label>
                 <input
                   type="text"
-                  required
-                  id="input-experience"
+                  value={form.gpa}
+                  onChange={(e) => setForm({ ...form, gpa: e.target.value })}
+                  placeholder="92% (ممتاز مع مرتبة الشرف)"
+                  className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-bold text-[#0F1E36] focus:outline-none focus:border-amber-500 focus:bg-white transition"
+                />
+              </div>
+
+              {/* Experience */}
+              <div className="sm:col-span-2 text-start">
+                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">سنوات الخبرة المهنية</label>
+                <input
+                  type="text"
                   value={form.experienceYears}
                   onChange={(e) => setForm({ ...form, experienceYears: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-amber-500 focus:bg-white transition"
+                  placeholder="حديث التخرج (0 - 1 سنة)"
+                  className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-bold text-[#0F1E36] focus:outline-none focus:border-amber-500 focus:bg-white transition"
                 />
               </div>
             </div>
           </div>
 
-          {/* ================= SECTION 3: BIO & OBJECTIVE ================= */}
+          {/* ================= SECTION 3: BIO ================= */}
           <div className="bg-white border border-[#E2E8F0] rounded-[22px] p-6 sm:p-8 shadow-[0_4px_12px_rgba(15,30,54,0.05)] space-y-4">
             <div className="flex items-center justify-between border-b border-[#F1F5F9] pb-3.5">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#0F1E36]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#10B981]" />
                 <h2 className="text-[15px] font-black text-[#0F1E36]">
                   3. النبذة التعريفية والهدف الوظيفي
                 </h2>
               </div>
-              <span className="px-3 py-1 rounded-[8px] bg-[#F1F5F9] text-[#64748B] text-[11px] font-bold font-mono">
-                {wordCount} words / 150 max
+              <span className="text-[11px] font-bold text-[#64748B]">
+                {wordCount} كلمة
               </span>
             </div>
 
-            <textarea
-              rows={4}
-              required
-              id="input-bio"
-              value={form.bio}
-              onChange={(e) => setForm({ ...form, bio: e.target.value })}
-              className="w-full p-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] text-[#0F1E36] leading-relaxed focus:outline-none focus:border-amber-500 focus:bg-white transition"
-              placeholder="اكتب نبذة مختصرة عن مهاراتك وشغفك وأهدافك الوظيفية..."
-            />
-
-            {/* Smart Advice Bar */}
-            <div className="p-3 rounded-[8px] bg-[#FFFBEB] border border-[#FDE68A] text-right">
-              <span className="text-[11px] font-bold text-[#B45309]">
-                💡 نصيحة مهنية: النبذة التعريفية الواضحة والدقيقة تزيد من فرصة تواصل مسؤولي التوظيف والشركات معك بنسبة 40%
-              </span>
+            <div className="text-start">
+              <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">
+                اكتب نبذة مهنية مختصرة تبرز مهاراتك وشغفك التقني
+              </label>
+              <textarea
+                rows={5}
+                value={form.bio}
+                onChange={(e) => setForm({ ...form, bio: e.target.value })}
+                placeholder="اكتب نبذتك التعريفية هنا..."
+                className="w-full p-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-amber-500 focus:bg-white transition leading-relaxed"
+              />
             </div>
           </div>
 
           {/* ================= BOTTOM ACTION BUTTONS ================= */}
-          <div className="flex items-center justify-end gap-3 pt-3">
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <Link
+              to="/profile"
+              className="px-6 h-[46px] rounded-[12px] border border-[#CBD5E1] bg-white hover:bg-slate-50 text-[#0F1E36] text-[13px] font-bold transition flex items-center justify-center cursor-pointer"
+            >
+              إلغاء والعودة
+            </Link>
             <button
               type="submit"
-              id="submit-save-profile"
               disabled={isSaving}
-              className="px-6 py-3 rounded-[12px] bg-[#F59E0B] hover:bg-amber-600 disabled:opacity-60 text-[#0F1E36] text-[13px] font-black shadow-sm transition transform active:scale-[0.99] cursor-pointer flex items-center gap-2"
+              className="px-8 h-[46px] rounded-[12px] bg-[#0F1E36] hover:bg-[#1E293B] text-white text-[13px] font-bold shadow-sm transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
             >
               {isSaving ? (
                 <>
-                  <span className="w-4 h-4 border-2 border-[#0F1E36] border-t-transparent rounded-full animate-spin" />
-                  <span>جاري الحفظ في الخادم...</span>
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>جاري الحفظ...</span>
                 </>
               ) : (
-                <>
-                  <span>حفظ البيانات الأساسية</span>
-                  <span>✓</span>
-                </>
+                <span>حفظ التعديلات</span>
               )}
             </button>
-            <Link
-              to="/profile"
-              className="px-5 py-3 rounded-[12px] bg-white border border-[#CBD5E1] text-[#475569] text-[12px] font-bold hover:bg-slate-50 transition"
-            >
-              إلغاء التغييرات
-            </Link>
           </div>
         </form>
       </main>
     </div>
   )
 }
+
+export default ProfileEditPage
