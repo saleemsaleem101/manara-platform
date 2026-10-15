@@ -22,9 +22,9 @@ class AccountsSprint1TestCase(TestCase):
     # =========================================================================
 
     def test_tc_01_graduate_registration_success(self):
-        """TC-01: إنشاء حساب خريج جديد ببيانات صحيحة والتأكد من إنشاء الحساب والملف المهني وتوليد OTP."""
+        """TC-01: إنشاء حساب خريج جديد ببيانات صحيحة واسم رباعي والتأكد من إنشاء الحساب والملف المهني وتوليد OTP."""
         payload = {
-            "name": "سليم شايف سليمان",
+            "name": "سليم شايف علي سليمان",
             "email": "salim_test@manara.edu.ye",
             "phone": "+967 770 000 001",
             "role": "GRADUATE",
@@ -39,11 +39,40 @@ class AccountsSprint1TestCase(TestCase):
         self.assertEqual(user.role, "GRADUATE")
         self.assertFalse(user.email_verified)
         self.assertTrue(GraduateProfile.objects.filter(user=user).exists())
+        profile = GraduateProfile.objects.get(user=user)
+        self.assertEqual(profile.first_name, "سليم")
+        self.assertEqual(profile.last_name, "شايف علي سليمان")
+
+    def test_tc_01b_name_less_than_four_parts_rejected(self):
+        """التحقق من رفض التسجيل إذا كان الاسم أقل من رباعي (اسمان أو ثلاثة فقط)."""
+        # تجربة اسم ثنائي
+        payload_two_words = {
+            "name": "سليم شايف",
+            "email": "two_names@manara.edu.ye",
+            "role": "GRADUATE",
+            "password": "SecurePassword@2026",
+        }
+        response_two = self.client.post("/api/auth/register/", payload_two_words)
+        self.assertEqual(response_two.status_code, 400)
+        self.assertIn("name", response_two.data)
+        self.assertIn("الرباعي", str(response_two.data["name"]))
+
+        # تجربة اسم ثلاثي
+        payload_three_words = {
+            "name": "سليم شايف سليمان",
+            "email": "three_names@manara.edu.ye",
+            "role": "GRADUATE",
+            "password": "SecurePassword@2026",
+        }
+        response_three = self.client.post("/api/auth/register/", payload_three_words)
+        self.assertEqual(response_three.status_code, 400)
+        self.assertIn("name", response_three.data)
+        self.assertIn("الرباعي", str(response_three.data["name"]))
 
     def test_tc_02_invalid_email_format_rejected(self):
         """TC-02: إدخال بريد إلكتروني بصيغة غير صحيحة ورفض التسجيل."""
         payload = {
-            "name": "مستخدم تجريبي",
+            "name": "مستخدم تجريبي أحمد علي",
             "email": "invalid-email-format",
             "role": "GRADUATE",
             "password": "SecurePassword@2026",
@@ -56,12 +85,12 @@ class AccountsSprint1TestCase(TestCase):
         """TC-03: استخدام بريد إلكتروني مسجل مسبقاً ومنع تكرار الحساب برسالة توضيحية."""
         User.objects.create_user(
             email="existing@manara.edu.ye",
-            name="Existing User",
+            name="Existing User First Last",
             role="GRADUATE",
             password="SecurePassword@2026",
         )
         payload = {
-            "name": "Second User",
+            "name": "Second User Full Name",
             "email": "existing@manara.edu.ye",
             "role": "GRADUATE",
             "password": "SecurePassword@2026",
@@ -73,7 +102,7 @@ class AccountsSprint1TestCase(TestCase):
     def test_tc_04_weak_or_short_password_rejected(self):
         """TC-04: إدخال كلمة مرور ضعيفة أو قصيرة ومنع التسجيل وفق معايير الأمان."""
         payload = {
-            "name": "مستخدم كلمة قصيرة",
+            "name": "مستخدم كلمة قصيرة أحمد",
             "email": "short_pass@manara.edu.ye",
             "role": "GRADUATE",
             "password": "123",  # قصيرة جداً
@@ -97,7 +126,7 @@ class AccountsSprint1TestCase(TestCase):
     def test_tc_06_account_role_validation(self):
         """TC-06: التحقق من نوع الحساب وضمان تسجيله بصلاحية خريج فقط ورفض أي صلاحية خارج سبرنت 1."""
         payload = {
-            "name": "شركة غير مصرحة",
+            "name": "شركة غير مصرحة أحمد علي",
             "email": "company_attempt@manara.edu.ye",
             "role": "COMPANY",
             "password": "SecurePassword@2026",
@@ -201,6 +230,20 @@ class AccountsSprint1TestCase(TestCase):
         })
         self.assertEqual(login_res.status_code, 200)
 
+    def test_tc_resend_otp_success(self):
+        """التحقق من إمكانية طلب إعادة إرسال رمز OTP لحساب غير مفعل بنجاح."""
+        User.objects.create_user(
+            email="resend_target@manara.edu.ye",
+            name="مستهدف إعادة الإرسال علي",
+            role="GRADUATE",
+            password="SecurePassword@2026",
+        )
+        response = self.client.post("/api/auth/resend-otp/", {
+            "email": "resend_target@manara.edu.ye",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("message", response.data)
+
     # =========================================================================
     # MNRA-61: حالات اختبار تسجيل الخروج (TC-LOGOUT-01 إلى TC-LOGOUT-04)
     # =========================================================================
@@ -231,3 +274,53 @@ class AccountsSprint1TestCase(TestCase):
         self.client.credentials()  # مسح أي ترويسة
         res = self.client.post("/api/auth/logout/")
         self.assertEqual(res.status_code, 401)
+
+    # =========================================================================
+    # استعادة كلمة المرور (Password Reset Request & Confirm)
+    # =========================================================================
+
+    def test_password_reset_request_and_confirm_flow(self):
+        """اختبار دورة استعادة كلمة المرور بالكامل: طلب الرابط، التحقق من التوكن، وتعيين كلمة مرور جديدة والدخول بها."""
+        from django.core.signing import TimestampSigner
+
+        user = User.objects.create_user(
+            email="reset_target@manara.edu.ye",
+            name="مستهدف الاستعادة",
+            role="GRADUATE",
+            password="OldPassword@2026",
+        )
+        user.verify_email()
+
+        # 1. طلب استعادة كلمة المرور
+        req_res = self.client.post("/api/auth/password-reset-request/", {
+            "email": "reset_target@manara.edu.ye",
+        })
+        self.assertEqual(req_res.status_code, 200)
+
+        # 2. إنشاء توكن صالح
+        signer = TimestampSigner(salt="password-reset-salt")
+        token = signer.sign(f"{user.id}:{user.email}")
+
+        # 3. تأكيد وتعيين كلمة المرور الجديدة
+        confirm_res = self.client.post("/api/auth/password-reset-confirm/", {
+            "token": token,
+            "new_password": "NewSecurePassword@2026",
+        })
+        self.assertEqual(confirm_res.status_code, 200)
+
+        # 4. تسجيل الدخول بكلمة المرور الجديدة للتأكد
+        login_res = self.client.post("/api/auth/login/", {
+            "email": "reset_target@manara.edu.ye",
+            "password": "NewSecurePassword@2026",
+        })
+        self.assertEqual(login_res.status_code, 200)
+        self.assertIn("token", login_res.data)
+
+    def test_password_reset_confirm_invalid_token_rejected(self):
+        """محاولة إعادة تعيين كلمة المرور بتوكن مزور أو غير صالح ورفض الطلب."""
+        confirm_res = self.client.post("/api/auth/password-reset-confirm/", {
+            "token": "fake_invalid_token_123",
+            "new_password": "NewSecurePassword@2026",
+        })
+        self.assertEqual(confirm_res.status_code, 400)
+        self.assertIn("error", confirm_res.data)

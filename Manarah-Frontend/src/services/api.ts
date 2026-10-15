@@ -4,10 +4,7 @@
  * ربط الواجهة الأمامية (React) مع الواجهة الخلفية (Django REST Framework)
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ||
-  (typeof window !== 'undefined' && window.location.hostname === 'localhost'
-    ? 'http://127.0.0.1:8000/api'
-    : 'https://manarah-platform.onrender.com/api')
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api'
 
 export interface AuthResponse {
   token: string
@@ -137,6 +134,20 @@ export const api = {
     return { success: true, token: data.token, user: data.user, message: data.message }
   },
 
+  // 4b. إعادة إرسال رمز التحقق (FR-26)
+  async resendOTP(email: string): Promise<{ message: string; dev_otp?: string }> {
+    const res = await fetch(`${API_BASE_URL}/auth/resend-otp/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.error || err.detail || 'فشل إعادة إرسال رمز التحقق.')
+    }
+    return res.json()
+  },
+
   // 5. استرجاع الملف المهني الأساسي (MNRA-64, MNRA-71)
   async getGraduateProfile(): Promise<BackendProfile> {
     const res = await fetch(`${API_BASE_URL}/profiles/graduate/me/`, {
@@ -168,5 +179,33 @@ export const api = {
     }
     const result = await res.json()
     return result.profile || result
+  },
+
+  // 7. طلب استعادة كلمة المرور
+  async requestPasswordReset(email: string): Promise<{ message: string }> {
+    const res = await fetch(`${API_BASE_URL}/auth/password-reset-request/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.error || err.detail || 'تعذر إرسال طلب استعادة كلمة المرور.')
+    }
+    return res.json()
+  },
+
+  // 8. تأكيد وتعيين كلمة المرور الجديدة
+  async confirmPasswordReset(payload: { token: string; new_password: string }): Promise<{ message: string }> {
+    const res = await fetch(`${API_BASE_URL}/auth/password-reset-confirm/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.error || err.detail || 'فشل إعادة تعيين كلمة المرور.')
+    }
+    return res.json()
   },
 }
