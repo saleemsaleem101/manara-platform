@@ -28,6 +28,8 @@ def send_verification_email(user: User, otp: str, is_resend: bool = False) -> No
     ورمز التحقق الرقمي OTP (6 أرقام) لضمان سهولة الاستخدام وتوافق جميع المتطلبات.
     """
     frontend_url = getattr(settings, "FRONTEND_URL", "https://manarah-platform.vercel.app").rstrip("/")
+    if ("localhost" in frontend_url or "127.0.0.1" in frontend_url) and not settings.DEBUG:
+        frontend_url = "https://manarah-platform.vercel.app"
     verify_link = f"{frontend_url}/verify-email?email={user.email}&code={otp}"
     from_email = getattr(settings, "DEFAULT_FROM_EMAIL", "منصة منارة <jalalmatluq@gmail.com>")
 
@@ -346,6 +348,9 @@ class PasswordResetRequestView(APIView):
                 frontend_url = f"{parsed.scheme}://{parsed.netloc}".rstrip("/")
             else:
                 frontend_url = getattr(settings, "FRONTEND_URL", "https://manarah-platform.vercel.app").rstrip("/")
+
+            if ("localhost" in frontend_url or "127.0.0.1" in frontend_url) and not settings.DEBUG:
+                frontend_url = "https://manarah-platform.vercel.app"
 
             reset_url = f"{frontend_url}/password-reset?token={quote(token)}"
             from_email = getattr(settings, "DEFAULT_FROM_EMAIL", "منصة منارة <noreply@manara.edu.ye>")
