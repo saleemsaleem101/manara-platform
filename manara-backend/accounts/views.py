@@ -27,7 +27,7 @@ def send_verification_email(user: User, otp: str, is_resend: bool = False) -> No
     تجمع بين رابط التفعيل الخارجي المباشر (External Link)
     ورمز التحقق الرقمي OTP (6 أرقام) لضمان سهولة الاستخدام وتوافق جميع المتطلبات.
     """
-    frontend_url = getattr(settings, "FRONTEND_URL", "http://localhost:5173").rstrip("/")
+    frontend_url = getattr(settings, "FRONTEND_URL", "https://manarah-platform.vercel.app").rstrip("/")
     verify_link = f"{frontend_url}/verify-email?email={user.email}&code={otp}"
     from_email = getattr(settings, "DEFAULT_FROM_EMAIL", "منصة منارة <jalalmatluq@gmail.com>")
 
@@ -403,10 +403,10 @@ class PasswordResetRequestView(APIView):
                     from_email=from_email,
                     recipient_list=[user.email],
                     html_message=html_reset,
-                    fail_silently=True,
+                    fail_silently=False,
                 )
             except Exception as e:
-                logger.warning("Failed to send reset email: %s", e)
+                logger.error("Failed to send reset email to %s: %s", user.email, e, exc_info=True)
 
             if settings.DEBUG:
                 print(
