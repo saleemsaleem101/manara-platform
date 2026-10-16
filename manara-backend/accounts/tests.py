@@ -32,10 +32,9 @@ class AccountsSprint1TestCase(TestCase):
         }
         response = self.client.post("/api/auth/register/", payload)
         self.assertEqual(response.status_code, 201)
-        self.assertIn("token", response.data)
-        self.assertIn("otp_code", response.data)
         self.assertTrue(User.objects.filter(email=payload["email"]).exists())
         user = User.objects.get(email=payload["email"])
+        self.assertEqual(len(user.get_verification_code()), 6)
         self.assertEqual(user.role, "GRADUATE")
         self.assertFalse(user.email_verified)
         self.assertTrue(GraduateProfile.objects.filter(user=user).exists())

@@ -122,7 +122,6 @@ export const ProfileEditPage: React.FC = () => {
                   id="input-fullname"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  placeholder="مثال: سليم شايف علي سليمان"
                   className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-bold text-[#0F1E36] focus:outline-none focus:border-amber-500 focus:bg-white transition"
                 />
               </div>
@@ -154,7 +153,6 @@ export const ProfileEditPage: React.FC = () => {
                   id="input-phone"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  placeholder="مثال: 771234567"
                   className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] font-mono focus:outline-none focus:border-amber-500 focus:bg-white transition"
                 />
               </div>
@@ -274,7 +272,6 @@ export const ProfileEditPage: React.FC = () => {
                   type="text"
                   required
                   id="input-gpa"
-                  placeholder="مثال: 92%"
                   value={form.gpa}
                   onChange={(e) => setForm({ ...form, gpa: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-bold text-[#0F1E36] font-mono focus:outline-none focus:border-amber-500 focus:bg-white transition"
@@ -325,7 +322,6 @@ export const ProfileEditPage: React.FC = () => {
                 id="input-bio"
                 value={form.bio}
                 onChange={(e) => setForm({ ...form, bio: e.target.value })}
-                placeholder="اكتب نبذة مختصرة عن مهاراتك وشغفك وأهدافك الوظيفية..."
                 className="w-full p-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] text-[#0F1E36] leading-relaxed focus:outline-none focus:border-amber-500 focus:bg-white transition"
               />
             </div>

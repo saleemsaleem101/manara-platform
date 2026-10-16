@@ -53,7 +53,7 @@ export function validateQuadrupleName(name: string): NameValidationResult {
     return {
       isValid: false,
       partCount: parts.length,
-      errorMessage: 'يجب إدخال الاسم الرباعي كاملاً على الأقل (أربعة أسماء مفصولة بمسافات، مثال: سليم شايف علي سليمان).',
+      errorMessage: 'يجب إدخال الاسم الرباعي كاملاً على الأقل (أربعة أسماء مفصولة بمسافات).',
     }
   }
 

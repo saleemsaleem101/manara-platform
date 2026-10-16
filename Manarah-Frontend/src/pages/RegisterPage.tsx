@@ -75,15 +75,12 @@ export const RegisterPage: React.FC = () => {
 
     setIsLoading(true)
     try {
-      const res = await api.register({
+      await api.register({
         name: formData.name.trim(),
         email: formData.email.trim(),
         password: formData.password,
       })
 
-      if (res && (res as any).otp_code) {
-        sessionStorage.setItem('manarah_demo_otp', (res as any).otp_code)
-      }
       sessionStorage.setItem('manarah_registered_email', formData.email.trim())
 
       await updateProfile({

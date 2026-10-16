@@ -149,8 +149,7 @@ class RegisterView(APIView):
                 {
                     "user": UserSerializer(user).data,
                     "token": token.key,
-                    "otp_code": otp_code,
-                    "message": f"تم إنشاء حساب الخريج بنجاح. تم إرسال رمز التحقق ({otp_code}) إلى بريدك.",
+                    "message": "تم إنشاء حساب الخريج بنجاح. تم إرسال رمز التحقق إلى بريدك الإلكتروني.",
                 },
                 status=status.HTTP_201_CREATED,
             )
@@ -315,9 +314,6 @@ class ResendOTPView(APIView):
             "message": generic_msg,
             "email": user.email,
         }
-        if settings.DEBUG:
-            resp_data["dev_otp"] = otp
-
         return Response(resp_data, status=status.HTTP_200_OK)
 
 
@@ -341,7 +337,16 @@ class PasswordResetRequestView(APIView):
             signer = TimestampSigner(salt="password-reset-salt")
             pw_hash = user.password[:16]
             token = signer.sign(f"{user.id}:{user.email}:{pw_hash}")
-            frontend_url = getattr(settings, "FRONTEND_URL", "http://localhost:5173").rstrip("/")
+
+            # قراءة رابط الواجهة الأمامية ديناميكياً من الطلب (Origin أو Referer) أو من الإعدادات
+            origin = request.headers.get("Origin") or request.headers.get("Referer")
+            if origin:
+                from urllib.parse import urlparse
+                parsed = urlparse(origin)
+                frontend_url = f"{parsed.scheme}://{parsed.netloc}".rstrip("/")
+            else:
+                frontend_url = getattr(settings, "FRONTEND_URL", "https://manarah-platform.vercel.app").rstrip("/")
+
             reset_url = f"{frontend_url}/password-reset?token={quote(token)}"
             from_email = getattr(settings, "DEFAULT_FROM_EMAIL", "منصة منارة <noreply@manara.edu.ye>")
 

@@ -98,11 +98,7 @@ export function App() {
           />
           <Route
             path="/password-reset"
-            element={
-              <PublicOnlyRoute>
-                <AuthPasswordResetConfirmPage />
-              </PublicOnlyRoute>
-            }
+            element={<AuthPasswordResetConfirmPage />}
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
