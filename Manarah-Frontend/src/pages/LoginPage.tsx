@@ -22,7 +22,14 @@ export const LoginPage: React.FC = () => {
 
     try {
       await login(email, password)
-      navigate('/profile')
+      const storedRole = localStorage.getItem('manarah_user_role') || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('manarah_user_role') : null)
+      if (storedRole === 'ADMIN') {
+        navigate('/admin')
+      } else if (storedRole === 'COMPANY') {
+        navigate('/company/jobs')
+      } else {
+        navigate('/profile')
+      }
     } catch (err: unknown) {
       const errorObj = err as { message?: string; status?: number } | undefined
       const msg = errorObj?.message || 'بيانات الاعتماد غير صحيحة. يرجى التحقق من البريد وكلمة المرور.'
@@ -122,7 +129,8 @@ export const LoginPage: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-[46px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start font-mono"
+                    placeholder="student@example.com"
+                    className="w-full h-[46px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
                   />
                 </div>
 
@@ -143,7 +151,8 @@ export const LoginPage: React.FC = () => {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full h-[46px] px-4 pe-11 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[14px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
+                      placeholder="••••••••••••"
+                      className="w-full h-[46px] px-4 pe-11 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[14px] font-semibold text-[#64748B] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
                     />
                     <button
                       type="button"
@@ -199,5 +208,3 @@ export const LoginPage: React.FC = () => {
     </div>
   )
 }
-
-export default LoginPage

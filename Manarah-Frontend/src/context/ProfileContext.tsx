@@ -1,23 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import type { GraduateProfile } from '../types'
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import type { GraduateProfile, AuthUser, CompanyProfile } from '../types'
 import { api } from '../services/api'
-
-export function calculateCompletion(p: Partial<GraduateProfile>): number {
-  const fields = [
-    p.name,
-    p.email,
-    p.phone,
-    p.city,
-    p.university,
-    p.major,
-    p.graduationYear,
-    p.gpa,
-    p.experienceYears,
-    p.bio,
-  ]
-  const filled = fields.filter((f) => Boolean(f && String(f).trim().length > 0)).length
-  return Math.round((filled / fields.length) * 100)
-}
 
 const defaultProfile: GraduateProfile = {
   name: '',
@@ -31,17 +14,18 @@ const defaultProfile: GraduateProfile = {
   experienceYears: 'حديث التخرج (0 - 1 سنة)',
   bio: '',
   isVerified: false,
-  completionPercentage: 0,
 }
 
 interface ProfileContextType {
   profile: GraduateProfile
+  role: 'GRADUATE' | 'COMPANY' | 'ADMIN' | null
+  companyStatus: 'PENDING' | 'APPROVED' | 'REJECTED' | null
   updateProfile: (updated: Partial<GraduateProfile>) => Promise<void>
   isAuthenticated: boolean
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
-  verifyEmail: (userData?: any) => void
+  verifyEmail: (userData?: AuthUser) => Promise<void>
   refreshProfile: () => Promise<void>
 }
 
@@ -49,68 +33,112 @@ const ProfileContext = createContext<ProfileContextType | undefined>(undefined)
 
 export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [profile, setProfile] = useState<GraduateProfile>(() => {
-    const saved = localStorage.getItem('manarah_profile')
-    return saved ? JSON.parse(saved) : defaultProfile
+    try {
+      const saved = localStorage.getItem('manarah_profile')
+      return saved ? JSON.parse(saved) : defaultProfile
+    } catch {
+      return defaultProfile
+    }
+  })
+
+  const [role, setRole] = useState<'GRADUATE' | 'COMPANY' | 'ADMIN' | null>(() => {
+    return (
+      (localStorage.getItem('manarah_user_role') as AuthUser['role'] | null) ||
+      (typeof sessionStorage !== 'undefined' ? (sessionStorage.getItem('manarah_user_role') as AuthUser['role'] | null) : null) ||
+      null
+    )
+  })
+
+  const [companyStatus, setCompanyStatus] = useState<'PENDING' | 'APPROVED' | 'REJECTED' | null>(() => {
+    return (localStorage.getItem('manarah_company_status') as CompanyProfile['verification_status'] | null) || null
   })
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    const token = localStorage.getItem('manarah_token')
+    const token = localStorage.getItem('manarah_token') || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('manarah_token') : null)
     return Boolean(token)
   })
 
   const [isLoading, setIsLoading] = useState<boolean>(() => {
-    return Boolean(localStorage.getItem('manarah_token'))
+    const token = localStorage.getItem('manarah_token') || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('manarah_token') : null)
+    return Boolean(token)
   })
 
   useEffect(() => {
     localStorage.setItem('manarah_profile', JSON.stringify(profile))
   }, [profile])
 
-  const refreshProfile = async () => {
-    const token = localStorage.getItem('manarah_token')
+  const refreshProfile = useCallback(async () => {
+    const token = localStorage.getItem('manarah_token') || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('manarah_token') : null)
     if (!token) {
       setIsLoading(false)
       return
     }
+
+    const currentRole = role || (localStorage.getItem('manarah_user_role') as AuthUser['role'] | null) || (typeof sessionStorage !== 'undefined' ? (sessionStorage.getItem('manarah_user_role') as AuthUser['role'] | null) : null)
+
     try {
-      const be = await api.getGraduateProfile()
-      setProfile((prev) => {
-        const updated: GraduateProfile = {
+      if (currentRole === 'COMPANY') {
+        const comp = await api.getCompanyProfile()
+        setCompanyStatus(comp.verification_status || 'PENDING')
+        localStorage.setItem('manarah_company_status', comp.verification_status || 'PENDING')
+        setProfile((prev) => ({
           ...prev,
-          name: be.full_name || (be.first_name || be.last_name ? `${be.first_name} ${be.last_name}`.trim() : be.user_name || prev.name),
-          email: be.email || prev.email,
-          phone: be.phone || prev.phone,
-          city: be.city || prev.city,
-          university: be.university || prev.university,
-          major: be.specialization || prev.major,
-          graduationYear: be.graduation_year || prev.graduationYear,
-          gpa: be.gpa || prev.gpa,
-          experienceYears: be.years_of_experience || prev.experienceYears,
-          bio: be.bio || prev.bio,
-          isVerified: be.email_verified,
-        }
-        updated.completionPercentage = calculateCompletion(updated)
-        return updated
-      })
-      setIsAuthenticated(true)
-    } catch (err) {
+          name: comp.company_name || prev.name,
+          city: comp.location || prev.city,
+          bio: comp.description || prev.bio,
+          isVerified: comp.verification_status === 'APPROVED',
+        }))
+        setIsAuthenticated(true)
+      } else if (currentRole === 'ADMIN') {
+        setIsAuthenticated(true)
+      } else {
+        const be = await api.getGraduateProfile()
+        setProfile((prev) => {
+          const updated: GraduateProfile = {
+            ...prev,
+            name: be.full_name || (be.first_name || be.last_name ? `${be.first_name} ${be.last_name}`.trim() : be.user_name || prev.name),
+            email: be.email || prev.email,
+            phone: be.phone || prev.phone,
+            city: be.city || prev.city,
+            university: be.university || prev.university,
+            major: be.specialization || prev.major,
+            graduationYear: be.graduation_year || prev.graduationYear,
+            gpa: be.gpa || prev.gpa,
+            experienceYears: be.years_of_experience || prev.experienceYears,
+            bio: be.bio || prev.bio,
+            isVerified: Boolean(be.email_verified),
+          }
+          return updated
+        })
+        setIsAuthenticated(true)
+      }
+    } catch (err: unknown) {
       console.warn('Could not fetch backend profile:', err)
+      const errorObj = err as { status?: number; message?: string } | undefined
+      if (errorObj?.status === 401 || errorObj?.status === 403 || errorObj?.message?.includes('401') || errorObj?.message?.includes('403')) {
+        localStorage.removeItem('manarah_token')
+        sessionStorage.removeItem('manarah_token')
+        localStorage.removeItem('manarah_user_role')
+        sessionStorage.removeItem('manarah_user_role')
+        localStorage.removeItem('manarah_company_status')
+        sessionStorage.removeItem('manarah_company_status')
+        setIsAuthenticated(false)
+        setRole(null)
+      }
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [role])
 
   useEffect(() => {
-    if (localStorage.getItem('manarah_token')) {
+    const token = localStorage.getItem('manarah_token') || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('manarah_token') : null)
+    if (token) {
       refreshProfile()
-    } else {
-      setIsLoading(false)
     }
-  }, [])
+  }, [refreshProfile])
 
   const updateProfile = async (updated: Partial<GraduateProfile>) => {
     const nextProfile = { ...profile, ...updated }
-    nextProfile.completionPercentage = calculateCompletion(nextProfile)
     setProfile(nextProfile)
 
     if (localStorage.getItem('manarah_token')) {
@@ -139,14 +167,21 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
             experienceYears: res.years_of_experience || prev.experienceYears,
             bio: res.bio || prev.bio,
           }
-          fresh.completionPercentage = calculateCompletion(fresh)
           return fresh
         })
       }
     }
   }
 
-  const verifyEmail = (userData?: any) => {
+  const verifyEmail = async (userData?: AuthUser) => {
+    setIsAuthenticated(true)
+    if (userData?.role) {
+      setRole(userData.role)
+      localStorage.setItem('manarah_user_role', userData.role)
+    }
+    let syncedUniversity = profile.university
+    let syncedMajor = profile.major
+
     setProfile((prev) => {
       const next = {
         ...prev,
@@ -157,10 +192,21 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
           phone: userData.phone || prev.phone,
         } : {}),
       }
-      next.completionPercentage = calculateCompletion(next)
+      syncedUniversity = next.university
+      syncedMajor = next.major
       return next
     })
-    setIsAuthenticated(true)
+
+    if (syncedUniversity || syncedMajor) {
+      try {
+        await api.updateGraduateProfile({
+          university: syncedUniversity,
+          specialization: syncedMajor,
+        })
+      } catch (err) {
+        console.warn('Could not sync initial university/major to backend:', err)
+      }
+    }
   }
 
   const login = async (email: string, password: string) => {
@@ -169,6 +215,11 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
     const res = await api.login({ email, password })
     setIsAuthenticated(true)
+    if (res.user?.role) {
+      const uRole = res.user.role as 'GRADUATE' | 'COMPANY' | 'ADMIN'
+      setRole(uRole)
+      localStorage.setItem('manarah_user_role', uRole)
+    }
     if (res.user) {
       setProfile((prev) => {
         const updated = {
@@ -176,9 +227,8 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
           name: res.user.name || prev.name,
           email: res.user.email || prev.email,
           phone: res.user.phone || prev.phone,
-          isVerified: res.user.email_verified,
+          isVerified: Boolean(res.user.email_verified),
         }
-        updated.completionPercentage = calculateCompletion(updated)
         return updated
       })
     }
@@ -188,13 +238,20 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const logout = async () => {
     await api.logout()
     localStorage.removeItem('manarah_token')
+    sessionStorage.removeItem('manarah_token')
     localStorage.removeItem('manarah_profile')
+    sessionStorage.removeItem('manarah_profile')
+    localStorage.removeItem('manarah_user_role')
+    sessionStorage.removeItem('manarah_user_role')
+    localStorage.removeItem('manarah_company_status')
     setIsAuthenticated(false)
+    setRole(null)
+    setCompanyStatus(null)
     setProfile(defaultProfile)
   }
 
   return (
-    <ProfileContext.Provider value={{ profile, updateProfile, isAuthenticated, isLoading, login, logout, verifyEmail, refreshProfile }}>
+    <ProfileContext.Provider value={{ profile, role, companyStatus, updateProfile, isAuthenticated, isLoading, login, logout, verifyEmail, refreshProfile }}>
       {children}
     </ProfileContext.Provider>
   )

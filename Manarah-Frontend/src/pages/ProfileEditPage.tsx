@@ -15,36 +15,17 @@ export const ProfileEditPage: React.FC = () => {
   }, [])
 
   const [form, setForm] = useState({
-    name: profile.name || '',
-    email: profile.email || '',
-    phone: profile.phone || '',
-    city: profile.city || '',
-    university: profile.university || '',
-    major: profile.major || '',
-    graduationYear: profile.graduationYear || 2026,
+    name: profile.name,
+    email: profile.email,
+    phone: profile.phone,
+    city: profile.city,
+    university: profile.university,
+    major: profile.major,
+    graduationYear: profile.graduationYear,
     gpa: profile.gpa || '',
     experienceYears: profile.experienceYears || '',
     bio: profile.bio || '',
   })
-
-  // مزامنة النموذج تلقائياً عند اكتمال جلب البيانات من الخادم
-  useEffect(() => {
-    if (profile.name || profile.email) {
-      setForm((prev) => ({
-        ...prev,
-        name: profile.name || prev.name,
-        email: profile.email || prev.email,
-        phone: profile.phone || prev.phone,
-        city: profile.city || prev.city,
-        university: profile.university || prev.university,
-        major: profile.major || prev.major,
-        graduationYear: profile.graduationYear || prev.graduationYear,
-        gpa: profile.gpa || prev.gpa,
-        experienceYears: profile.experienceYears || prev.experienceYears,
-        bio: profile.bio || prev.bio,
-      }))
-    }
-  }, [profile])
 
   const [savedSuccess, setSavedSuccess] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -63,26 +44,26 @@ export const ProfileEditPage: React.FC = () => {
         navigate('/profile')
       }, 800)
     } catch (err: unknown) {
-      const errorObj = err as { message?: string } | undefined
-      setError(errorObj?.message || 'فشل حفظ وتحديث البيانات الأساسية للخريج.')
+      const msg = (err as { message?: string })?.message
+      setError(msg || 'فشل حفظ وتحديث البيانات الأساسية للخريج.')
     } finally {
       setIsSaving(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-['Cairo']">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
       <Navbar />
 
       <main className="max-w-[1120px] mx-auto w-full px-4 sm:px-6 py-6 space-y-6 flex-1">
         {/* Saved Success Toast */}
         {savedSuccess && (
-          <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-between shadow-sm animate-in fade-in duration-200">
-            <span>✓ تم حفظ وتحديث بيانات الملف المهني بنجاح! جاري تحويلك إلى صفحة الملف...</span>
+          <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-between shadow-sm transition-all duration-200">
+            <span>✓ تم حفظ وتحديث بيانات الملف المهني بنجاح! جاري تحويلك...</span>
           </div>
         )}
 
-        {/* Error Banner */}
+        {/* Error Banner (MNRA-68) */}
         {error && (
           <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-sm">
             <span>⚠️</span>
@@ -114,7 +95,7 @@ export const ProfileEditPage: React.FC = () => {
               {/* Name */}
               <div className="text-start">
                 <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">
-                  الاسم الكامل (رباعي على الأقل) *
+                  الاسم الكامل (رباعي) *
                 </label>
                 <input
                   type="text"
@@ -128,12 +109,9 @@ export const ProfileEditPage: React.FC = () => {
 
               {/* Email (Readonly) */}
               <div className="text-start">
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-[12px] font-bold text-[#0F1E36]">البريد الإلكتروني 🔒</label>
-                  <span className="text-[10px] text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded">
-                    حساب موثق
-                  </span>
-                </div>
+                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">
+                  البريد الإلكتروني 🔒
+                </label>
                 <input
                   type="email"
                   disabled
@@ -148,7 +126,7 @@ export const ProfileEditPage: React.FC = () => {
                   رقم الهاتف / واتساب *
                 </label>
                 <input
-                  type="tel"
+                  type="text"
                   required
                   id="input-phone"
                   value={form.phone}
@@ -184,7 +162,7 @@ export const ProfileEditPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ================= SECTION 2: ACADEMIC DETAILS ================= */}
+          {/* ================= SECTION 2: ACADEMIC QUALIFICATIONS ================= */}
           <div className="bg-white border border-[#E2E8F0] rounded-[22px] p-6 sm:p-8 shadow-[0_4px_12px_rgba(15,30,54,0.05)] space-y-5">
             <div className="flex items-center gap-2 border-b border-[#F1F5F9] pb-3.5">
               <span className="w-2.5 h-2.5 rounded-full bg-[#0F1E36]" />
@@ -194,7 +172,6 @@ export const ProfileEditPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {/* University */}
               <div className="text-start">
                 <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">الجامعة *</label>
                 <select
@@ -218,7 +195,6 @@ export const ProfileEditPage: React.FC = () => {
                 </select>
               </div>
 
-              {/* Major */}
               <div className="text-start">
                 <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">
                   التخصص الأكاديمي *
@@ -269,10 +245,14 @@ export const ProfileEditPage: React.FC = () => {
                   المعدل التراكمي (%) *
                 </label>
                 <input
-                  type="text"
+                  type="number"
+                  min="50"
+                  max="100"
+                  step="0.1"
                   required
                   id="input-gpa"
-                  value={form.gpa}
+                  placeholder="مثال: 88.5"
+                  value={form.gpa ? form.gpa.toString().replace(/[^0-9.]/g, '') : ''}
                   onChange={(e) => setForm({ ...form, gpa: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-bold text-[#0F1E36] font-mono focus:outline-none focus:border-amber-500 focus:bg-white transition"
                 />
@@ -280,26 +260,24 @@ export const ProfileEditPage: React.FC = () => {
 
               <div className="text-start">
                 <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">
-                  سنوات الخبرة المهنية *
+                  سنوات الخبرة المهنية (أرقام) *
                 </label>
-                <select
+                <input
+                  type="number"
+                  min="0"
+                  max="20"
                   required
                   id="input-experience"
+                  placeholder="0 للحديث التخرج"
                   value={form.experienceYears}
                   onChange={(e) => setForm({ ...form, experienceYears: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-amber-500 focus:bg-white transition"
-                >
-                  <option value="">اختر سنوات الخبرة</option>
-                  <option value="حديث التخرج (0 - 1 سنة)">حديث التخرج (0 - 1 سنة)</option>
-                  <option value="1 - 2 سنوات">1 - 2 سنوات</option>
-                  <option value="3 - 5 سنوات">3 - 5 سنوات</option>
-                  <option value="أكثر من 5 سنوات">أكثر من 5 سنوات</option>
-                </select>
+                  className="w-full px-4 py-2.5 rounded-[10px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] font-mono focus:outline-none focus:border-amber-500 focus:bg-white transition"
+                />
               </div>
             </div>
           </div>
 
-          {/* ================= SECTION 3: BIO ================= */}
+          {/* ================= SECTION 3: BIO & OBJECTIVE ================= */}
           <div className="bg-white border border-[#E2E8F0] rounded-[22px] p-6 sm:p-8 shadow-[0_4px_12px_rgba(15,30,54,0.05)] space-y-4">
             <div className="flex items-center justify-between border-b border-[#F1F5F9] pb-3.5">
               <div className="flex items-center gap-2">
@@ -313,18 +291,15 @@ export const ProfileEditPage: React.FC = () => {
               </span>
             </div>
 
-            <div className="text-start">
-              <label className="block text-[12px] font-bold text-[#0F1E36] mb-1.5">
-                اكتب نبذة مهنية مختصرة تبرز مهاراتك وشغفك وأهدافك الوظيفية
-              </label>
-              <textarea
-                rows={4}
-                id="input-bio"
-                value={form.bio}
-                onChange={(e) => setForm({ ...form, bio: e.target.value })}
-                className="w-full p-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] text-[#0F1E36] leading-relaxed focus:outline-none focus:border-amber-500 focus:bg-white transition"
-              />
-            </div>
+            <textarea
+              rows={4}
+              required
+              id="input-bio"
+              value={form.bio}
+              onChange={(e) => setForm({ ...form, bio: e.target.value })}
+              className="w-full p-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] text-[#0F1E36] leading-relaxed focus:outline-none focus:border-amber-500 focus:bg-white transition"
+              placeholder="اكتب نبذة مختصرة عن مهاراتك وشغفك وأهدافك الوظيفية..."
+            />
           </div>
 
           {/* ================= BOTTOM ACTION BUTTONS ================= */}
@@ -359,5 +334,3 @@ export const ProfileEditPage: React.FC = () => {
     </div>
   )
 }
-
-export default ProfileEditPage

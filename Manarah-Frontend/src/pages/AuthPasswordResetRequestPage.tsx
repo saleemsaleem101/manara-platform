@@ -40,7 +40,7 @@ export const AuthPasswordResetRequestPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-between font-['Cairo'] text-start text-slate-800" dir="rtl">
-      {/* Top Bar (48px) */}
+      {/* Top Bar (48px) - Exact Screen 05 */}
       <header className="w-full bg-white border-b border-[#E2E8F0] px-6 sm:px-12 h-12 flex items-center justify-between text-xs">
         <span className="text-[#64748B] font-semibold text-[13px]">
           منصة منارة لربط الخريجين بسوق العمل
@@ -118,7 +118,8 @@ export const AuthPasswordResetRequestPage: React.FC = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-12 px-4 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-xs font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start font-mono"
+                  placeholder="student@example.com"
+                  className="w-full h-12 px-4 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-xs font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
                 />
               </div>
 

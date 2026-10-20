@@ -75,7 +75,14 @@ export const VerifyEmailPage: React.FC = () => {
           }
 
           timeoutRef.current = setTimeout(() => {
-            navigate('/profile')
+            const uRole = res.user?.role || localStorage.getItem('manarah_user_role')
+            if (uRole === 'ADMIN') {
+              navigate('/admin')
+            } else if (uRole === 'COMPANY') {
+              navigate('/company/jobs')
+            } else {
+              navigate('/profile')
+            }
           }, 1800)
         })
         .catch((err: unknown) => {
@@ -89,7 +96,7 @@ export const VerifyEmailPage: React.FC = () => {
         isCurrent = false
       }
     }
-  }, [searchParams, targetEmail, verifyEmail, navigate, verificationSuccess])
+  }, [searchParams, targetEmail, verifyEmail, navigate])
 
   // Handle Manual OTP Code Submission
   const handleVerifySubmit = async (e: React.FormEvent) => {
@@ -121,7 +128,14 @@ export const VerifyEmailPage: React.FC = () => {
       }
 
       timeoutRef.current = setTimeout(() => {
-        navigate('/profile')
+        const uRole = res.user?.role || localStorage.getItem('manarah_user_role')
+        if (uRole === 'ADMIN') {
+          navigate('/admin')
+        } else if (uRole === 'COMPANY') {
+          navigate('/company/jobs')
+        } else {
+          navigate('/profile')
+        }
       }, 1800)
     } catch (err: unknown) {
       const msg = (err as { message?: string })?.message
@@ -207,10 +221,15 @@ export const VerifyEmailPage: React.FC = () => {
               <div className="pt-2">
                 <button
                   type="button"
-                  onClick={() => navigate('/profile')}
+                  onClick={() => {
+                    const uRole = localStorage.getItem('manarah_user_role')
+                    if (uRole === 'ADMIN') navigate('/admin/dashboard')
+                    else if (uRole === 'COMPANY') navigate('/company/jobs')
+                    else navigate('/profile')
+                  }}
                   className="inline-flex items-center justify-center w-full h-[46px] rounded-xl bg-[#0F1E36] hover:bg-slate-900 text-white font-bold text-sm transition shadow-sm cursor-pointer"
                 >
-                  المتابعة إلى الملف المهني ➔
+                  المتابعة إلى لوحة التحكم ➔
                 </button>
               </div>
             </div>

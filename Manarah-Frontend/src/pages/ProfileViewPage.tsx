@@ -44,15 +44,6 @@ export const ProfileViewPage: React.FC = () => {
                 <div className="w-[85px] h-[85px] rounded-[20px] bg-[#0F1E36] text-white text-[28px] font-black flex items-center justify-center shadow-sm">
                   {initials}
                 </div>
-                {/* Verified Badge */}
-                {profile.isVerified && (
-                  <span
-                    className="absolute -bottom-1 -left-1 w-[26px] h-[26px] rounded-full bg-[#10B981] border-[3px] border-white text-white text-[11px] font-bold flex items-center justify-center shadow-sm"
-                    title="سجل موثق رسمياً"
-                  >
-                    ✓
-                  </span>
-                )}
               </div>
 
               <div className="text-center sm:text-start space-y-2">
@@ -67,40 +58,32 @@ export const ProfileViewPage: React.FC = () => {
                     {profile.major || 'هندسة البرمجيات'}
                   </span>
                   <span className="text-[12px] font-semibold text-[#475569]">
-                    {profile.university || 'جامعة العلوم والتكنولوجيا'} • كلية الحاسبات وتكنولوجيا المعلومات
+                    {profile.university || 'الجامعة غير محددة'}
                   </span>
                 </div>
 
                 {/* Line 3: Meta Details */}
                 <p className="text-[12px] font-medium text-[#64748B]">
-                  {profile.city || 'صنعاء، اليمن'}  •  دفعة <bdi dir="ltr">{profile.graduationYear || 2026}</bdi>  •  المعدل التراكمي: <bdi dir="ltr">{profile.gpa || '92%'}</bdi>  •  الخبرة: {profile.experienceYears || 'حديث التخرج (0 - 1 سنة)'}
+                  {profile.city || 'المدينة غير محددة'}  •  دفعة <bdi dir="ltr">{profile.graduationYear || '—'}</bdi>  •  المعدل التراكمي: <bdi dir="ltr">{profile.gpa || '—'}</bdi>  •  الخبرة: {profile.experienceYears ? `${profile.experienceYears} سنوات` : 'حديث التخرج'}
                 </p>
               </div>
             </div>
 
-            {/* Left in RTL: Actions & Completion Gauge */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 self-center md:self-center">
-              {/* Completion Box */}
-              <div className="bg-[#F8FAFC] border border-[#E2E8F0] px-4 py-2.5 rounded-[14px] text-center w-[230px]">
-                <div className="flex items-center justify-between text-[11px] mb-1.5">
-                  <span className="font-bold text-[#475569]">نسبة اكتمال البيانات الأساسية:</span>
-                  <span className="font-black text-[#D97706] text-[13px]">{profile.completionPercentage}%</span>
-                </div>
-                <div className="w-full bg-[#E2E8F0] h-2 rounded-full overflow-hidden">
-                  <div
-                    className="bg-[#F59E0B] h-full rounded-full transition-all duration-500"
-                    style={{ width: `${profile.completionPercentage}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* Edit Profile Primary Button */}
+            {/* Left in RTL: Actions */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 self-center md:self-center">
+              <Link
+                to="/portfolio"
+                className="w-full sm:w-auto px-5 h-[44px] bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#0F1E36] border border-[#CBD5E1] text-[12px] font-bold rounded-[12px] shadow-sm transition flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>📂</span>
+                <span>المهارات والمشاريع</span>
+              </Link>
               <Link
                 to="/profile/edit"
-                className="w-full sm:w-[230px] h-[44px] bg-[#0F1E36] hover:bg-[#1E293B] text-white text-[12px] font-bold rounded-[12px] shadow-sm transition flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto px-5 h-[44px] bg-[#0F1E36] hover:bg-[#1E293B] text-white text-[12px] font-bold rounded-[12px] shadow-sm transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>✏️</span>
-                <span>تعديل واستكمال البيانات الأساسية</span>
+                <span>تعديل البيانات الأساسية</span>
               </Link>
             </div>
           </div>
@@ -120,41 +103,57 @@ export const ProfileViewPage: React.FC = () => {
               </div>
 
               <div className="text-[12px] font-medium text-[#334155] leading-relaxed text-start">
-                <p className="whitespace-pre-line">{profile.bio || 'لم يتم إضافة نبذة مهنية بعد.'}</p>
+                <p className="whitespace-pre-line">{profile.bio || 'لم يتم إضافة نبذة مهنية بعد. يمكنك إضافة نبذة تعريفية من صفحة تعديل الملف.'}</p>
               </div>
 
-              <div className="pt-2 flex flex-wrap gap-2 text-[11px] text-[#64748B]">
-                <span className="bg-slate-50 border border-slate-200 px-3 py-1 rounded-full">
-                  💼 باحث عن فرص تقنية واعدة
-                </span>
-                <span className="bg-slate-50 border border-slate-200 px-3 py-1 rounded-full">
-                  🚀 شغوف بتطوير الويب الحديث
-                </span>
-                <span className="bg-slate-50 border border-slate-200 px-3 py-1 rounded-full">
-                  🤝 منفتح على العمل الجماعي
-                </span>
-              </div>
+              {/* Specialization Field */}
+              {profile.major && (
+                <div className="pt-2">
+                  <div className="text-[11px] font-bold text-[#0F1E36] mb-2 text-start">
+                    مجال التخصص الأساسي:
+                  </div>
+                  <div className="flex flex-wrap gap-2 justify-start">
+                    <span className="px-3.5 py-1.5 rounded-[8px] bg-[#F8FAFC] border border-[#E2E8F0] text-[#0F1E36] text-[11px] font-semibold">
+                      {profile.major}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Card 2: Contact Details */}
+            {/* Card 2: Academic Qualifications */}
             <div className="bg-white border border-[#E2E8F0] rounded-[22px] p-6 shadow-[0_4px_12px_rgba(15,30,54,0.05)] space-y-4">
-              <div className="flex items-center gap-2 border-b border-[#F1F5F9] pb-3.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#0F1E36]" />
-                <h2 className="text-[15px] font-black text-[#0F1E36]">معلومات الاتصال والإقامة</h2>
+              <div className="flex items-center justify-between border-b border-[#F1F5F9] pb-3.5">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0F1E36]" />
+                  <h2 className="text-[15px] font-black text-[#0F1E36]">المؤهل الأكاديمي والجامعة</h2>
+                </div>
               </div>
 
-              <div className="space-y-3 text-[12px]">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
-                  <span className="text-slate-500 font-bold">البريد الإلكتروني</span>
-                  <span className="text-slate-900 font-mono font-bold" dir="ltr">{profile.email || '—'}</span>
+              <div className="text-start">
+                <div className="text-[14px] font-bold text-[#0F1E36]">
+                  بكالوريوس {profile.major || 'غير محدد'}
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
-                  <span className="text-slate-500 font-bold">رقم الهاتف / واتساب</span>
-                  <span className="text-slate-900 font-mono font-bold" dir="ltr">{profile.phone || 'غير محدد'}</span>
+                <div className="text-[12px] text-[#64748B] mt-0.5">
+                  {profile.university || 'الجامعة غير محددة'}
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
-                  <span className="text-slate-500 font-bold">المدينة الحالية</span>
-                  <span className="text-slate-900 font-bold">{profile.city || 'صنعاء، اليمن'}</span>
+              </div>
+
+              {/* Metrics Badges (3 items) */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="p-2.5 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] text-start">
+                  <span className="text-[11px] text-[#64748B] font-semibold">سنة التخرج: </span>
+                  <span className="text-[12px] text-[#0F1E36] font-bold"><bdi dir="ltr">{profile.graduationYear || '—'}</bdi></span>
+                </div>
+
+                <div className="p-2.5 rounded-[10px] bg-[#FEF3C7] border border-[#FDE68A] text-start">
+                  <span className="text-[11px] text-[#92400E] font-bold">المعدل التراكمي: </span>
+                  <span className="text-[12px] text-[#B45309] font-black"><bdi dir="ltr">{profile.gpa || '—'}</bdi></span>
+                </div>
+
+                <div className="p-2.5 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] text-start">
+                  <span className="text-[11px] text-[#64748B] font-semibold">الخبرة: </span>
+                  <span className="text-[12px] text-[#0F1E36] font-bold">{profile.experienceYears ? `${profile.experienceYears} سنوات` : 'حديث التخرج'}</span>
                 </div>
               </div>
             </div>
@@ -162,47 +161,65 @@ export const ProfileViewPage: React.FC = () => {
 
           {/* ================= LEFT COLUMN (in RTL) ================= */}
           <div className="space-y-6">
-            {/* Card 3: Academic Qualifications */}
+            {/* Card 3: Contact Information */}
             <div className="bg-white border border-[#E2E8F0] rounded-[22px] p-6 shadow-[0_4px_12px_rgba(15,30,54,0.05)] space-y-4">
-              <div className="flex items-center gap-2 border-b border-[#F1F5F9] pb-3.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#10B981]" />
-                <h2 className="text-[15px] font-black text-[#0F1E36]">المؤهل الأكاديمي والجامعة</h2>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-amber-50/50 border border-amber-100 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-[14px] font-black text-[#0F1E36]">{profile.university || 'جامعة العلوم والتكنولوجيا'}</h3>
-                    <p className="text-[12px] font-bold text-amber-800 mt-0.5">{profile.major || 'هندسة البرمجيات'}</p>
-                  </div>
-                  <span className="text-[11px] font-black bg-white px-3 py-1 rounded-full border border-amber-200 text-amber-900">
-                    بكالوريوس
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-amber-200/60 text-[11px]">
-                  <div>
-                    <span className="text-slate-500 block">سنة التخرج:</span>
-                    <span className="font-bold text-slate-800" dir="ltr">{profile.graduationYear || 2026}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block">المعدل التراكمي:</span>
-                    <span className="font-bold text-slate-800" dir="ltr">{profile.gpa || '92%'}</span>
-                  </div>
+              <div className="flex items-center justify-between border-b border-[#F1F5F9] pb-3.5">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0F1E36]" />
+                  <h2 className="text-[15px] font-black text-[#0F1E36]">بيانات التواصل</h2>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between text-[12px]">
-                <span className="text-slate-500 font-bold">سنوات الخبرة المهنية</span>
-                <span className="text-slate-900 font-bold">{profile.experienceYears || 'حديث التخرج (0 - 1 سنة)'}</span>
+              {/* Rows */}
+              <div className="space-y-3">
+                {/* Row 1: Email */}
+                <div className="p-2.5 px-3.5 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-[13px] font-bold text-[#0F1E36]">@</span>
+                    <span className="text-[12px] font-semibold text-[#0F1E36] font-mono">{profile.email || 'لم يسجل بريد'}</span>
+                  </div>
+                </div>
+
+                {/* Row 2: Phone */}
+                <div className="p-2.5 px-3.5 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-[13px] font-bold text-[#0F1E36]">📞</span>
+                    <span className="text-[12px] font-semibold text-[#0F1E36] font-mono" dir="ltr">{profile.phone || '+967 770 000 000'}</span>
+                  </div>
+                </div>
+
+                {/* Row 3: City */}
+                <div className="p-2.5 px-3.5 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] flex items-center gap-2.5">
+                  <span className="text-[13px] font-bold text-[#0F1E36]">📍</span>
+                  <span className="text-[12px] font-semibold text-[#0F1E36]">{profile.city || 'اليمن - صنعاء'}</span>
+                </div>
+              </div>
+
+              {/* Privacy Note */}
+              <div className="text-[11px] font-medium text-[#94A3B8] text-start pt-2 border-t border-[#F1F5F9]">
+                🔒 تظهر بيانات التواصل فقط للشركات والمؤسسات المعتمدة في منصة منارة
               </div>
             </div>
 
+            {/* Quick Link Card to Portfolio */}
+            <div className="bg-gradient-to-br from-[#0F1E36] to-[#1E293B] text-white rounded-[22px] p-6 shadow-sm space-y-3 text-start">
+              <h3 className="text-[15px] font-bold text-amber-400">ملف المهارات والمشاريع والفيديو التعريفي</h3>
+              <p className="text-[12px] text-slate-300 leading-relaxed">
+                استكمل معرض مهاراتك التقنية ومشاريعك العملية والفيديو التقديمي لتحسين مطابقة ملفك مع متطلبات سوق العمل.
+              </p>
+              <div className="pt-2">
+                <Link
+                  to="/portfolio"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-[10px] bg-amber-400 text-[#0F1E36] text-[12px] font-bold hover:bg-amber-300 transition"
+                >
+                  <span>إدارة المهارات والمشاريع</span>
+                  <span>←</span>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </main>
     </div>
   )
 }
-
-export default ProfileViewPage
