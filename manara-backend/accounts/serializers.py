@@ -1,14 +1,14 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password as django_validate_password
+from django.db import transaction
 from .models import User
-from profiles.models import GraduateProfile
+from profiles.models import GraduateProfile, Company
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
-    سيريالايزر إنشاء حساب الخريج (Sprint 1 - US-01 / MNRA-12 / MNRA-46).
-    يقبل حسابات الخريجين فقط (GRADUATE).
+    سيريالايزر إنشاء الحسابات (الخريجين والشركات - US-01 / MNRA-12 / Screen 08).
     """
     email = serializers.EmailField(
         validators=[
@@ -21,50 +21,77 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     phone = serializers.CharField(required=False, allow_blank=True, default='')
 
+    # حقول إضافية لتسجيل حساب المنشأة / الشركة (Screen 08)
+    company_name = serializers.CharField(required=False, allow_blank=True, default='', write_only=True)
+    commercial_reg = serializers.CharField(required=False, allow_blank=True, default='', write_only=True)
+    industry = serializers.CharField(required=False, allow_blank=True, default='', write_only=True)
+    location = serializers.CharField(required=False, allow_blank=True, default='', write_only=True)
+    description = serializers.CharField(required=False, allow_blank=True, default='', write_only=True)
+    cr_document_url = serializers.URLField(required=False, allow_null=True, allow_blank=True, default=None, write_only=True)
+
     class Meta:
         model = User
-        fields = ('id', 'name', 'email', 'phone', 'role', 'password')
-
-    def validate_name(self, value):
-        name = (value or '').strip()
-        if not name:
-            raise serializers.ValidationError('حقل الاسم مطلوب.')
-        parts = [p for p in name.split() if p]
-        if len(parts) < 4:
-            raise serializers.ValidationError(
-                'يجب إدخال الاسم الرباعي كاملاً على الأقل (أربعة أسماء مفصولة بمسافات، مثال: سليم شايف علي سليمان).'
-            )
-        return name
+        fields = (
+            'id', 'name', 'email', 'phone', 'role', 'password',
+            'company_name', 'commercial_reg', 'industry', 'location',
+            'description', 'cr_document_url'
+        )
 
     def validate_role(self, value):
-        if value != 'GRADUATE':
-            raise serializers.ValidationError('التسجيل متاح لحسابات الخريجين فقط في سبرنت 1.')
+        if value not in ['GRADUATE', 'COMPANY']:
+            raise serializers.ValidationError('التسجيل متاح لحسابات الخريجين والشركات فقط.')
         return value
 
     def validate_password(self, value):
         django_validate_password(value)
         return value
 
+    @transaction.atomic
     def create(self, validated_data):
+        company_name = validated_data.pop('company_name', '').strip()
+        commercial_reg = validated_data.pop('commercial_reg', '').strip()
+        industry = validated_data.pop('industry', '').strip()
+        location = validated_data.pop('location', '').strip()
+        description = validated_data.pop('description', '').strip()
+        cr_document_url = validated_data.pop('cr_document_url', None)
+
+        role = validated_data.get('role', 'GRADUATE')
         user = User.objects.create_user(
             email=validated_data['email'],
             name=validated_data['name'],
-            role='GRADUATE',
+            role=role,
             password=validated_data['password'],
             phone=validated_data.get('phone', '')
         )
-        # توليد الملف المهني الأساسي للخريج فورياً
-        parts = user.name.split()
-        first_name = parts[0] if parts else ''
-        last_name = ' '.join(parts[1:]) if len(parts) > 1 else ''
-        GraduateProfile.objects.get_or_create(
-            user=user,
-            defaults={
-                'first_name': first_name,
-                'last_name': last_name,
-                'phone': user.phone or '',
-            }
-        )
+
+        if role == 'GRADUATE':
+            # توليد الملف المهني الأساسي للخريج فورياً
+            first_name = user.name.split(' ')[0] if user.name else ''
+            last_name = user.name.split(' ', 1)[1] if ' ' in user.name else ''
+            GraduateProfile.objects.get_or_create(
+                user=user,
+                defaults={
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'phone': user.phone or '',
+                }
+            )
+        elif role == 'COMPANY':
+            # توليد ملف المنشأة والاعتماد التجاري للشركة فورياً (Screen 08)
+            c_name = company_name or user.name
+            Company.objects.get_or_create(
+                user=user,
+                defaults={
+                    'company_name': c_name,
+                    'commercial_reg': commercial_reg,
+                    'industry': industry,
+                    'location': location,
+                    'description': description,
+                    'cr_document_url': cr_document_url or '',
+                    'verification_status': 'PENDING',
+                }
+            )
+
         return user
 
 

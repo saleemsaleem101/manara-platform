@@ -27,9 +27,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework.authtoken',
-    # Manara Project Apps - Sprint 1
+    # Manara Project Apps
     'accounts',
     'profiles',
+    'jobs',
+    'matching',
+    'notifications',
+    'admin_panel',
 ]
 
 MIDDLEWARE = [

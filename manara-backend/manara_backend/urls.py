@@ -10,6 +10,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('accounts.urls')),
     path('api/profiles/', include('profiles.urls')),
+    path('api/jobs/', include('jobs.urls')),
+    path('api/matching/', include('matching.urls')),
+    path('api/notifications/', include('notifications.urls')),
+    path('api/admin-panel/', include('admin_panel.urls')),
 ]
 
 if settings.DEBUG:
