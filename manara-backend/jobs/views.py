@@ -43,10 +43,10 @@ class JobListCreateView(generics.ListCreateAPIView):
     ordering = ["-created_at"]
 
     def get_permissions(self):
-        # القراءة: أي مستخدم مسجّل | النشر: شركة معتمدة فقط
+        # القراءة: متاحة للجميع والزوار | النشر: شركة معتمدة فقط
         if self.request.method == "POST":
             return [IsVerifiedCompany()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
 
     def get_queryset(self):
         user = self.request.user
@@ -110,14 +110,18 @@ class JobListCreateView(generics.ListCreateAPIView):
 # ============================================================
 class JobDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = JobSerializer
-    permission_classes = [permissions.IsAuthenticated, IsJobOwner]
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated(), IsJobOwner()]
 
     def get_queryset(self):
         user = self.request.user
-        if getattr(user, 'role', '') == 'ADMIN':
+        if user.is_authenticated and getattr(user, 'role', '') == 'ADMIN':
             return Job.objects.all()
         # المالك يرى جميع وظائفه | الباقون يرون OPEN فقط (منع تسريب DRAFT/CLOSED)
-        if hasattr(user, 'company_profile'):
+        if user.is_authenticated and hasattr(user, 'company_profile'):
             return Job.objects.filter(
                 models.Q(company__user=user) | models.Q(status='OPEN')
             )
