@@ -31,8 +31,8 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     <div className={`flex items-center gap-3.5 group cursor-pointer ${className}`}>
       {/* Glowing Icon Frame */}
       <div className="relative shrink-0">
-        <div className="absolute -inset-1 bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#10B981] rounded-2xl blur-xs opacity-65 group-hover:opacity-100 transition duration-300" />
-        <div className={`relative ${iconSizes[size]} bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center p-1.5 shadow-xs border border-[#EAE4D9] dark:border-slate-700 transition duration-300 group-hover:scale-[1.02]`}>
+        <div className="absolute -inset-1 bg-gradient-to-r from-[#38BDF8] via-[#BAE6FD] to-[#D4C3A3] rounded-2xl blur-xs opacity-75 group-hover:opacity-100 transition duration-300" />
+        <div className={`relative ${iconSizes[size]} bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center p-1.5 shadow-xs border border-[#E8DEC8] dark:border-slate-700 transition duration-300 group-hover:scale-[1.02]`}>
           <img
             src="/logo_trimmed.png"
             alt="شعار منصة منارة"

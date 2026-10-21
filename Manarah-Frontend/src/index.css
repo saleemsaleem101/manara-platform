@@ -10,13 +10,66 @@
   --color-brand-navy-light: #1E293B;
   --color-brand-primary: #0284C7;
   --color-brand-primary-hover: #0369A1;
-  --color-brand-primary-light: #E8F4FC;
-  --color-brand-mint: #10B981;
-  --color-brand-mint-light: #E8F8F2;
+  --color-brand-primary-light: #E0F2FE;
+  --color-brand-sky: #38BDF8;
+  --color-brand-sky-light: #BAE6FD;
+  --color-brand-cream: #FAF7F2;
+  --color-brand-beige: #E5D7C3;
+  --color-brand-beige-dark: #8C6D53;
+  --color-brand-mocha: #6C4F3D;
   --color-brand-sand: #F4EFE6;
-  --color-brand-canvas: #FBF9F5;
+  --color-brand-canvas: #FDFBF7;
   --color-brand-card: #FFFFFF;
-  --color-brand-border: #EAE4D9;
+  --color-brand-border: #E8DEC8;
+}
+
+/* ==========================================================
+   Luxury Silk & Glassmorphism Aesthetics
+   ========================================================== */
+.glass-silk-card {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 20px 50px -15px rgba(200, 180, 155, 0.22), 0 4px 16px rgba(186, 230, 253, 0.2);
+}
+
+html.dark .glass-silk-card {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-color: rgba(51, 65, 85, 0.75) !important;
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.5) !important;
+}
+
+.silk-gradient-border {
+  border-image: linear-gradient(to bottom right, #BAE6FD, #E8DEC8, #FFFFFF) 1;
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 7s ease-in-out infinite;
+}
+
+.animate-twinkle {
+  animation: twinkle 3.5s ease-in-out infinite;
 }
 
 body {
