@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { Navbar } from '../components/Navbar'
 import { ApplyConfirmationModal } from '../components/ApplyConfirmationModal'
 import { StatusBadge } from '../components/StatusBadge'
 import { LoadingState } from '../components/LoadingState'
 import { ErrorState } from '../components/ErrorState'
+import { useProfile } from '../context/ProfileContext'
 import { api } from '../services/api'
 import type { Job, JobApplication } from '../types'
 
 export const JobDetailsApplyPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const jobId = Number(id)
+  const navigate = useNavigate()
+  const { isAuthenticated } = useProfile()
 
   const [job, setJob] = useState<Job | null>(null)
   const [myApplications, setMyApplications] = useState<JobApplication[]>([])
@@ -307,7 +310,13 @@ export const JobDetailsApplyPage: React.FC = () => {
 
                   <button
                     type="button"
-                    onClick={() => setShowConfirmModal(true)}
+                    onClick={() => {
+                      if (!isAuthenticated) {
+                        navigate('/login')
+                        return
+                      }
+                      setShowConfirmModal(true)
+                    }}
                     className="w-full py-3.5 rounded-[12px] bg-[#0F1E36] hover:bg-[#1E293B] text-white text-[13px] font-black transition flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-[0.99]"
                   >
                     <span>تأكيد وإرسال طلب التوظيف</span>

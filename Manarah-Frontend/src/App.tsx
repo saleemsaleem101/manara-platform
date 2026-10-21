@@ -234,22 +234,8 @@ export function App() {
               </RoleRoute>
             }
           />
-          <Route
-            path="/jobs"
-            element={
-              <RoleRoute allowedRoles={['GRADUATE']}>
-                <JobsBrowsePage />
-              </RoleRoute>
-            }
-          />
-          <Route
-            path="/jobs/:id"
-            element={
-              <RoleRoute allowedRoles={['GRADUATE']}>
-                <JobDetailsApplyPage />
-              </RoleRoute>
-            }
-          />
+          <Route path="/jobs" element={<JobsBrowsePage />} />
+          <Route path="/jobs/:id" element={<JobDetailsApplyPage />} />
           <Route
             path="/applications"
             element={
