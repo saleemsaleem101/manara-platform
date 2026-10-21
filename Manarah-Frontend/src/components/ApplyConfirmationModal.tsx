@@ -24,13 +24,13 @@ export const ApplyConfirmationModal: React.FC<ApplyConfirmationModalProps> = ({
   const pct = matchScore !== undefined && matchScore !== null ? Math.round(matchScore * 100) : null
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4" dir="rtl">
-      <div className="w-full max-w-[520px] bg-white rounded-3xl shadow-2xl border border-[#EAE4D9] overflow-hidden text-start transition-all duration-150">
+    <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 font-['Cairo'] text-start animate-fadeIn" dir="rtl">
+      <div className="w-full max-w-[520px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-[#E8DEC8] dark:border-slate-800 overflow-hidden text-start transition-all duration-150">
         {/* Header */}
-        <div className="p-6 border-b border-[#EAE4D9] bg-[#FBF9F5] flex items-start justify-between">
+        <div className="p-6 border-b border-[#E8DEC8] dark:border-slate-800 bg-[#FAF7F2] dark:bg-slate-950/80 flex items-start justify-between">
           <div>
-            <h3 className="text-[18px] font-black text-[#0F172A]">تأكيد تقديم طلب التوظيف</h3>
-            <p className="text-[12px] text-[#64748B] mt-1">
+            <h3 className="text-[18px] font-black text-[#0F172A] dark:text-white">تأكيد تقديم طلب التوظيف</h3>
+            <p className="text-[12px] text-[#64748B] dark:text-slate-400 mt-1">
               مراجعة البيانات التي ستُرسل إلى جهة التوظيف
             </p>
           </div>
@@ -38,7 +38,7 @@ export const ApplyConfirmationModal: React.FC<ApplyConfirmationModalProps> = ({
             type="button"
             onClick={onClose}
             disabled={isApplying}
-            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 font-bold transition cursor-pointer"
+            className="w-8 h-8 rounded-full bg-[#FAF7F2] dark:bg-slate-800 hover:bg-[#E8DEC8] dark:hover:bg-slate-700 flex items-center justify-center text-[#475569] dark:text-slate-300 font-bold transition cursor-pointer border border-[#E8DEC8] dark:border-slate-700"
           >
             ✕
           </button>
@@ -47,13 +47,13 @@ export const ApplyConfirmationModal: React.FC<ApplyConfirmationModalProps> = ({
         {/* Content */}
         <div className="p-6 space-y-4">
           {/* Job & Company summary card */}
-          <div className="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-[#FAF7F2] dark:bg-slate-800/80 border border-[#E8DEC8] dark:border-slate-700 flex items-center justify-between">
             <div>
-              <h4 className="text-[15px] font-black text-[#0F172A]">{jobTitle}</h4>
-              <p className="text-[12px] text-slate-600 font-semibold mt-0.5">{companyName}</p>
+              <h4 className="text-[15px] font-black text-[#0F172A] dark:text-white">{jobTitle}</h4>
+              <p className="text-[12px] text-[#475569] dark:text-slate-300 font-semibold mt-0.5">{companyName}</p>
             </div>
             {pct !== null && (
-              <div className="px-3 py-1.5 rounded-xl bg-[#E8F8F2] border border-[#BDE8D2] text-[#0D6E44] text-[12px] font-black font-mono">
+              <div className="px-3 py-1.5 rounded-xl bg-[#E8F8F2] dark:bg-emerald-950/60 border border-[#BDE8D2] dark:border-emerald-500/40 text-[#0D6E44] dark:text-[#34D399] text-[12px] font-black font-mono">
                 نسبة التوافق: <bdi dir="ltr">{pct}%</bdi>
               </div>
             )}
@@ -61,45 +61,45 @@ export const ApplyConfirmationModal: React.FC<ApplyConfirmationModalProps> = ({
 
           {/* Included Data Checklist */}
           <div className="space-y-2.5">
-            <h5 className="text-[12px] font-black text-[#0F172A]">
+            <h5 className="text-[12px] font-black text-[#0F172A] dark:text-white">
               سيتم إرفاق البيانات التالية تلقائياً من ملفك المهني:
             </h5>
 
-            <div className="space-y-2 text-[12px] text-slate-700 font-medium">
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-emerald-600 font-bold">✓</span>
+            <div className="space-y-2 text-[12px] text-[#475569] dark:text-slate-300 font-medium">
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/60 border border-[#E8DEC8] dark:border-slate-700">
+                <span className="text-[#0D6E44] dark:text-[#34D399] font-bold">✓</span>
                 <span>بياناتك الشخصية والأكاديمية (الجامعة، التخصص، المعدل، سنة التخرج)</span>
               </div>
 
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-emerald-600 font-bold">✓</span>
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/60 border border-[#E8DEC8] dark:border-slate-700">
+                <span className="text-[#0D6E44] dark:text-[#34D399] font-bold">✓</span>
                 <span>قائمة المهارات المعتمدة ومستويات الإتقان المسجلة</span>
               </div>
 
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-emerald-600 font-bold">✓</span>
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/60 border border-[#E8DEC8] dark:border-slate-700">
+                <span className="text-[#0D6E44] dark:text-[#34D399] font-bold">✓</span>
                 <span>المشاريع البرمجية ومشاريع التخرج وروابط الاستعراض</span>
               </div>
 
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-emerald-600 font-bold">✓</span>
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/60 border border-[#E8DEC8] dark:border-slate-700">
+                <span className="text-[#0D6E44] dark:text-[#34D399] font-bold">✓</span>
                 <span>الفيديو التعريفي (وفق مستوى الخصوصية المحدد من قِبلك)</span>
               </div>
             </div>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px] font-semibold leading-relaxed">
+          <div className="p-3.5 rounded-xl bg-[#E0F2FE]/50 dark:bg-sky-950/40 border border-[#BAE6FD] dark:border-sky-500/40 text-[#0284C7] dark:text-[#38BDF8] text-[11px] font-semibold leading-relaxed">
             ℹ️ تنبيه: لا يمكن تقديم أكثر من طلب لنفس الوظيفة، وستتمكن من تتبع حالة الطلب من صفحة «طلباتي».
           </div>
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 sm:p-6 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3">
+        <div className="p-4 sm:p-6 bg-[#FAF7F2] dark:bg-slate-950/80 border-t border-[#E8DEC8] dark:border-slate-800 flex items-center justify-end gap-3">
           <button
             type="button"
             onClick={onClose}
             disabled={isApplying}
-            className="px-4 py-2.5 rounded-[12px] border border-slate-300 bg-white text-slate-700 text-[12px] font-bold hover:bg-slate-100 transition cursor-pointer"
+            className="px-4 py-2.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#475569] dark:text-slate-300 text-[12px] font-bold hover:bg-[#FAF7F2] dark:hover:bg-slate-700 transition cursor-pointer"
           >
             إلغاء
           </button>
@@ -107,7 +107,7 @@ export const ApplyConfirmationModal: React.FC<ApplyConfirmationModalProps> = ({
             type="button"
             onClick={onConfirm}
             disabled={isApplying}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] disabled:opacity-60 text-white text-[12px] font-black transition flex items-center gap-2 cursor-pointer shadow-xs"
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:brightness-105 disabled:opacity-60 text-white text-[12px] font-black transition flex items-center gap-2 cursor-pointer shadow-xs"
           >
             {isApplying ? (
               <>

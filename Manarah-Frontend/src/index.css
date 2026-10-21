@@ -27,21 +27,36 @@
    Luxury Silk & Glassmorphism Aesthetics
    ========================================================== */
 .glass-silk-card {
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(232, 222, 200, 0.9);
   box-shadow: 0 20px 50px -15px rgba(200, 180, 155, 0.22), 0 4px 16px rgba(186, 230, 253, 0.2);
 }
 
 html.dark .glass-silk-card {
-  background: rgba(15, 23, 42, 0.85) !important;
-  border-color: rgba(51, 65, 85, 0.75) !important;
-  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.5) !important;
+  background: rgba(15, 23, 42, 0.88) !important;
+  border-color: rgba(51, 65, 85, 0.8) !important;
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.6) !important;
 }
 
 .silk-gradient-border {
   border-image: linear-gradient(to bottom right, #BAE6FD, #E8DEC8, #FFFFFF) 1;
+}
+
+/* Signature Sky-Blue Luxury Gradient across ALL platform buttons */
+[class*="from-[#0284C7]"][class*="to-[#10B981]"],
+[class*="from-[#0284C7]"][class*="to-[#059669]"],
+.btn-silk-primary {
+  background-image: linear-gradient(135deg, #0284C7 0%, #0EA5E9 50%, #38BDF8 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px -3px rgba(2, 132, 199, 0.35) !important;
+}
+
+[class*="hover:from-[#0369A1]"][class*="hover:to-[#059669]"]:hover,
+.btn-silk-primary:hover {
+  background-image: linear-gradient(135deg, #0369A1 0%, #0284C7 50%, #0EA5E9 100%) !important;
+  filter: brightness(1.05);
 }
 
 @keyframes floatSlow {
@@ -74,12 +89,60 @@ html.dark .glass-silk-card {
 
 body {
   font-family: 'Cairo', system-ui, -apple-system, sans-serif;
-  background-color: #FBF9F5;
-  color: #0F172A;
+  background-color: #FDFBF7;
+  color: #1E293B;
   margin: 0;
   padding: 0;
   min-height: 100vh;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Base Light Theme Mappings (Silk Palette: Sky Blue, Sukari Cream, Warm Champagne Beige, White) */
+.bg-\[\#FBF9F5\] {
+  background-color: #FDFBF7 !important;
+}
+
+.bg-\[\#F4EFE6\],
+.bg-\[\#F4EFE6\]\/60,
+.bg-\[\#F4EFE6\]\/50,
+.bg-\[\#FAF8F5\] {
+  background-color: #FAF7F2 !important;
+}
+
+.border-\[\#EAE4D9\],
+.border-\[\#EAE4D9\]\/80,
+.border-\[\#EAE4D9\]\/70,
+.border-\[\#EAE4D9\]\/60,
+.border-\[\#E5D7C3\],
+.border-\[\#CBD5E1\],
+.border-slate-200 {
+  border-color: #E8DEC8 !important;
+}
+
+.bg-\[\#E8F4FC\] {
+  background-color: #E0F2FE !important;
+}
+
+.border-\[\#BAE3F9\],
+.border-\[\#BAE3F9\]\/60 {
+  border-color: #BAE6FD !important;
+}
+
+/* Refined Form Controls in Light Mode */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  border-color: #E8DEC8 !important;
+  background-color: #FAF7F2;
+  transition: all 0.2s ease;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+select:focus,
+textarea:focus {
+  border-color: #0284C7 !important;
+  background-color: #FFFFFF !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2) !important;
 }
 
 /* ==========================================================
@@ -94,14 +157,19 @@ html.dark body {
   color: #F8FAFC !important;
 }
 
-/* Seamless token adaptation in dark mode */
+/* Background Adaptation */
+html.dark .bg-\[\#FDFBF7\],
 html.dark .bg-\[\#FBF9F5\] {
   background-color: #0B1120 !important;
 }
 
+html.dark .bg-\[\#FAF7F2\],
 html.dark .bg-\[\#F4EFE6\],
 html.dark .bg-\[\#F4EFE6\]\/60,
-html.dark .bg-\[\#F4EFE6\]\/50 {
+html.dark .bg-\[\#F4EFE6\]\/50,
+html.dark .bg-\[\#FAF8F5\],
+html.dark .bg-slate-50,
+html.dark .bg-slate-100 {
   background-color: #1E293B !important;
 }
 
@@ -110,36 +178,110 @@ html.dark .bg-white {
 }
 
 html.dark .bg-white\/90,
-html.dark .bg-white\/95 {
-  background-color: rgba(15, 23, 42, 0.95) !important;
+html.dark .bg-white\/95,
+html.dark .bg-white\/80,
+html.dark .bg-white\/85 {
+  background-color: rgba(15, 23, 42, 0.92) !important;
 }
 
+/* Border Adaptation */
+html.dark .border-\[\#E8DEC8\],
 html.dark .border-\[\#EAE4D9\],
+html.dark .border-\[\#E5D7C3\],
+html.dark .border-\[\#CBD5E1\],
+html.dark .border-slate-200,
+html.dark .border-slate-300,
 html.dark .border-\[\#EAE4D9\]\/80,
 html.dark .border-\[\#EAE4D9\]\/70,
-html.dark .border-\[\#EAE4D9\]\/60 {
-  border-color: #1E293B !important;
-}
-
-html.dark .border-\[\#CBD5E1\] {
+html.dark .border-\[\#EAE4D9\]\/60,
+html.dark .border-\[\#E8DEC8\]\/80,
+html.dark .border-\[\#E8DEC8\]\/70,
+html.dark .border-\[\#E8DEC8\]\/60 {
   border-color: #334155 !important;
 }
 
-html.dark .text-\[\#0F172A\] {
+/* Text Hierarchy in Dark Mode */
+html.dark .text-\[\#0F172A\],
+html.dark .text-\[\#1E293B\],
+html.dark .text-slate-900,
+html.dark .text-slate-800 {
   color: #F8FAFC !important;
 }
 
 html.dark .text-\[\#475569\],
+html.dark .text-\[\#5C5046\],
 html.dark .text-slate-700,
 html.dark .text-slate-600 {
   color: #94A3B8 !important;
 }
 
+html.dark .text-\[\#64748B\],
 html.dark .text-slate-500 {
-  color: #64748B !important;
+  color: #94A3B8 !important;
 }
 
-html.dark input,
+/* Warm Mocha & Bronze Accents -> Champagne Gold in Dark Mode */
+html.dark .text-\[\#6C4F3D\],
+html.dark .text-\[\#8C6D53\] {
+  color: #FDE68A !important;
+}
+
+/* Sky-Blue Badges & Pills */
+html.dark .bg-\[\#E0F2FE\],
+html.dark .bg-\[\#E8F4FC\],
+html.dark .bg-sky-50 {
+  background-color: rgba(2, 132, 199, 0.22) !important;
+  color: #38BDF8 !important;
+}
+
+html.dark .border-\[\#BAE6FD\],
+html.dark .border-\[\#BAE3F9\],
+html.dark .border-sky-200,
+html.dark .border-sky-300 {
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+/* Emerald / Verified Badges */
+html.dark .bg-\[\#E8F8F2\],
+html.dark .bg-emerald-50,
+html.dark .bg-emerald-100 {
+  background-color: rgba(16, 185, 129, 0.18) !important;
+  color: #34D399 !important;
+}
+
+html.dark .border-\[\#BDE8D2\],
+html.dark .border-emerald-200,
+html.dark .border-emerald-300 {
+  border-color: rgba(52, 211, 153, 0.35) !important;
+}
+
+/* Amber / Warning Badges */
+html.dark .bg-\[\#FEF3C7\],
+html.dark .bg-amber-50,
+html.dark .bg-amber-100 {
+  background-color: rgba(245, 158, 11, 0.18) !important;
+  color: #FCD34D !important;
+}
+
+html.dark .border-\[\#FDE68A\],
+html.dark .border-amber-200,
+html.dark .border-amber-300 {
+  border-color: rgba(251, 191, 36, 0.35) !important;
+}
+
+/* Rose / Error Badges */
+html.dark .bg-rose-50,
+html.dark .bg-rose-100 {
+  background-color: rgba(244, 63, 94, 0.18) !important;
+  color: #FDA4AF !important;
+}
+
+html.dark .border-rose-200 {
+  border-color: rgba(251, 113, 133, 0.35) !important;
+}
+
+/* Form inputs in Dark Mode */
+html.dark input:not([type="checkbox"]):not([type="radio"]),
 html.dark select,
 html.dark textarea {
   background-color: #1E293B !important;
@@ -151,7 +293,40 @@ html.dark input:focus,
 html.dark select:focus,
 html.dark textarea:focus {
   background-color: #0F172A !important;
-  border-color: #0284C7 !important;
+  border-color: #38BDF8 !important;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.3) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #64748B !important;
+}
+
+/* Dark Mode Modal Dialogs */
+html.dark .fixed.inset-0 {
+  background-color: rgba(2, 6, 23, 0.8) !important;
+}
+
+html.dark .fixed.inset-0 > div,
+html.dark [role="dialog"] {
+  background-color: #0F172A !important;
+  border-color: #334155 !important;
+  color: #F8FAFC !important;
+}
+
+/* Tables in Dark Mode */
+html.dark th {
+  background-color: #1E293B !important;
+  color: #94A3B8 !important;
+  border-color: #334155 !important;
+}
+
+html.dark td {
+  border-color: #334155 !important;
+}
+
+html.dark tr:hover td {
+  background-color: rgba(30, 41, 59, 0.5) !important;
 }
 
 /* Animations */

@@ -48,21 +48,21 @@ export const ApplicationsTrackingPage: React.FC = () => {
   })
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] flex flex-col font-['Cairo'] text-start text-[#0F172A]" dir="rtl">
+    <div className="min-h-screen bg-[#FDFBF7] dark:bg-[#0B1120] flex flex-col font-['Cairo'] text-start text-[#0F172A] dark:text-slate-100 transition-colors duration-300" dir="rtl">
       <Navbar />
 
       <main className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-1">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-[#0F172A]">طلباتي وسجل المتابعة</h1>
-            <p className="text-xs text-[#64748B] mt-1 font-medium">
+            <h1 className="text-2xl font-black text-[#0F172A] dark:text-white">طلباتي وسجل المتابعة</h1>
+            <p className="text-xs text-[#64748B] dark:text-slate-400 mt-1 font-medium">
               متابعة حالة طلبات التوظيف المقدمة، وسجل التحديثات، وتفاصيل درجات التوافق
             </p>
           </div>
           <Link
             to="/jobs"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white text-xs font-black transition self-start sm:self-auto shadow-xs"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:from-[#0369A1] hover:to-[#0284C7] text-white text-xs font-black transition self-start sm:self-auto shadow-sm"
           >
             <span>استكشاف فرص وظيفية جديدة</span>
             <span>←</span>
@@ -70,14 +70,14 @@ export const ApplicationsTrackingPage: React.FC = () => {
         </div>
 
         {/* Status Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[#EAE4D9]">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[#E8DEC8] dark:border-slate-800">
           <button
             type="button"
             onClick={() => setActiveTab('ALL')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
               activeTab === 'ALL'
-                ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs font-black'
-                : 'bg-white text-[#475569] hover:bg-[#F4EFE6]/60 border border-[#EAE4D9]'
+                ? 'bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] text-white shadow-sm font-black'
+                : 'bg-[#FAF7F2] dark:bg-slate-800 text-[#475569] dark:text-slate-300 hover:bg-[#E5D7C3]/50 dark:hover:bg-slate-700 border border-[#E8DEC8] dark:border-slate-700'
             }`}
           >
             جميع الطلبات (<bdi dir="ltr">{applications.length}</bdi>)
@@ -87,8 +87,8 @@ export const ApplicationsTrackingPage: React.FC = () => {
             onClick={() => setActiveTab('UNDER_REVIEW')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
               activeTab === 'UNDER_REVIEW'
-                ? 'bg-[#0284C7] text-white shadow-xs font-black'
-                : 'bg-white text-[#475569] hover:bg-[#F4EFE6]/60 border border-[#EAE4D9]'
+                ? 'bg-[#0284C7] text-white shadow-sm font-black'
+                : 'bg-[#FAF7F2] dark:bg-slate-800 text-[#475569] dark:text-slate-300 hover:bg-[#E5D7C3]/50 dark:hover:bg-slate-700 border border-[#E8DEC8] dark:border-slate-700'
             }`}
           >
             قيد المراجعة (
@@ -102,8 +102,8 @@ export const ApplicationsTrackingPage: React.FC = () => {
             onClick={() => setActiveTab('ACCEPTED')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
               activeTab === 'ACCEPTED'
-                ? 'bg-[#10B981] text-white shadow-xs font-black'
-                : 'bg-white text-[#475569] hover:bg-[#F4EFE6]/60 border border-[#EAE4D9]'
+                ? 'bg-[#0284C7] text-white shadow-sm font-black'
+                : 'bg-[#FAF7F2] dark:bg-slate-800 text-[#475569] dark:text-slate-300 hover:bg-[#E5D7C3]/50 dark:hover:bg-slate-700 border border-[#E8DEC8] dark:border-slate-700'
             }`}
           >
             مقبول (
@@ -117,8 +117,8 @@ export const ApplicationsTrackingPage: React.FC = () => {
             onClick={() => setActiveTab('REJECTED')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
               activeTab === 'REJECTED'
-                ? 'bg-rose-600 text-white shadow-xs font-black'
-                : 'bg-white text-[#475569] hover:bg-[#F4EFE6]/60 border border-[#EAE4D9]'
+                ? 'bg-rose-600 text-white shadow-sm font-black'
+                : 'bg-[#FAF7F2] dark:bg-slate-800 text-[#475569] dark:text-slate-300 hover:bg-[#E5D7C3]/50 dark:hover:bg-slate-700 border border-[#E8DEC8] dark:border-slate-700'
             }`}
           >
             مرفوض (
@@ -154,13 +154,13 @@ export const ApplicationsTrackingPage: React.FC = () => {
               return (
                 <div
                   key={app.id}
-                  className="bg-white rounded-3xl p-6 border border-[#EAE4D9] shadow-2xs hover:border-[#BAE3F9] transition space-y-4"
+                  className="glass-silk-card bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl rounded-3xl p-6 border border-[#E8DEC8] dark:border-slate-800 shadow-sm hover:border-[#BAE6FD] dark:hover:border-sky-800 transition space-y-4"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                      <h3 className="text-base font-black text-[#0F172A]">{app.job_title}</h3>
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-[#64748B] mt-1">
-                        <span className="font-bold text-[#475569]">{app.company_name}</span>
+                      <h3 className="text-base font-black text-[#0F172A] dark:text-white">{app.job_title}</h3>
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-[#64748B] dark:text-slate-400 mt-1">
+                        <span className="font-bold text-[#475569] dark:text-slate-300">{app.company_name}</span>
                         <span>•</span>
                         <span>
                           تاريخ التقديم: {new Date(app.applied_at).toLocaleDateString('ar-EG')}
@@ -170,7 +170,7 @@ export const ApplicationsTrackingPage: React.FC = () => {
 
                     <div className="flex items-center gap-3">
                       {scorePct !== null && (
-                        <div className="px-3 py-1 rounded-xl bg-[#E8F8F2] border border-[#BDE8D2] text-xs font-black text-[#0D6E44] font-mono">
+                        <div className="px-3 py-1 rounded-xl bg-[#E0F2FE] dark:bg-sky-950/60 border border-[#BAE6FD] dark:border-sky-800 text-xs font-black text-[#0284C7] dark:text-sky-300 font-mono">
                           التوافق: <bdi dir="ltr">{scorePct}%</bdi>
                         </div>
                       )}
@@ -179,21 +179,21 @@ export const ApplicationsTrackingPage: React.FC = () => {
                   </div>
 
                   {/* Status History Timeline */}
-                  <div className="p-3.5 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] text-xs text-[#475569] space-y-1.5">
-                    <div className="font-bold text-[#0F172A] text-[11px]">سجل ومسار الطلب:</div>
+                  <div className="p-3.5 rounded-2xl bg-[#FAF7F2] dark:bg-slate-800/70 border border-[#E8DEC8] dark:border-slate-700 text-xs text-[#475569] dark:text-slate-300 space-y-1.5">
+                    <div className="font-bold text-[#0F172A] dark:text-white text-[11px]">سجل ومسار الطلب:</div>
                     <div className="flex flex-wrap items-center gap-2 text-[11px]">
-                      <span className="text-[#0D6E44] font-bold">1. تم إرسال الطلب</span>
+                      <span className="text-[#0284C7] dark:text-sky-300 font-bold">1. تم إرسال الطلب</span>
                       <span>➔</span>
                       {app.status === 'UNDER_REVIEW' || app.status === 'SUBMITTED' ? (
-                        <span className="text-[#0284C7] font-bold">2. قيد مراجعة بيانات المرشح</span>
+                        <span className="text-[#0284C7] dark:text-sky-300 font-bold">2. قيد مراجعة بيانات المرشح</span>
                       ) : app.status === 'ACCEPTED' ? (
-                        <span className="text-[#0D6E44] font-black">2. تم القبول بنجاح ✓ (تم فتح التواصل المباشر)</span>
+                        <span className="text-[#0284C7] dark:text-sky-300 font-black">2. تم القبول بنجاح ✓ (تم فتح التواصل المباشر)</span>
                       ) : (
-                        <span className="text-rose-600 font-bold">2. تم الاعتذار عن القبول</span>
+                        <span className="text-rose-600 dark:text-rose-400 font-bold">2. تم الاعتذار عن القبول</span>
                       )}
                     </div>
                     {app.status === 'ACCEPTED' && (
-                      <div className="mt-2 pt-2 border-t border-[#BDE8D2] text-[#0D6E44] font-bold text-[11px] flex items-center gap-1.5">
+                      <div className="mt-2 pt-2 border-t border-[#BAE6FD] dark:border-sky-900 text-[#0284C7] dark:text-sky-300 font-bold text-[11px] flex items-center gap-1.5">
                         <span>🎉</span>
                         <span>تهانينا! وافقت المنشأة على طلبك وستتواصل معك لتحديد موعد المقابلة المباشرة.</span>
                       </div>
@@ -201,21 +201,21 @@ export const ApplicationsTrackingPage: React.FC = () => {
                   </div>
 
                   {/* Action Row */}
-                  <div className="flex items-center justify-between pt-2 border-t border-[#EAE4D9]/60">
+                  <div className="flex items-center justify-between pt-2 border-t border-[#E8DEC8]/60 dark:border-slate-800">
                     <button
                       type="button"
                       onClick={() => setSelectedMatchApp(app)}
-                      className="px-4 py-2 rounded-xl bg-[#E8F4FC] hover:bg-[#BAE6FD]/40 text-[#0284C7] border border-[#BAE3F9] text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                      className="px-4 py-2 rounded-xl bg-[#FAF7F2] dark:bg-slate-800 hover:bg-[#E5D7C3]/50 dark:hover:bg-slate-700 text-[#0284C7] dark:text-sky-300 border border-[#E8DEC8] dark:border-slate-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
                     >
                       <span>تفاصيل المطابقة</span>
                       {scorePct !== null && (
-                        <span className="text-[#0284C7] font-black font-mono">(<bdi dir="ltr">{scorePct}%</bdi>)</span>
+                        <span className="text-[#0284C7] dark:text-sky-300 font-black font-mono">(<bdi dir="ltr">{scorePct}%</bdi>)</span>
                       )}
                     </button>
 
                     <Link
                       to={`/jobs/${app.job}`}
-                      className="text-xs font-bold text-[#64748B] hover:text-[#0F172A] underline underline-offset-4"
+                      className="text-xs font-bold text-[#64748B] dark:text-slate-400 hover:text-[#0284C7] dark:hover:text-sky-400 underline underline-offset-4"
                     >
                       عرض الشاغر الأصلي
                     </Link>

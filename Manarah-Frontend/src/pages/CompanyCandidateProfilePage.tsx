@@ -109,7 +109,7 @@ export const CompanyCandidateProfilePage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FBF9F5]" dir="rtl">
+      <div className="min-h-screen bg-[#FDFBF7] dark:bg-[#0B1120] text-[#0F172A] dark:text-white transition-colors duration-300" dir="rtl">
         <Navbar />
         <div className="max-w-5xl mx-auto px-4 py-20">
           <LoadingState message="جاري استرجاع ملف المرشح وتفاصيل التوافق الموزونة..." />
@@ -120,7 +120,7 @@ export const CompanyCandidateProfilePage: React.FC = () => {
 
   if (error || !candidate) {
     return (
-      <div className="min-h-screen bg-[#FBF9F5]" dir="rtl">
+      <div className="min-h-screen bg-[#FDFBF7] dark:bg-[#0B1120] text-[#0F172A] dark:text-white transition-colors duration-300" dir="rtl">
         <Navbar />
         <div className="max-w-3xl mx-auto px-4 py-20">
           <ErrorState
@@ -142,37 +142,37 @@ export const CompanyCandidateProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] text-[#0F172A] font-sans" dir="rtl">
+    <div className="min-h-screen bg-[#FDFBF7] dark:bg-[#0B1120] text-[#0F172A] dark:text-white font-sans transition-colors duration-300 selection:bg-[#BAE6FD] selection:text-[#0284C7]" dir="rtl">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb Navigation */}
-        <div className="flex items-center gap-2 text-xs text-[#64748B] mb-6 font-medium">
-          <Link to="/company/jobs" className="hover:text-[#0284C7] transition">
+        <div className="flex items-center gap-2 text-xs text-[#6C4F3D] dark:text-slate-400 mb-6 font-medium">
+          <Link to="/company/jobs" className="hover:text-[#0284C7] dark:hover:text-[#38BDF8] transition">
             وظائفي
           </Link>
           <span>/</span>
-          <Link to="/company/applicants" className="hover:text-[#0284C7] transition">
+          <Link to="/company/applicants" className="hover:text-[#0284C7] dark:hover:text-[#38BDF8] transition">
             المتقدمون
           </Link>
           <span>/</span>
-          <span className="text-[#0284C7] font-bold">ملف المرشح #{applicationId}</span>
+          <span className="text-[#0284C7] dark:text-[#38BDF8] font-bold">ملف المرشح #{applicationId}</span>
         </div>
 
         {/* Feedback Alert */}
         {feedbackMsg && (
           <div
-            className={`mb-6 p-4 rounded-2xl flex items-center justify-between text-sm font-bold shadow-2xs ${
+            className={`mb-6 p-4 rounded-2xl flex items-center justify-between text-sm font-bold shadow-sm ${
               feedbackMsg.type === 'success'
-                ? 'bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2]'
-                : 'bg-rose-50 text-rose-800 border border-rose-200'
+                ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                : 'bg-rose-50 dark:bg-rose-950/30 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
             }`}
           >
             <span>{feedbackMsg.text}</span>
             <button
               type="button"
               onClick={() => setFeedbackMsg(null)}
-              className="text-xs text-slate-400 hover:text-slate-700 font-normal px-2 py-1 cursor-pointer"
+              className="text-xs text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-normal px-2 py-1 cursor-pointer"
             >
               إغلاق
             </button>
@@ -180,21 +180,21 @@ export const CompanyCandidateProfilePage: React.FC = () => {
         )}
 
         {/* Top Header Card */}
-        <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 sm:p-8 shadow-2xs mb-8">
+        <div className="glass-silk-card bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl rounded-3xl border border-[#E8DEC8] dark:border-slate-800 p-6 sm:p-8 shadow-sm mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white text-xl font-black flex items-center justify-center shrink-0 shadow-xs">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] text-white text-xl font-black flex items-center justify-center shrink-0 shadow-md">
                 {candidate.full_name.charAt(0)}
               </div>
               <div>
                 <div className="flex flex-wrap items-center gap-3 mb-1">
-                  <h1 className="text-2xl font-black text-[#0F172A]">{candidate.full_name}</h1>
+                  <h1 className="text-2xl font-black text-[#0F172A] dark:text-white">{candidate.full_name}</h1>
                   <StatusBadge status={candidate.status} />
                 </div>
-                <p className="text-xs text-[#64748B] font-medium">
+                <p className="text-xs text-[#6C4F3D] dark:text-slate-400 font-medium">
                   {candidate.major} • {candidate.university} (دفعة <bdi dir="ltr">{candidate.graduation_year}</bdi>)
                 </p>
-                <div className="flex flex-wrap items-center gap-4 text-xs text-[#64748B] mt-2 font-mono">
+                <div className="flex flex-wrap items-center gap-4 text-xs text-[#6C4F3D] dark:text-slate-400 mt-2 font-mono">
                   <span>المدينة: {candidate.city || 'صنعاء'}</span>
                   <span>•</span>
                   <span>سنوات الخبرة: {candidate.experience_years}</span>
@@ -205,17 +205,21 @@ export const CompanyCandidateProfilePage: React.FC = () => {
             </div>
 
             {/* Overall Match Badge */}
-            <div className="bg-[#FBF9F5] border border-[#EAE4D9] rounded-2xl p-4 text-center sm:text-start shrink-0 min-w-44">
-              <span className="text-xs font-bold text-[#64748B] block mb-1">نسبة التوافق الموزونة</span>
+            <div className="bg-[#FAF7F2] dark:bg-slate-800/60 border border-[#E8DEC8] dark:border-slate-700 rounded-2xl p-4 text-center sm:text-start shrink-0 min-w-44">
+              <span className="text-xs font-bold text-[#6C4F3D] dark:text-slate-400 block mb-1">نسبة التوافق الموزونة</span>
               <div className="flex items-center justify-center sm:justify-start gap-2">
                 <span
                   className={`text-3xl font-black font-mono ${
-                    scorePct >= 85 ? 'text-[#0D6E44]' : scorePct >= 70 ? 'text-[#0284C7]' : 'text-[#475569]'
+                    scorePct >= 85
+                      ? 'text-emerald-600 dark:text-emerald-400'
+                      : scorePct >= 70
+                      ? 'text-[#0284C7] dark:text-[#38BDF8]'
+                      : 'text-[#6C4F3D] dark:text-slate-300'
                   }`}
                 >
                   <bdi dir="ltr">{scorePct}%</bdi>
                 </span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2] font-black">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-[#E0F2FE]/70 dark:bg-sky-950/60 text-[#0284C7] dark:text-[#38BDF8] border border-[#BAE6FD] dark:border-sky-800 font-black">
                   مطابقة رياضية
                 </span>
               </div>
@@ -227,95 +231,95 @@ export const CompanyCandidateProfilePage: React.FC = () => {
           {/* Main Column (8 cols) */}
           <div className="lg:col-span-8 space-y-8">
             {/* 1. Score Breakdown Matrix */}
-            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 sm:p-8 shadow-2xs">
-              <div className="flex items-center justify-between border-b border-[#EAE4D9] pb-4 mb-6">
+            <div className="glass-silk-card bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl rounded-3xl border border-[#E8DEC8] dark:border-slate-800 p-6 sm:p-8 shadow-sm">
+              <div className="flex items-center justify-between border-b border-[#E8DEC8] dark:border-slate-800 pb-4 mb-6">
                 <div>
-                  <h2 className="text-lg font-black text-[#0F172A]">تفاصيل المطابقة الموزونة (Jaccard Match)</h2>
-                  <p className="text-xs text-[#64748B]">الدرجات المحققة عبر الأوزان المعتمدة للوظيفة</p>
+                  <h2 className="text-lg font-black text-[#0F172A] dark:text-white">تفاصيل المطابقة الموزونة (Jaccard Match)</h2>
+                  <p className="text-xs text-[#6C4F3D] dark:text-slate-400">الدرجات المحققة عبر الأوزان المعتمدة للوظيفة</p>
                 </div>
-                <span className="text-xs font-mono font-black text-[#0284C7] bg-[#E8F4FC] border border-[#BAE6FD] px-2.5 py-1 rounded-xl">
+                <span className="text-xs font-mono font-black text-[#0284C7] dark:text-[#38BDF8] bg-[#E0F2FE]/70 dark:bg-sky-950/60 border border-[#BAE6FD] dark:border-sky-800 px-2.5 py-1 rounded-xl">
                   ∑ الأوزان = 1.00
                 </span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="p-4 rounded-2xl bg-[#E8F8F2] border border-[#BDE8D2] text-center">
-                  <span className="text-xs font-bold text-[#0D6E44] block mb-1">المهارات (جاكارد)</span>
-                  <div className="text-2xl font-black text-[#0D6E44] font-mono">
+                <div className="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/60 text-center">
+                  <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 block mb-1">المهارات (جاكارد)</span>
+                  <div className="text-2xl font-black text-emerald-700 dark:text-emerald-300 font-mono">
                     <bdi dir="ltr">{getScoreNumber(candidate.score_breakdown?.skills_score, 45)}/45</bdi>
                   </div>
-                  <span className="text-[10px] text-[#0D6E44]/80 font-medium mt-1 block">|A∩B| / |A∪B|</span>
+                  <span className="text-[10px] text-emerald-700/80 dark:text-emerald-400/80 font-medium mt-1 block">|A∩B| / |A∪B|</span>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#E8F4FC] border border-[#BAE6FD] text-center">
-                  <span className="text-xs font-bold text-[#0284C7] block mb-1">التخصص الأكاديمي</span>
-                  <div className="text-2xl font-black text-[#0284C7] font-mono">
+                <div className="p-4 rounded-2xl bg-[#E0F2FE]/60 dark:bg-sky-950/40 border border-[#BAE6FD] dark:border-sky-800 text-center">
+                  <span className="text-xs font-bold text-[#0284C7] dark:text-[#38BDF8] block mb-1">التخصص الأكاديمي</span>
+                  <div className="text-2xl font-black text-[#0284C7] dark:text-[#38BDF8] font-mono">
                     <bdi dir="ltr">{getScoreNumber(candidate.score_breakdown?.specialization_score, 25)}/25</bdi>
                   </div>
-                  <span className="text-[10px] text-[#0284C7]/80 font-medium mt-1 block">مطابقة التخصص</span>
+                  <span className="text-[10px] text-[#0284C7]/80 dark:text-[#38BDF8]/80 font-medium mt-1 block">مطابقة التخصص</span>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] text-center">
-                  <span className="text-xs font-bold text-[#475569] block mb-1">سنوات الخبرة</span>
-                  <div className="text-2xl font-black text-[#0F172A] font-mono">
+                <div className="p-4 rounded-2xl bg-[#FAF7F2] dark:bg-slate-800/60 border border-[#E8DEC8] dark:border-slate-700 text-center">
+                  <span className="text-xs font-bold text-[#6C4F3D] dark:text-slate-400 block mb-1">سنوات الخبرة</span>
+                  <div className="text-2xl font-black text-[#0F172A] dark:text-white font-mono">
                     <bdi dir="ltr">{getScoreNumber(candidate.score_breakdown?.experience_score, 20)}/20</bdi>
                   </div>
-                  <span className="text-[10px] text-[#64748B] font-medium mt-1 block">معيار الخبرة</span>
+                  <span className="text-[10px] text-[#6C4F3D] dark:text-slate-400 font-medium mt-1 block">معيار الخبرة</span>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#E8F8F2] border border-[#BDE8D2] text-center">
-                  <span className="text-xs font-bold text-[#10B981] block mb-1">المؤهل والدرجة</span>
-                  <div className="text-2xl font-black text-[#0D6E44] font-mono">
+                <div className="p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 text-center">
+                  <span className="text-xs font-bold text-amber-800 dark:text-amber-300 block mb-1">المؤهل والدرجة</span>
+                  <div className="text-2xl font-black text-amber-700 dark:text-amber-300 font-mono">
                     <bdi dir="ltr">{getScoreNumber(candidate.score_breakdown?.qualification_score, 10)}/10</bdi>
                   </div>
-                  <span className="text-[10px] text-[#10B981]/80 font-medium mt-1 block">الحد الأدنى للمؤهل</span>
+                  <span className="text-[10px] text-amber-700/80 dark:text-amber-400/80 font-medium mt-1 block">الحد الأدنى للمؤهل</span>
                 </div>
               </div>
             </div>
 
             {/* 2. Skills Portfolio */}
-            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 sm:p-8 shadow-2xs">
-              <h2 className="text-lg font-black text-[#0F172A] mb-4">المهارات المعتمدة</h2>
+            <div className="glass-silk-card bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl rounded-3xl border border-[#E8DEC8] dark:border-slate-800 p-6 sm:p-8 shadow-sm">
+              <h2 className="text-lg font-black text-[#0F172A] dark:text-white mb-4">المهارات المعتمدة</h2>
               {candidate.skills && candidate.skills.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {candidate.skills.map((sk) => (
                     <span
                       key={sk.id}
-                      className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#FBF9F5] border border-[#EAE4D9] text-[#0F172A] flex items-center gap-2"
+                      className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#FAF7F2] dark:bg-slate-800/80 border border-[#E8DEC8] dark:border-slate-700 text-[#0F172A] dark:text-white flex items-center gap-2 shadow-xs"
                     >
                       <span>{sk.name}</span>
-                      <span className="text-[10px] text-[#0284C7] bg-[#E8F4FC] px-1.5 py-0.5 rounded-md font-bold">
+                      <span className="text-[10px] text-[#0284C7] dark:text-[#38BDF8] bg-[#E0F2FE]/70 dark:bg-sky-950/60 px-1.5 py-0.5 rounded-md font-bold">
                         {sk.category === 'TECHNICAL' ? 'تقنية' : 'ناعمة'}
                       </span>
                     </span>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-[#64748B]">لم يتم تسجيل مهارات إضافية في هذا الملف.</p>
+                <p className="text-xs text-[#6C4F3D] dark:text-slate-400">لم يتم تسجيل مهارات إضافية في هذا الملف.</p>
               )}
             </div>
 
             {/* 3. Projects Portfolio */}
-            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 sm:p-8 shadow-2xs">
-              <h2 className="text-lg font-black text-[#0F172A] mb-4">المشاريع البرمجية والنماذج العملية</h2>
+            <div className="glass-silk-card bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl rounded-3xl border border-[#E8DEC8] dark:border-slate-800 p-6 sm:p-8 shadow-sm">
+              <h2 className="text-lg font-black text-[#0F172A] dark:text-white mb-4">المشاريع البرمجية والنماذج العملية</h2>
               {candidate.projects && candidate.projects.length > 0 ? (
                 <div className="space-y-4">
                   {candidate.projects.map((proj, idx) => (
-                    <div key={idx} className="p-5 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9]">
+                    <div key={idx} className="p-5 rounded-2xl bg-[#FAF7F2] dark:bg-slate-800/60 border border-[#E8DEC8] dark:border-slate-700/80">
                       <div className="flex items-start justify-between gap-3 mb-2">
                         <div className="flex items-center gap-2">
-                          <h3 className="text-sm font-black text-[#0F172A]">{proj.title}</h3>
+                          <h3 className="text-sm font-black text-[#0F172A] dark:text-white">{proj.title}</h3>
                           {proj.is_graduation_project && (
-                            <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A] font-black flex items-center gap-1">
+                            <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 font-black flex items-center gap-1">
                               <span>🎓</span>
                               <span>مشروع تخرج نوعي موثق</span>
                             </span>
                           )}
                         </div>
                       </div>
-                      <p className="text-xs text-[#475569] mb-3 leading-relaxed">{proj.description}</p>
+                      <p className="text-xs text-[#6C4F3D] dark:text-slate-300 mb-3 leading-relaxed">{proj.description}</p>
                       <div className="flex flex-wrap items-center gap-3 text-xs">
-                        <span className="text-[11px] text-[#64748B] font-mono">
+                        <span className="text-[11px] text-[#6C4F3D] dark:text-slate-400 font-mono">
                           التقنيات: {proj.technologies}
                         </span>
                         {proj.github_url && (
@@ -323,7 +327,7 @@ export const CompanyCandidateProfilePage: React.FC = () => {
                             href={proj.github_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs font-bold text-[#0284C7] hover:underline flex items-center gap-1"
+                            className="text-xs font-bold text-[#0284C7] dark:text-[#38BDF8] hover:underline flex items-center gap-1"
                           >
                             <span>💻</span>
                             <span>مستودع GitHub ↗</span>
@@ -334,7 +338,7 @@ export const CompanyCandidateProfilePage: React.FC = () => {
                             href={proj.project_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs font-bold text-[#10B981] hover:underline"
+                            className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
                           >
                             معاينة حية للمشروع ↗
                           </a>
@@ -344,28 +348,28 @@ export const CompanyCandidateProfilePage: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-[#64748B]">لا توجد مشاريع مرفقة في ملف المرشح.</p>
+                <p className="text-xs text-[#6C4F3D] dark:text-slate-400">لا توجد مشاريع مرفقة في ملف المرشح.</p>
               )}
             </div>
 
             {/* 4. Video CV */}
-            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 sm:p-8 shadow-2xs">
-              <h2 className="text-lg font-black text-[#0F172A] mb-4">الفيديو التعريفي (Video CV)</h2>
+            <div className="glass-silk-card bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl rounded-3xl border border-[#E8DEC8] dark:border-slate-800 p-6 sm:p-8 shadow-sm">
+              <h2 className="text-lg font-black text-[#0F172A] dark:text-white mb-4">الفيديو التعريفي (Video CV)</h2>
               {candidate.video_cv_url && candidate.video_visibility !== 'PRIVATE' ? (
                 <div>
                   <video
                     controls
-                    className="w-full max-h-80 rounded-2xl bg-black"
+                    className="w-full max-h-80 rounded-2xl bg-black shadow-inner"
                     src={candidate.video_cv_url}
                   >
                     متصفحك لا يدعم تشغيل الفيديو.
                   </video>
-                  <p className="text-[11px] text-[#64748B] mt-2">
+                  <p className="text-[11px] text-[#6C4F3D] dark:text-slate-400 mt-2">
                     المدة: <bdi dir="ltr">{candidate.video_duration_seconds || 60} ثانية</bdi> • متاح للمنشآت المعتمدة
                   </p>
                 </div>
               ) : (
-                <div className="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] text-xs text-[#64748B]">
+                <div className="p-4 rounded-2xl bg-[#FAF7F2] dark:bg-slate-800/60 border border-[#E8DEC8] dark:border-slate-700 text-xs text-[#6C4F3D] dark:text-slate-400">
                   {candidate.video_visibility === 'PRIVATE'
                     ? '🔒 الفيديو التعريفي محدد كخاص بواسطة المرشح وغير متاح للعرض.'
                     : 'لم يقم المرشح برفع فيديو تعريفي بعد.'}
@@ -377,9 +381,9 @@ export const CompanyCandidateProfilePage: React.FC = () => {
           {/* Side Column (4 cols): Decision & Contact */}
           <div className="lg:col-span-4 space-y-6">
             {/* Decision Action Card */}
-            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 shadow-2xs sticky top-24">
-              <h2 className="text-base font-black text-[#0F172A] mb-1">قرار التوظيف بشأن الطلب</h2>
-              <p className="text-xs text-[#64748B] mb-5">
+            <div className="glass-silk-card bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl rounded-3xl border border-[#E8DEC8] dark:border-slate-800 p-6 shadow-sm sticky top-24">
+              <h2 className="text-base font-black text-[#0F172A] dark:text-white mb-1">قرار التوظيف بشأن الطلب</h2>
+              <p className="text-xs text-[#6C4F3D] dark:text-slate-400 mb-5">
                 تحديث حالة الطلب وإرسال إشعار رسمي فوري للمرشح
               </p>
 
@@ -390,8 +394,8 @@ export const CompanyCandidateProfilePage: React.FC = () => {
                   onClick={() => handleUpdateStatus('ACCEPTED')}
                   className={`w-full py-3 px-4 rounded-xl font-black text-xs transition flex items-center justify-center gap-2 cursor-pointer ${
                     candidate.status === 'ACCEPTED'
-                      ? 'bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2] cursor-default'
-                      : 'bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white shadow-xs'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 cursor-default'
+                      : 'bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:from-[#0369A1] hover:to-[#0284C7] text-white shadow-md hover:shadow-sky-500/20'
                   }`}
                 >
                   <span>{candidate.status === 'ACCEPTED' ? '✓ تم قبول الطلب (التواصل مفتوح)' : 'قبول الطلب'}</span>
@@ -403,8 +407,8 @@ export const CompanyCandidateProfilePage: React.FC = () => {
                   onClick={() => handleUpdateStatus('UNDER_REVIEW')}
                   className={`w-full py-3 px-4 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2 cursor-pointer ${
                     candidate.status === 'UNDER_REVIEW'
-                      ? 'bg-[#E8F4FC] text-[#0284C7] border border-[#BAE6FD] cursor-default'
-                      : 'bg-white hover:bg-[#F4EFE6]/60 text-[#0F172A] border border-[#EAE4D9]'
+                      ? 'bg-[#E0F2FE]/70 dark:bg-sky-950/50 text-[#0284C7] dark:text-[#38BDF8] border border-[#BAE6FD] dark:border-sky-800 cursor-default'
+                      : 'bg-[#FAF7F2] dark:bg-slate-800 hover:bg-[#E8DEC8]/30 dark:hover:bg-slate-700 text-[#0F172A] dark:text-white border border-[#E8DEC8] dark:border-slate-700'
                   }`}
                 >
                   <span>قيد المراجعة</span>
@@ -416,8 +420,8 @@ export const CompanyCandidateProfilePage: React.FC = () => {
                   onClick={() => handleUpdateStatus('REJECTED')}
                   className={`w-full py-3 px-4 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2 cursor-pointer ${
                     candidate.status === 'REJECTED'
-                      ? 'bg-rose-50 text-rose-800 border border-rose-200 cursor-default'
-                      : 'bg-rose-600 hover:bg-rose-700 text-white shadow-xs'
+                      ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800 cursor-default'
+                      : 'bg-rose-600 hover:bg-rose-700 text-white shadow-sm'
                   }`}
                 >
                   <span>رفض الطلب</span>
@@ -425,38 +429,38 @@ export const CompanyCandidateProfilePage: React.FC = () => {
               </div>
 
               {/* Contact Information (Gated by acceptance status) */}
-              <div className="mt-6 pt-6 border-t border-[#EAE4D9]">
-                <h3 className="text-xs font-black text-[#0F172A] mb-3">بيانات التواصل المباشر</h3>
+              <div className="mt-6 pt-6 border-t border-[#E8DEC8] dark:border-slate-800">
+                <h3 className="text-xs font-black text-[#0F172A] dark:text-white mb-3">بيانات التواصل المباشر</h3>
                 {candidate.status === 'ACCEPTED' ? (
                   <div className="space-y-3 text-xs">
-                    <div className="p-3.5 rounded-2xl bg-[#E8F8F2] border border-[#BDE8D2]">
+                    <div className="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/60">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-[#0D6E44] text-[11px] font-bold">قناة التواصل مفتوحة وموثقة:</span>
-                        <span className="text-[10px] bg-[#10B981] text-white px-2 py-0.5 rounded-full font-bold">مقبول ✓</span>
+                        <span className="text-emerald-800 dark:text-emerald-300 text-[11px] font-bold">قناة التواصل مفتوحة وموثقة:</span>
+                        <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">مقبول ✓</span>
                       </div>
                       <div className="space-y-2 mt-2">
                         {candidate.phone && (
                           <div className="flex items-center justify-between">
-                            <span className="text-[#64748B] font-medium">رقم الهاتف / واتساب:</span>
-                            <span className="font-bold text-[#0F172A] font-mono" dir="ltr">{candidate.phone}</span>
+                            <span className="text-[#6C4F3D] dark:text-slate-400 font-medium">رقم الهاتف / واتساب:</span>
+                            <span className="font-bold text-[#0F172A] dark:text-white font-mono" dir="ltr">{candidate.phone}</span>
                           </div>
                         )}
                         {candidate.email && (
                           <div className="flex items-center justify-between">
-                            <span className="text-[#64748B] font-medium">البريد المهني:</span>
-                            <span className="font-bold text-[#0F172A] font-mono" dir="ltr">{candidate.email}</span>
+                            <span className="text-[#6C4F3D] dark:text-slate-400 font-medium">البريد المهني:</span>
+                            <span className="font-bold text-[#0F172A] dark:text-white font-mono" dir="ltr">{candidate.email}</span>
                           </div>
                         )}
                       </div>
 
                       {/* Quick Action Buttons */}
-                      <div className="flex items-center gap-2 mt-3 pt-2.5 border-t border-[#BDE8D2]">
+                      <div className="flex items-center gap-2 mt-3 pt-2.5 border-t border-emerald-200/60 dark:border-emerald-850">
                         {candidate.phone && (
                           <a
                             href={`https://wa.me/${candidate.phone.replace(/[^0-9]/g, '')}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="flex-1 py-2 px-3 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-center transition flex items-center justify-center gap-1.5"
+                            className="flex-1 py-2 px-3 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-center transition flex items-center justify-center gap-1.5 shadow-xs"
                           >
                             <span>مراسلة واتساب</span>
                           </a>
@@ -464,7 +468,7 @@ export const CompanyCandidateProfilePage: React.FC = () => {
                         {candidate.email && (
                           <a
                             href={`mailto:${candidate.email}`}
-                            className="flex-1 py-2 px-3 rounded-xl bg-[#0284C7] hover:bg-[#0369A1] text-white font-bold text-center transition flex items-center justify-center gap-1.5"
+                            className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#0EA5E9] hover:from-[#0369A1] hover:to-[#0284C7] text-white font-bold text-center transition flex items-center justify-center gap-1.5 shadow-xs"
                           >
                             <span>إرسال بريد</span>
                           </a>
@@ -473,8 +477,8 @@ export const CompanyCandidateProfilePage: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="p-3.5 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] text-xs leading-relaxed text-[#64748B]">
-                    <div className="flex items-center gap-1.5 font-bold text-[#0F172A] mb-1.5">
+                  <div className="p-3.5 rounded-2xl bg-[#FAF7F2] dark:bg-slate-800/60 border border-[#E8DEC8] dark:border-slate-700 text-xs leading-relaxed text-[#6C4F3D] dark:text-slate-300">
+                    <div className="flex items-center gap-1.5 font-bold text-[#0F172A] dark:text-white mb-1.5">
                       <span>🔒</span>
                       <span>بيانات التواصل محمية</span>
                     </div>
@@ -486,22 +490,22 @@ export const CompanyCandidateProfilePage: React.FC = () => {
               </div>
 
               {/* Status Change Audit Log */}
-              <div className="mt-6 pt-6 border-t border-[#EAE4D9]">
-                <h3 className="text-xs font-black text-[#0F172A] mb-3">سجل القرارات التاريخي</h3>
+              <div className="mt-6 pt-6 border-t border-[#E8DEC8] dark:border-slate-800">
+                <h3 className="text-xs font-black text-[#0F172A] dark:text-white mb-3">سجل القرارات التاريخي</h3>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                   {statusHistory.length > 0 ? (
                     statusHistory.map((item) => (
-                      <div key={item.history_id} className="text-[11px] p-2.5 rounded-xl bg-[#FBF9F5] border border-[#EAE4D9]">
-                        <div className="font-bold text-[#0F172A]">
+                      <div key={item.history_id} className="text-[11px] p-2.5 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/60 border border-[#E8DEC8] dark:border-slate-700">
+                        <div className="font-bold text-[#0F172A] dark:text-white">
                           {item.new_status === 'ACCEPTED' ? 'قبول' : item.new_status === 'REJECTED' ? 'رفض' : 'قيد المراجعة'}
                         </div>
-                        <div className="text-[#94A3B8] font-mono text-[10px] mt-0.5">
+                        <div className="text-[#6C4F3D] dark:text-slate-400 font-mono text-[10px] mt-0.5">
                           <bdi dir="ltr">{new Date(item.changed_at).toLocaleString('ar-YE')}</bdi>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <span className="text-[11px] text-[#94A3B8]">لا توجد تحديثات سابقة مسجلة.</span>
+                    <span className="text-[11px] text-[#6C4F3D] dark:text-slate-400">لا توجد تحديثات سابقة مسجلة.</span>
                   )}
                 </div>
               </div>

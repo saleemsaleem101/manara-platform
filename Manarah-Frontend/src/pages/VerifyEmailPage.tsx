@@ -186,13 +186,19 @@ export const VerifyEmailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] flex flex-col justify-between font-['Cairo'] text-start text-[#0F172A]" dir="rtl">
+    <div className="min-h-screen bg-[#FDFBF7] dark:bg-[#0B1120] flex flex-col justify-between font-sans text-start text-[#0F172A] dark:text-white transition-colors duration-300 relative selection:bg-[#BAE6FD] selection:text-[#0284C7]" dir="rtl">
+      {/* Background Decorative Glow Auras */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#BAE6FD]/20 dark:bg-sky-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/3 left-10 w-96 h-96 bg-[#E8DEC8]/25 dark:bg-indigo-500/10 rounded-full blur-3xl" />
+      </div>
+
       {/* Top Bar */}
-      <header className="w-full bg-white/80 backdrop-blur-md border-b border-[#EAE4D9] px-6 sm:px-12 h-16 flex items-center justify-between text-xs sticky top-0 z-20">
+      <header className="w-full glass-silk-card bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-[#E8DEC8] dark:border-slate-800 px-6 sm:px-12 h-16 flex items-center justify-between text-xs sticky top-0 z-20">
         <div className="flex items-center gap-4">
           <BrandLogo size="sm" showSubline={false} />
-          <span className="text-slate-300">/</span>
-          <span className="text-[#0284C7] bg-[#E8F4FC] border border-[#BAE3F9] px-3 py-1 rounded-full font-bold text-[11px]">
+          <span className="text-[#E8DEC8] dark:text-slate-700">/</span>
+          <span className="text-[#0284C7] dark:text-[#38BDF8] bg-[#BAE6FD]/30 dark:bg-sky-950/50 border border-[#BAE6FD] dark:border-sky-800 px-3 py-1 rounded-full font-bold text-[11px]">
             تأكيد البريد الإلكتروني
           </span>
         </div>
@@ -200,13 +206,13 @@ export const VerifyEmailPage: React.FC = () => {
       </header>
 
       {/* Main Centered Card */}
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
-        <div className="w-full max-w-[560px] bg-white border border-[#EAE4D9] rounded-3xl shadow-2xs p-8 sm:p-12 text-center space-y-6">
+      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 relative z-10">
+        <div className="w-full max-w-[560px] glass-silk-card bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl border border-[#E8DEC8] dark:border-slate-800 rounded-3xl shadow-xl p-8 sm:p-12 text-center space-y-6">
           {/* Glowing Logo */}
           <div className="flex justify-center">
             <div className="relative">
-              <div className="absolute -inset-1.5 bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#10B981] rounded-2xl blur-xs opacity-75" />
-              <div className="relative w-14 h-14 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center p-2 border border-[#EAE4D9] shadow-xs">
+              <div className="absolute -inset-1.5 bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] rounded-2xl blur-xs opacity-75" />
+              <div className="relative w-14 h-14 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center p-2 border border-[#E8DEC8] dark:border-slate-800 shadow-sm">
                 <img src="/logo_trimmed.png" alt="منارة" className="w-full h-full object-contain" />
               </div>
             </div>
@@ -215,12 +221,12 @@ export const VerifyEmailPage: React.FC = () => {
           {/* Success State */}
           {verificationSuccess ? (
             <div className="space-y-5 transition-all duration-200">
-              <div className="w-16 h-16 rounded-full bg-[#E8F8F2] text-[#0D6E44] flex items-center justify-center text-3xl mx-auto ring-8 ring-[#BDE8D2]/40">
+              <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 flex items-center justify-center text-3xl mx-auto ring-8 ring-emerald-500/20">
                 ✓
               </div>
               <div>
-                <h2 className="text-2xl font-black text-[#0D6E44]">تم تفعيل الحساب بنجاح!</h2>
-                <p className="text-xs text-[#64748B] mt-2 leading-relaxed">
+                <h2 className="text-2xl font-black text-emerald-700 dark:text-emerald-400">تم تفعيل الحساب بنجاح!</h2>
+                <p className="text-xs text-[#6C4F3D] dark:text-slate-400 mt-2 leading-relaxed">
                   تم تأكيد بريدك الإلكتروني بنجاح وأصبح حسابك نشطاً بالكامل. جاري نقلك تلقائياً...
                 </p>
               </div>
@@ -233,7 +239,7 @@ export const VerifyEmailPage: React.FC = () => {
                     else if (uRole === 'COMPANY') navigate('/company/jobs')
                     else navigate('/profile')
                   }}
-                  className="inline-flex items-center justify-center w-full h-12 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white font-black text-sm transition shadow-xs cursor-pointer"
+                  className="inline-flex items-center justify-center w-full h-12 rounded-xl bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:from-[#0369A1] hover:to-[#0284C7] text-white font-black text-sm transition shadow-md shadow-sky-500/20 cursor-pointer"
                 >
                   المتابعة إلى لوحة التحكم ➔
                 </button>
@@ -242,26 +248,26 @@ export const VerifyEmailPage: React.FC = () => {
           ) : (
             /* Active OTP Verification Form */
             <div className="space-y-6">
-              <div className="w-16 h-16 rounded-full bg-[#E8F4FC] text-[#0284C7] flex items-center justify-center text-3xl mx-auto ring-8 ring-[#BAE6FD]/40">
+              <div className="w-16 h-16 rounded-full bg-[#BAE6FD]/30 dark:bg-sky-950/50 text-[#0284C7] dark:text-[#38BDF8] flex items-center justify-center text-3xl mx-auto ring-8 ring-[#BAE6FD]/20 dark:ring-sky-500/10">
                 ✉️
               </div>
 
               <div>
-                <h1 className="text-2xl font-black text-[#0F172A] tracking-tight">
+                <h1 className="text-2xl font-black text-[#0F172A] dark:text-white tracking-tight">
                   تأكيد وتفعيل البريد الإلكتروني
                 </h1>
-                <p className="text-xs text-[#64748B] mt-1.5 leading-relaxed">
+                <p className="text-xs text-[#6C4F3D] dark:text-slate-400 mt-1.5 leading-relaxed">
                   تم إرسال رمز التحقق المكون من 6 أرقام إلى:
                 </p>
 
                 {/* Target Email display / edit */}
                 {!isEditingEmail && targetEmail ? (
-                  <div className="mt-2.5 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F4EFE6] border border-[#EAE4D9]">
-                    <span className="text-xs font-mono font-bold text-[#0F172A]">{targetEmail}</span>
+                  <div className="mt-2.5 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FAF7F2] dark:bg-slate-800/80 border border-[#E8DEC8] dark:border-slate-700">
+                    <span className="text-xs font-mono font-bold text-[#0F172A] dark:text-white">{targetEmail}</span>
                     <button
                       type="button"
                       onClick={() => setIsEditingEmail(true)}
-                      className="text-[11px] text-[#0284C7] hover:text-[#0369A1] font-bold underline transition cursor-pointer"
+                      className="text-[11px] text-[#0284C7] dark:text-[#38BDF8] hover:underline font-bold transition cursor-pointer"
                     >
                       تغيير
                     </button>
@@ -272,14 +278,14 @@ export const VerifyEmailPage: React.FC = () => {
                       type="email"
                       value={targetEmail}
                       onChange={(e) => setTargetEmail(e.target.value)}
-                      placeholder=""
-                      className="flex-1 h-10 px-3.5 rounded-xl border border-[#CBD5E1] text-xs font-mono text-center focus:outline-none focus:border-[#0284C7] bg-[#FBF9F5] focus:bg-white text-[#0F172A]"
+                      placeholder="name@example.com"
+                      className="flex-1 h-10 px-3.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 text-xs font-mono text-center focus:outline-none focus:border-[#38BDF8] bg-[#FAF7F2] dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 text-[#0F172A] dark:text-white"
                     />
                     <button
                       type="button"
                       onClick={() => setIsEditingEmail(false)}
                       disabled={!targetEmail.trim()}
-                      className="h-10 px-3.5 rounded-xl bg-[#0F172A] text-white text-xs font-bold hover:bg-slate-900 transition disabled:bg-slate-300 cursor-pointer"
+                      className="h-10 px-4 rounded-xl bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] text-white text-xs font-bold hover:from-[#0369A1] hover:to-[#0284C7] transition disabled:opacity-40 cursor-pointer"
                     >
                       حفظ
                     </button>
@@ -289,19 +295,19 @@ export const VerifyEmailPage: React.FC = () => {
 
               {/* Error Message */}
               {verificationError && (
-                <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs font-bold text-center">
+                <div className="p-3.5 bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-400 rounded-xl text-xs font-bold text-center">
                   ⚠️ {verificationError}
                 </div>
               )}
 
               {/* Resend Feedback */}
               {resendMessage && (
-                <div className="p-3 bg-[#E8F8F2] border border-[#BDE8D2] text-[#0D6E44] rounded-xl text-xs font-bold">
+                <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 rounded-xl text-xs font-bold">
                   ✓ {resendMessage}
                 </div>
               )}
               {resendError && (
-                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs font-bold">
+                <div className="p-3 bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-400 rounded-xl text-xs font-bold">
                   ⚠️ {resendError}
                 </div>
               )}
@@ -309,7 +315,7 @@ export const VerifyEmailPage: React.FC = () => {
               {/* OTP Form */}
               <form onSubmit={handleVerifySubmit} className="space-y-4 pt-1">
                 <div className="space-y-2">
-                  <label className="block text-xs font-bold text-[#0F172A]">
+                  <label className="block text-xs font-bold text-[#0F172A] dark:text-slate-200">
                     أدخل رمز التحقق (OTP) المكون من 6 أرقام:
                   </label>
                   <input
@@ -325,14 +331,14 @@ export const VerifyEmailPage: React.FC = () => {
                       if (verificationError) setVerificationError('')
                     }}
                     placeholder="• • • • • •"
-                    className="w-full h-14 text-center font-mono text-2xl tracking-[0.4em] font-black rounded-2xl border-2 border-[#CBD5E1] focus:border-[#0284C7] focus:bg-white bg-[#FBF9F5] text-[#0F172A] focus:outline-none transition shadow-2xs placeholder:text-slate-300"
+                    className="w-full h-14 text-center font-mono text-2xl tracking-[0.4em] font-black rounded-2xl border-2 border-[#E8DEC8] dark:border-slate-700 focus:border-[#38BDF8] focus:bg-white dark:focus:bg-slate-900 bg-[#FAF7F2] dark:bg-slate-800 text-[#0F172A] dark:text-white focus:outline-none transition shadow-sm placeholder:text-[#6C4F3D]/30 dark:placeholder:text-slate-600"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isVerifying || code.trim().length !== 6 || !targetEmail.trim()}
-                  className="w-full h-12 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] disabled:opacity-50 text-white font-black text-sm transition flex items-center justify-center gap-2 shadow-xs cursor-pointer disabled:cursor-not-allowed"
+                  className="w-full h-12 rounded-xl bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:from-[#0369A1] hover:to-[#0284C7] disabled:opacity-50 text-white font-black text-sm transition flex items-center justify-center gap-2 shadow-md shadow-sky-500/20 cursor-pointer disabled:cursor-not-allowed"
                 >
                   {isVerifying ? (
                     <>
@@ -346,10 +352,10 @@ export const VerifyEmailPage: React.FC = () => {
               </form>
 
               {/* 10-Minute Expiration Notice */}
-              <div className="p-3.5 rounded-2xl bg-[#F4EFE6] border border-[#EAE4D9] text-start flex items-center gap-3">
-                <span className="text-lg text-[#0284C7]">⏱️</span>
-                <div className="text-[11px] text-[#475569] leading-relaxed font-semibold">
-                  <span className="font-bold text-[#0F172A] ms-1">صلاحية الرمز: 10 دقائق.</span>
+              <div className="p-3.5 rounded-2xl bg-[#FAF7F2] dark:bg-slate-800/60 border border-[#E8DEC8] dark:border-slate-700 text-start flex items-center gap-3">
+                <span className="text-lg text-[#0284C7] dark:text-[#38BDF8]">⏱️</span>
+                <div className="text-[11px] text-[#6C4F3D] dark:text-slate-300 leading-relaxed font-semibold">
+                  <span className="font-bold text-[#0F172A] dark:text-white ms-1">صلاحية الرمز: 10 دقائق.</span>
                   إذا لم تجد الرسالة في صندوق الوارد، يرجى تفقد مجلد الرسائل غير المرغوب فيها (Spam / Junk).
                 </div>
               </div>
@@ -359,9 +365,9 @@ export const VerifyEmailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleOpenMailClient}
-                  className="w-full h-11 rounded-xl bg-[#FBF9F5] hover:bg-[#F4EFE6] border border-[#EAE4D9] text-[#0F172A] font-bold text-xs transition flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full h-11 rounded-xl bg-[#FAF7F2] dark:bg-slate-800 hover:bg-[#E8DEC8]/40 dark:hover:bg-slate-700 border border-[#E8DEC8] dark:border-slate-700 text-[#0F172A] dark:text-white font-bold text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                 >
-                  <svg className="w-4 h-4 text-[#0284C7]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-[#0284C7] dark:text-[#38BDF8]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                   <span>فتح صندوق البريد الوارد</span>
@@ -369,12 +375,12 @@ export const VerifyEmailPage: React.FC = () => {
 
                 {/* Resend Link with 60s Countdown */}
                 <div className="flex items-center justify-between text-xs pt-1 px-1">
-                  <span className="text-[#64748B] font-medium">لم يصلك الرمز؟</span>
+                  <span className="text-[#6C4F3D] dark:text-slate-400 font-medium">لم يصلك الرمز؟</span>
                   <button
                     type="button"
                     disabled={resendTimer > 0 || isResending}
                     onClick={handleResend}
-                    className="text-[#0284C7] hover:text-[#0369A1] disabled:text-slate-400 font-bold transition cursor-pointer disabled:cursor-not-allowed"
+                    className="text-[#0284C7] dark:text-[#38BDF8] hover:text-[#0369A1] disabled:text-slate-400 font-bold transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     {isResending
                       ? 'جاري الإرسال...'
@@ -386,17 +392,17 @@ export const VerifyEmailPage: React.FC = () => {
               </div>
 
               {/* Secondary options */}
-              <div className="pt-4 border-t border-[#EAE4D9] flex items-center justify-center gap-4 text-xs">
+              <div className="pt-4 border-t border-[#E8DEC8] dark:border-slate-800 flex items-center justify-center gap-4 text-xs">
                 <Link
                   to="/register"
-                  className="text-[#64748B] hover:text-[#0F172A] font-semibold transition"
+                  className="text-[#6C4F3D] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white font-semibold transition"
                 >
                   تسجيل حساب جديد
                 </Link>
-                <span className="text-slate-300">•</span>
+                <span className="text-[#E8DEC8] dark:text-slate-700">•</span>
                 <Link
                   to="/login"
-                  className="text-[#64748B] hover:text-[#0F172A] font-semibold transition"
+                  className="text-[#6C4F3D] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white font-semibold transition"
                 >
                   العودة لتسجيل الدخول
                 </Link>
@@ -407,7 +413,7 @@ export const VerifyEmailPage: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="py-4 text-center text-[11px] text-[#64748B]">
+      <footer className="py-4 text-center text-[11px] text-[#6C4F3D] dark:text-slate-400 relative z-10">
         جميع الحقوق محفوظة © منصة منارة 2026
       </footer>
     </div>

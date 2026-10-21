@@ -26,45 +26,45 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   if (!isOpen) return null
 
   const confirmColor = {
-    danger: 'bg-rose-600 hover:bg-rose-700 text-white',
-    warning: 'bg-amber-500 hover:bg-amber-600 text-slate-950',
-    primary: 'bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white',
+    danger: 'bg-rose-600 hover:bg-rose-700 text-white shadow-xs',
+    warning: 'bg-amber-500 hover:bg-amber-600 text-slate-950 shadow-xs',
+    primary: 'bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:brightness-105 text-white shadow-xs',
   }[variant]
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/50 backdrop-blur-xs font-['Cairo'] text-start"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md font-['Cairo'] text-start animate-fadeIn"
       dir="rtl"
       onClick={onCancel}
     >
       <div
-        className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#EAE4D9] space-y-4 transition-all duration-150"
+        className="relative w-full max-w-md bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#E8DEC8] dark:border-slate-800 space-y-4 transition-all duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start gap-4">
           <div
-            className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-xl ${
+            className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-xl border ${
               variant === 'danger'
-                ? 'bg-rose-100 text-rose-600'
+                ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-600 border-rose-200 dark:border-rose-900/40'
                 : variant === 'warning'
-                ? 'bg-amber-100 text-amber-700'
-                : 'bg-blue-100 text-blue-700'
+                ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 border-amber-200 dark:border-amber-900/40'
+                : 'bg-[#E0F2FE] dark:bg-sky-950/50 text-[#0284C7] dark:text-[#38BDF8] border-[#BAE6FD] dark:border-sky-500/40'
             }`}
           >
             {variant === 'danger' ? '🗑️' : variant === 'warning' ? '⚠️' : 'ℹ️'}
           </div>
           <div className="flex-1 space-y-1">
-            <h3 className="text-base sm:text-lg font-black text-[#0F172A]">{title}</h3>
-            <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">{message}</p>
+            <h3 className="text-base sm:text-lg font-black text-[#0F172A] dark:text-white">{title}</h3>
+            <p className="text-xs sm:text-sm text-[#64748B] dark:text-slate-400 leading-relaxed">{message}</p>
           </div>
         </div>
 
-        <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+        <div className="pt-3 border-t border-[#E8DEC8] dark:border-slate-800 flex items-center justify-end gap-3">
           <button
             type="button"
             disabled={isLoading}
             onClick={onCancel}
-            className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs hover:bg-slate-50 transition cursor-pointer"
+            className="px-4 py-2.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-white dark:bg-slate-800 text-[#475569] dark:text-slate-300 font-bold text-xs hover:bg-[#FAF7F2] dark:hover:bg-slate-700 transition cursor-pointer"
           >
             {cancelLabel}
           </button>
@@ -72,7 +72,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             type="button"
             disabled={isLoading}
             onClick={onConfirm}
-            className={`px-5 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 shadow-xs cursor-pointer ${confirmColor}`}
+            className={`px-5 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 cursor-pointer ${confirmColor}`}
           >
             {isLoading && (
               <span className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />

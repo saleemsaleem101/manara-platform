@@ -153,32 +153,32 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] text-[#0F172A] font-sans" dir="rtl">
+    <div className="min-h-screen bg-[#FDFBF7] dark:bg-[#0B1120] text-[#0F172A] dark:text-slate-100 font-sans transition-colors duration-300" dir="rtl">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Breadcrumbs */}
         <div className="mb-8">
-          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-2 font-medium">
-            <Link to="/company/jobs" className="hover:text-[#0284C7] transition">
+          <div className="flex items-center gap-2 text-xs text-[#64748B] dark:text-slate-400 mb-2 font-medium">
+            <Link to="/company/jobs" className="hover:text-[#0284C7] dark:hover:text-sky-400 transition">
               وظائفي
             </Link>
             <span>/</span>
-            <span className="text-[#0284C7] font-bold">المتقدمون وفرز التوافق</span>
+            <span className="text-[#0284C7] dark:text-sky-400 font-bold">المتقدمون وفرز التوافق</span>
           </div>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-[#0F172A]">
+              <h1 className="text-2xl sm:text-3xl font-black text-[#0F172A] dark:text-white">
                 المتقدمون وترتيب التوافق الموزون
               </h1>
-              <p className="text-[#64748B] text-xs sm:text-sm mt-1">
+              <p className="text-[#64748B] dark:text-slate-400 text-xs sm:text-sm mt-1">
                 فرز وترتيب المتقدمين وفق درجات التطابق الموزونة وسجل القرارات
               </p>
             </div>
             <div className="flex items-center gap-3">
               <Link
                 to="/company/jobs/new"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white font-black text-xs transition shadow-xs"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:from-[#0369A1] hover:to-[#0284C7] text-white font-black text-xs transition shadow-sm"
               >
                 + نشر شاغر جديد
               </Link>
@@ -191,15 +191,15 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
           <div
             className={`mb-6 p-4 rounded-2xl flex items-center justify-between text-sm font-bold shadow-2xs ${
               feedbackMsg.type === 'success'
-                ? 'bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2]'
-                : 'bg-rose-50 text-rose-800 border border-rose-200'
+                ? 'bg-[#E0F2FE] dark:bg-sky-950/60 text-[#0284C7] dark:text-sky-300 border border-[#BAE6FD] dark:border-sky-800'
+                : 'bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-900'
             }`}
           >
             <span>{feedbackMsg.text}</span>
             <button
               type="button"
               onClick={() => setFeedbackMsg(null)}
-              className="text-xs text-slate-400 hover:text-slate-700 font-normal px-2 py-1 cursor-pointer"
+              className="text-xs text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-normal px-2 py-1 cursor-pointer"
             >
               إغلاق
             </button>
@@ -207,18 +207,18 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
         )}
 
         {/* Top Filter & Job Switcher */}
-        <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 shadow-2xs mb-8">
+        <div className="glass-silk-card bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl rounded-3xl border border-[#E8DEC8] dark:border-slate-800 p-6 shadow-sm mb-8 transition-all">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
             {/* Job Select Dropdown */}
             <div className="md:col-span-5">
-              <label htmlFor="job-select-dropdown" className="block text-xs font-bold text-[#475569] mb-1.5">
+              <label htmlFor="job-select-dropdown" className="block text-xs font-bold text-[#475569] dark:text-slate-300 mb-1.5">
                 الشاغر الوظيفي المستهدف:
               </label>
               <select
                 id="job-select-dropdown"
                 value={selectedJobId || ''}
                 onChange={(e) => setSelectedJobId(Number(e.target.value))}
-                className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-sm font-bold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
+                className="w-full px-4 py-2.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-sm font-bold text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8] transition"
               >
                 {jobs.map((j) => (
                   <option key={j.id} value={j.id}>
@@ -230,14 +230,14 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
 
             {/* Sort Select */}
             <div className="md:col-span-4">
-              <label htmlFor="sort-by-select" className="block text-xs font-bold text-[#475569] mb-1.5">
+              <label htmlFor="sort-by-select" className="block text-xs font-bold text-[#475569] dark:text-slate-300 mb-1.5">
                 ترتيب المتقدمين:
               </label>
               <select
                 id="sort-by-select"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'MATCH_SCORE' | 'NEWEST')}
-                className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs font-bold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
+                className="w-full px-4 py-2.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-xs font-bold text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8] transition"
               >
                 <option value="MATCH_SCORE">الأعلى نسبة توافق (تنازلياً)</option>
                 <option value="NEWEST">الأحدث تقديماً</option>
@@ -246,14 +246,14 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
 
             {/* Status Filter */}
             <div className="md:col-span-3">
-              <label htmlFor="status-filter-select" className="block text-xs font-bold text-[#475569] mb-1.5">
+              <label htmlFor="status-filter-select" className="block text-xs font-bold text-[#475569] dark:text-slate-300 mb-1.5">
                 تصفية الحالة:
               </label>
               <select
                 id="status-filter-select"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs font-bold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
+                className="w-full px-4 py-2.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-xs font-bold text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8] transition"
               >
                 <option value="الكل">الكل ({applications.length})</option>
                 <option value="UNDER_REVIEW">قيد المراجعة</option>
@@ -267,11 +267,11 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
         {/* Candidates List */}
         <div className="space-y-4 mb-12">
           {isLoading ? (
-            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-12 text-center shadow-2xs">
+            <div className="glass-silk-card bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl rounded-3xl border border-[#E8DEC8] dark:border-slate-800 p-12 text-center shadow-sm">
               <LoadingState message="جاري تحميل وترتيب المتقدمين وفق درجات التوافق..." />
             </div>
           ) : filteredApplications.length === 0 ? (
-            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-12 text-center shadow-2xs">
+            <div className="glass-silk-card bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl rounded-3xl border border-[#E8DEC8] dark:border-slate-800 p-12 text-center shadow-sm">
               <EmptyState
                 title="لا يوجد متقدمون يطابقون المعايير المحددة"
                 description="لم يتم تسجيل طلبات تقديم مطابقة لشروط التصفية أو أن الشاغر لم يستقبل متقدمين بعد."
@@ -286,10 +286,10 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
 
               // النطاق القياسي الموحد (Standard Score Range) وفق توجيهات لجنة المناقشة
               const rangeInfo = scorePct >= 80
-                ? { label: 'تطابق فائق (Highly Recommended)', badge: '⭐ ممتاز (80% - 100%)', color: 'text-[#0D6E44] bg-[#E8F8F2] border-[#BDE8D2]' }
+                ? { label: 'تطابق فائق (Highly Recommended)', badge: '⭐ ممتاز (80% - 100%)', color: 'text-[#0284C7] dark:text-sky-300 bg-[#E0F2FE] dark:bg-sky-950/60 border-[#BAE6FD] dark:border-sky-800' }
                 : scorePct >= 60
-                ? { label: 'موصى به (Recommended)', badge: '✓ موصى به (60% - 79%)', color: 'text-[#0284C7] bg-[#E8F4FC] border-[#BAE6FD]' }
-                : { label: 'تطابق جزئي (Potential Match)', badge: 'دون 60%', color: 'text-[#64748B] bg-[#F1F5F9] border-[#CBD5E1]' }
+                ? { label: 'موصى به (Recommended)', badge: '✓ موصى به (60% - 79%)', color: 'text-[#0284C7] dark:text-sky-300 bg-[#E0F2FE] dark:bg-sky-950/60 border-[#BAE6FD] dark:border-sky-800' }
+                : { label: 'تطابق جزئي (Potential Match)', badge: 'دون 60%', color: 'text-[#64748B] dark:text-slate-400 bg-[#FAF7F2] dark:bg-slate-800 border-[#E8DEC8] dark:border-slate-700' }
 
               const isZeroExp = !app.applicant_experience || app.applicant_experience === '0' || app.applicant_experience.includes('حديث') || app.applicant_experience.includes('بدون')
               const isAccepted = app.status === 'ACCEPTED'
@@ -297,27 +297,27 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
               return (
                 <div
                   key={app.id}
-                  className="bg-white rounded-3xl border border-[#EAE4D9] p-6 sm:p-7 shadow-2xs hover:border-[#BAE6FD] transition"
+                  className="glass-silk-card bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl rounded-3xl border border-[#E8DEC8] dark:border-slate-800 p-6 sm:p-7 shadow-sm hover:border-[#BAE6FD] dark:hover:border-sky-800 transition"
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
                     {/* Col 1: Basic Info & Project Strengths (4 cols) */}
                     <div className="lg:col-span-4 flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-[#E8F4FC] text-[#0284C7] border border-[#BAE6FD] font-mono font-black text-lg flex items-center justify-center shrink-0 shadow-2xs">
+                      <div className="w-12 h-12 rounded-2xl bg-[#E0F2FE] dark:bg-sky-950/60 text-[#0284C7] dark:text-sky-300 border border-[#BAE6FD] dark:border-sky-800 font-mono font-black text-lg flex items-center justify-center shrink-0 shadow-2xs">
                         <bdi dir="ltr">#{index + 1}</bdi>
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-1.5 mb-1">
-                          <h3 className="text-base font-black text-[#0F172A] truncate">
+                          <h3 className="text-base font-black text-[#0F172A] dark:text-white truncate">
                             {app.applicant_name}
                           </h3>
                           <span className={`text-[10px] px-2 py-0.5 rounded-full border font-black ${rangeInfo.color}`}>
                             {rangeInfo.badge}
                           </span>
                         </div>
-                        <p className="text-xs text-[#64748B] font-medium">
+                        <p className="text-xs text-[#64748B] dark:text-slate-400 font-medium">
                           {app.applicant_specialization} • {app.applicant_university}
                         </p>
-                        <div className="flex items-center gap-2 text-[11px] text-[#64748B] mt-2 font-mono">
+                        <div className="flex items-center gap-2 text-[11px] text-[#64748B] dark:text-slate-400 mt-2 font-mono">
                           <span>الخبرة: {app.applicant_experience || 'حديث تخرج'}</span>
                           <span>•</span>
                           <span>المعدل: <bdi dir="ltr">{app.applicant_gpa || '90%'}</bdi></span>
@@ -326,7 +326,7 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
                         {/* شارات إثبات القوة العملية ومشاريع GitHub والتخرج */}
                         <div className="flex flex-wrap gap-1.5 mt-2.5">
                           {(app.has_graduation_project || (app.projects_count && app.projects_count > 0)) && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A] font-bold flex items-center gap-1">
+                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#FEF3C7] dark:bg-amber-950/60 text-[#92400E] dark:text-amber-300 border border-[#FDE68A] dark:border-amber-800 font-bold flex items-center gap-1">
                               <span>🎓</span>
                               <span>{app.graduation_project_title ? `مشروع: ${app.graduation_project_title.slice(0, 22)}...` : 'مشروع تخرج نوعي'}</span>
                             </span>
@@ -338,7 +338,7 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
                               target="_blank"
                               rel="noreferrer"
                               onClick={(e) => e.stopPropagation()}
-                              className="text-[10px] px-2 py-0.5 rounded-md bg-[#0F172A] text-white hover:bg-slate-800 font-bold flex items-center gap-1 transition"
+                              className="text-[10px] px-2 py-0.5 rounded-md bg-[#0F172A] dark:bg-slate-800 text-white hover:bg-slate-800 font-bold flex items-center gap-1 transition"
                             >
                               <span>💻</span>
                               <span>GitHub ↗</span>
@@ -346,14 +346,14 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
                           )}
 
                           {app.has_video_cv && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2] font-black flex items-center gap-1">
+                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#E0F2FE] dark:bg-sky-950/60 text-[#0284C7] dark:text-sky-300 border border-[#BAE6FD] dark:border-sky-800 font-black flex items-center gap-1">
                               <span>🎥</span>
                               <span>فيديو موثق</span>
                             </span>
                           )}
 
                           {isZeroExp && (app.has_graduation_project || app.has_github || (app.projects_count && app.projects_count > 0)) && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#E8F4FC] text-[#0284C7] border border-[#BAE6FD] font-bold">
+                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#E0F2FE] dark:bg-sky-950/60 text-[#0284C7] dark:text-sky-300 border border-[#BAE6FD] dark:border-sky-800 font-bold">
                               ✨ كفاءة مشاريع برمجية
                             </span>
                           )}
@@ -362,39 +362,39 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
                     </div>
 
                     {/* Col 2: Score Breakdown (4 cols) */}
-                    <div className="lg:col-span-4 border-y lg:border-y-0 lg:border-x border-[#EAE4D9] py-4 lg:py-0 lg:px-6">
-                      <div className="flex items-center justify-between text-xs font-bold text-[#475569] mb-2">
+                    <div className="lg:col-span-4 border-y lg:border-y-0 lg:border-x border-[#E8DEC8] dark:border-slate-800 py-4 lg:py-0 lg:px-6">
+                      <div className="flex items-center justify-between text-xs font-bold text-[#475569] dark:text-slate-300 mb-2">
                         <span>تفصيل معايير التوافق (المعادلة الموزونة):</span>
                         <button
                           type="button"
                           onClick={() => setMatchModalApp(app)}
-                          className="text-[11px] text-[#0284C7] hover:text-[#0369A1] font-black cursor-pointer"
+                          className="text-[11px] text-[#0284C7] dark:text-sky-400 hover:text-[#0369A1] font-black cursor-pointer"
                         >
                           المعادلة ↗
                         </button>
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div className="p-2 rounded-xl bg-[#FBF9F5] border border-[#EAE4D9]">
-                          <span className="text-[#64748B] text-[11px] block font-semibold">المهارات (جاكارد):</span>
-                          <span className="font-bold text-[#0F172A] font-mono">
+                        <div className="p-2 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/70 border border-[#E8DEC8] dark:border-slate-700">
+                          <span className="text-[#64748B] dark:text-slate-400 text-[11px] block font-semibold">المهارات:</span>
+                          <span className="font-bold text-[#0F172A] dark:text-white font-mono">
                             <bdi dir="ltr">{getBreakdownScore(app.score_breakdown?.skills_score, 45)}/45</bdi>
                           </span>
                         </div>
-                        <div className="p-2 rounded-xl bg-[#FBF9F5] border border-[#EAE4D9]">
-                          <span className="text-[#64748B] text-[11px] block font-semibold">التخصص الأكاديمي:</span>
-                          <span className="font-bold text-[#0F172A] font-mono">
+                        <div className="p-2 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/70 border border-[#E8DEC8] dark:border-slate-700">
+                          <span className="text-[#64748B] dark:text-slate-400 text-[11px] block font-semibold">التخصص الأكاديمي:</span>
+                          <span className="font-bold text-[#0F172A] dark:text-white font-mono">
                             <bdi dir="ltr">{getBreakdownScore(app.score_breakdown?.specialization_score, 25)}/25</bdi>
                           </span>
                         </div>
-                        <div className="p-2 rounded-xl bg-[#FBF9F5] border border-[#EAE4D9]">
-                          <span className="text-[#64748B] text-[11px] block font-semibold">الخبرة / المشاريع:</span>
-                          <span className="font-bold text-[#0F172A] font-mono">
+                        <div className="p-2 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/70 border border-[#E8DEC8] dark:border-slate-700">
+                          <span className="text-[#64748B] dark:text-slate-400 text-[11px] block font-semibold">الخبرة / المشاريع:</span>
+                          <span className="font-bold text-[#0F172A] dark:text-white font-mono">
                             <bdi dir="ltr">{getBreakdownScore(app.score_breakdown?.experience_score, 20)}/20</bdi>
                           </span>
                         </div>
-                        <div className="p-2 rounded-xl bg-[#FBF9F5] border border-[#EAE4D9]">
-                          <span className="text-[#64748B] text-[11px] block font-semibold">المؤهل والدرجة:</span>
-                          <span className="font-bold text-[#0F172A] font-mono">
+                        <div className="p-2 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/70 border border-[#E8DEC8] dark:border-slate-700">
+                          <span className="text-[#64748B] dark:text-slate-400 text-[11px] block font-semibold">المؤهل والدرجة:</span>
+                          <span className="font-bold text-[#0F172A] dark:text-white font-mono">
                             <bdi dir="ltr">{getBreakdownScore(app.score_breakdown?.qualification_score, 10)}/10</bdi>
                           </span>
                         </div>
@@ -405,30 +405,30 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
                     <div className="lg:col-span-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                       {/* Overall Match Score */}
                       <div className="text-center sm:text-start">
-                        <div className="text-[11px] font-bold text-[#64748B] mb-1">نسبة التوافق الموزونة:</div>
+                        <div className="text-[11px] font-bold text-[#64748B] dark:text-slate-400 mb-1">نسبة التوافق الموزونة:</div>
                         <div className="flex items-center gap-2">
                           <span
                             className={`text-2xl font-black font-mono ${
                               scorePct >= 80
-                                ? 'text-[#0D6E44]'
+                                ? 'text-[#0284C7] dark:text-sky-400'
                                 : scorePct >= 60
-                                ? 'text-[#0284C7]'
-                                : 'text-slate-600'
+                                ? 'text-[#0284C7] dark:text-sky-400'
+                                : 'text-slate-600 dark:text-slate-400'
                             }`}
                           >
                             <bdi dir="ltr">{scorePct}%</bdi>
                           </span>
                           {isBelowMin ? (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold">
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900 font-bold">
                               دون الحد الأدنى
                             </span>
                           ) : (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2] font-black">
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#E0F2FE] dark:bg-sky-950/60 text-[#0284C7] dark:text-sky-300 border border-[#BAE6FD] dark:border-sky-800 font-black">
                               مستوفٍ للشروط
                             </span>
                           )}
                         </div>
-                        <span className="text-[10px] text-[#64748B] font-medium block mt-1">
+                        <span className="text-[10px] text-[#64748B] dark:text-slate-400 font-medium block mt-1">
                           {rangeInfo.label}
                         </span>
                       </div>
@@ -442,10 +442,10 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
                           onChange={(e) => handleStatusChange(app.id, e.target.value as 'UNDER_REVIEW' | 'ACCEPTED' | 'REJECTED')}
                           className={`w-full text-xs font-black px-3 py-2 rounded-xl border focus:outline-none transition ${
                             app.status === 'ACCEPTED'
-                              ? 'bg-[#E8F8F2] border-[#BDE8D2] text-[#0D6E44]'
+                              ? 'bg-[#E0F2FE] dark:bg-sky-950/60 border-[#BAE6FD] dark:border-sky-800 text-[#0284C7] dark:text-sky-300'
                               : app.status === 'REJECTED'
-                              ? 'bg-rose-50 border-rose-200 text-rose-800'
-                              : 'bg-[#E8F4FC] border-[#BAE6FD] text-[#0284C7]'
+                              ? 'bg-rose-50 dark:bg-rose-950/60 border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-300'
+                              : 'bg-[#FAF7F2] dark:bg-slate-800 border-[#E8DEC8] dark:border-slate-700 text-[#0284C7] dark:text-sky-300'
                           }`}
                         >
                           <option value="UNDER_REVIEW">قيد المراجعة ▾</option>
@@ -480,7 +480,7 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
                         {/* Link to Candidate Profile */}
                         <Link
                           to={`/company/applications/${app.id}`}
-                          className="w-full text-xs font-bold text-[#0F172A] bg-white hover:bg-[#F4EFE6]/60 border border-[#EAE4D9] py-1.5 px-3 rounded-xl transition block text-center shadow-2xs"
+                          className="w-full text-xs font-bold text-[#0F172A] dark:text-white bg-[#FAF7F2] dark:bg-slate-800 hover:bg-[#E5D7C3]/50 dark:hover:bg-slate-700 border border-[#E8DEC8] dark:border-slate-700 py-1.5 px-3 rounded-xl transition block text-center shadow-2xs"
                         >
                           عرض الملف الكامل ➔
                         </Link>
@@ -494,14 +494,14 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
         </div>
 
         {/* Audit Log Section */}
-        <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 sm:p-8 shadow-2xs">
-          <div className="flex items-center gap-3 border-b border-[#EAE4D9] pb-4 mb-4">
-            <div className="w-8 h-8 rounded-xl bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2] flex items-center justify-center text-sm font-black">
+        <div className="glass-silk-card bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl rounded-3xl border border-[#E8DEC8] dark:border-slate-800 p-6 sm:p-8 shadow-sm transition-all">
+          <div className="flex items-center gap-3 border-b border-[#E8DEC8] dark:border-slate-800 pb-4 mb-4">
+            <div className="w-8 h-8 rounded-xl bg-[#E0F2FE] dark:bg-sky-950/60 text-[#0284C7] dark:text-sky-300 border border-[#BAE6FD] dark:border-sky-800 flex items-center justify-center text-sm font-black">
               ✓
             </div>
             <div>
-              <h2 className="text-base font-black text-[#0F172A]">سجل تحديث حالات المتقدمين</h2>
-              <p className="text-xs text-[#64748B]">توثيق تاريخي لكل قرار اتخذه مسؤول التوظيف مع التوقيت المعتمد</p>
+              <h2 className="text-base font-black text-[#0F172A] dark:text-white">سجل تحديث حالات المتقدمين</h2>
+              <p className="text-xs text-[#64748B] dark:text-slate-400">توثيق تاريخي لكل قرار اتخذه مسؤول التوظيف مع التوقيت المعتمد</p>
             </div>
           </div>
 
@@ -523,16 +523,16 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
                 return (
                   <div
                     key={log.history_id}
-                    className="p-3.5 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] flex items-start gap-3 text-xs"
+                    className="p-3.5 rounded-2xl bg-[#FAF7F2] dark:bg-slate-800/70 border border-[#E8DEC8] dark:border-slate-700 flex items-start gap-3 text-xs"
                   >
                     <span className="w-2 h-2 rounded-full bg-[#0284C7] mt-1.5 shrink-0" />
                     <div className="flex-1">
-                      <p className="text-[#475569]">
+                      <p className="text-[#475569] dark:text-slate-300">
                         تم تحديث حالة الطلب <bdi dir="ltr">#{log.application}</bdi> من ({statusLabels[log.previous_status] || log.previous_status}) إلى (
-                        <span className="font-black text-[#0F172A]">{statusLabels[log.new_status] || log.new_status}</span>
-                        ) بواسطة مسؤول التوظيف <span className="text-[#0F172A] font-black">{log.changed_by_name || 'مسؤول التوظيف'}</span>.
+                        <span className="font-black text-[#0F172A] dark:text-white">{statusLabels[log.new_status] || log.new_status}</span>
+                        ) بواسطة مسؤول التوظيف <span className="text-[#0F172A] dark:text-white font-black">{log.changed_by_name || 'مسؤول التوظيف'}</span>.
                       </p>
-                      <span className="text-[10px] text-[#94A3B8] font-mono mt-0.5 block">
+                      <span className="text-[10px] text-[#94A3B8] dark:text-slate-400 font-mono mt-0.5 block">
                         <bdi dir="ltr">{formattedDate}</bdi>
                       </span>
                     </div>
@@ -540,7 +540,7 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
                 )
               })
             ) : (
-              <div className="text-xs text-[#64748B] p-3 rounded-xl bg-[#FBF9F5] border border-[#EAE4D9]">
+              <div className="text-xs text-[#64748B] dark:text-slate-400 p-3 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/50 border border-[#E8DEC8] dark:border-slate-700">
                 • يتم توثيق قرارات مسؤولي التوظيف لحظياً في السجل التاريخي للطلبات.
               </div>
             )}

@@ -72,19 +72,22 @@ export const RegisterPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] flex flex-col justify-between" dir="rtl">
+    <div className="min-h-screen bg-[#FDFBF7] dark:bg-[#0B1120] flex flex-col justify-between relative overflow-hidden" dir="rtl">
+      {/* Background Silk Ambient Glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(186,230,253,0.35),transparent_70%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(2,132,199,0.2),transparent_70%)] pointer-events-none" />
+
       {/* Top Bar */}
-      <header className="w-full bg-white/90 backdrop-blur-md border-b border-[#EAE4D9] px-6 sm:px-12 h-16 flex items-center justify-between text-xs">
+      <header className="relative z-10 w-full bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl border-b border-[#E8DEC8] dark:border-slate-800 px-6 sm:px-12 h-16 flex items-center justify-between text-xs">
         <div className="flex items-center gap-4">
           <BrandLogo size="sm" showSubline={false} />
-          <span className="text-slate-300">/</span>
-          <span className="text-[#0284C7] font-black text-[12px] bg-[#E8F4FC] px-3 py-1 rounded-full border border-[#BAE3F9]">
+          <span className="text-slate-300 dark:text-slate-700">/</span>
+          <span className="text-[#0284C7] dark:text-[#38BDF8] font-black text-[12px] bg-[#E0F2FE] dark:bg-sky-950/60 px-3 py-1 rounded-full border border-[#BAE6FD] dark:border-sky-500/40">
             إنشاء حساب جديد
           </span>
         </div>
         <div className="flex items-center gap-2.5">
           <ThemeToggle />
-          <Link to="/" className="text-[#64748B] hover:text-[#0284C7] font-semibold text-[13px] transition flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#EAE4D9] bg-white">
+          <Link to="/" className="text-[#64748B] dark:text-slate-300 hover:text-[#0284C7] dark:hover:text-[#38BDF8] font-semibold text-[13px] transition flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xs">
             <span>الرئيسية</span>
             <span>➔</span>
           </Link>
@@ -92,33 +95,33 @@ export const RegisterPage: React.FC = () => {
       </header>
 
       {/* Main Centered Card */}
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-[1240px] bg-white border border-[#EAE4D9] rounded-[28px] shadow-[0_6px_24px_rgba(15,23,42,0.04)] overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[740px]">
+      <main className="relative z-10 flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div className="w-full max-w-[1240px] bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-[#E8DEC8] dark:border-slate-800 rounded-[32px] shadow-[0_20px_60px_-15px_rgba(200,180,155,0.25)] dark:shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[740px]">
           
           {/* Form (7 cols) */}
           <div className="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-center">
             <div className="max-w-[480px] mx-auto w-full space-y-4">
               {/* Role Switcher */}
-              <div className="inline-flex p-1 bg-[#F4EFE6] rounded-xl text-[12px] border border-[#EAE4D9]">
+              <div className="inline-flex p-1 bg-[#FAF7F2] dark:bg-slate-800/80 rounded-xl text-[12px] border border-[#E8DEC8] dark:border-slate-700">
                 <button
                   type="button"
-                  className="px-5 py-1.5 bg-[#0284C7] text-white font-bold rounded-lg shadow-2xs cursor-pointer"
+                  className="px-5 py-1.5 bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] text-white font-bold rounded-lg shadow-xs cursor-pointer"
                 >
                   حساب باحث عن عمل
                 </button>
                 <Link
                   to="/company/register"
-                  className="px-4 py-1.5 text-[#475569] hover:text-[#0284C7] font-bold flex items-center gap-1.5 transition rounded-lg"
+                  className="px-4 py-1.5 text-[#475569] dark:text-slate-300 hover:text-[#0284C7] dark:hover:text-[#38BDF8] font-bold flex items-center gap-1.5 transition rounded-lg"
                 >
                   <span>حساب منشأة / شركة</span>
                 </Link>
               </div>
 
               <div>
-                <h1 className="text-[26px] font-black text-[#0F172A] tracking-tight">
+                <h1 className="text-[26px] font-black text-[#0F172A] dark:text-white tracking-tight">
                   إنشاء حساب جديد
                 </h1>
-                <p className="text-[13px] text-[#64748B] mt-1">
+                <p className="text-[13px] text-[#64748B] dark:text-slate-400 mt-1">
                   الخطوة الأولى لبناء ملفك المهني الموثق واستقبال فرص العمل المتوافقة
                 </p>
               </div>
@@ -324,14 +327,21 @@ export const RegisterPage: React.FC = () => {
           </div>
 
           {/* Features Side (5 cols) */}
-          <div className="lg:col-span-5 bg-[#FAF8F5] border-b lg:border-b-0 lg:border-e border-[#EAE4D9] p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden">
+          <div className="lg:col-span-5 bg-[#FAF7F2] dark:bg-slate-950/80 border-b lg:border-b-0 lg:border-e border-[#E8DEC8] dark:border-slate-800 p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden">
+            {/* Subtle Silk Texture */}
+            <img
+              src="/manarah_silk_bg.jpg"
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover opacity-15 dark:opacity-10 mix-blend-overlay pointer-events-none"
+            />
+
             {/* Halo circle */}
-            <div className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] bg-gradient-to-tr from-[#BAE6FD]/40 to-[#DCFCE7]/30 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] bg-gradient-to-tr from-[#BAE6FD]/40 to-[#E8DEC8]/30 dark:from-sky-500/20 dark:to-transparent rounded-full blur-3xl pointer-events-none" />
 
             <div className="text-center my-auto py-6 relative z-10 space-y-4">
               <div className="relative mx-auto w-40 h-40 sm:w-48 sm:h-48">
-                <div className="absolute -inset-2 bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#10B981] rounded-3xl blur-md opacity-70" />
-                <div className="relative w-full h-full bg-white dark:bg-slate-900 rounded-3xl p-4 border border-[#EAE4D9] dark:border-slate-700 shadow-2xs flex items-center justify-center">
+                <div className="absolute -inset-3 bg-gradient-to-r from-[#38BDF8] via-[#BAE6FD] to-[#D4C3A3] rounded-3xl blur-xl opacity-75 animate-pulse" />
+                <div className="relative w-full h-full bg-white/95 dark:bg-slate-900/95 rounded-3xl p-5 border border-white/90 dark:border-slate-700 shadow-2xl flex items-center justify-center">
                   <img
                     src="/logo_trimmed.png"
                     alt="شعار منصة منارة الرسمي"
@@ -340,10 +350,10 @@ export const RegisterPage: React.FC = () => {
                 </div>
               </div>
               <div>
-                <h2 className="text-[22px] font-black text-[#0F172A]">
+                <h2 className="text-[22px] font-black text-[#0F172A] dark:text-white">
                   منصة مَنَارَة للربط المهني
                 </h2>
-                <p className="text-[13px] text-[#64748B] mt-2 max-w-sm mx-auto leading-relaxed">
+                <p className="text-[13px] text-[#6C4F3D] dark:text-[#FDE68A] font-bold mt-2 max-w-sm mx-auto leading-relaxed">
                   بوابتك الموثوقة لربط مؤهلاتك وتخصصك مباشرة مع شواغر الشركات المعتمدة
                 </p>
               </div>
@@ -352,26 +362,26 @@ export const RegisterPage: React.FC = () => {
             {/* Value Feature Cards */}
             <div className="space-y-2.5 relative z-10">
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="bg-white border border-[#EAE4D9] p-3.5 rounded-[16px] text-center shadow-2xs">
-                  <div className="w-8 h-8 mx-auto mb-1.5 rounded-full bg-[#E8F4FC] text-[#0284C7] flex items-center justify-center text-sm font-bold border border-[#BAE3F9]">
+                <div className="bg-white/90 dark:bg-slate-900/90 border border-[#E8DEC8] dark:border-slate-800 p-3.5 rounded-[16px] text-center shadow-xs">
+                  <div className="w-8 h-8 mx-auto mb-1.5 rounded-full bg-[#E0F2FE] dark:bg-sky-950/60 text-[#0284C7] dark:text-[#38BDF8] flex items-center justify-center text-sm font-bold border border-[#BAE6FD] dark:border-sky-500/40">
                     ✓
                   </div>
-                  <div className="text-[12px] font-black text-[#0F172A]">ملف مهني معتمد</div>
-                  <div className="text-[10px] text-[#64748B] mt-0.5">توثيق مهاراتك ومشاريعك لسوق العمل</div>
+                  <div className="text-[12px] font-black text-[#0F172A] dark:text-white">ملف مهني معتمد</div>
+                  <div className="text-[10px] text-[#64748B] dark:text-slate-400 mt-0.5">توثيق مهاراتك ومشاريعك لسوق العمل</div>
                 </div>
-                <div className="bg-white border border-[#EAE4D9] p-3.5 rounded-[16px] text-center shadow-2xs">
-                  <div className="w-8 h-8 mx-auto mb-1.5 rounded-full bg-[#E8F8F2] text-[#0D6E44] flex items-center justify-center text-sm font-bold border border-[#BDE8D2]">
+                <div className="bg-white/90 dark:bg-slate-900/90 border border-[#E8DEC8] dark:border-slate-800 p-3.5 rounded-[16px] text-center shadow-xs">
+                  <div className="w-8 h-8 mx-auto mb-1.5 rounded-full bg-[#E8F8F2] dark:bg-emerald-950/60 text-[#0D6E44] dark:text-[#34D399] flex items-center justify-center text-sm font-bold border border-[#BDE8D2] dark:border-emerald-500/40">
                     ⚡
                   </div>
-                  <div className="text-[12px] font-black text-[#0F172A]">مطابقة موزونة</div>
-                  <div className="text-[10px] text-[#64748B] mt-0.5">خوارزمية قياس التوافق مع متطلبات الشركات</div>
+                  <div className="text-[12px] font-black text-[#0F172A] dark:text-white">مطابقة موزونة</div>
+                  <div className="text-[10px] text-[#64748B] dark:text-slate-400 mt-0.5">خوارزمية قياس التوافق مع متطلبات الشركات</div>
                 </div>
               </div>
-              <div className="bg-white border border-[#EAE4D9] p-3 rounded-[16px] flex items-center gap-3 shadow-2xs text-start">
-                <div className="w-8 h-8 shrink-0 rounded-full bg-[#F8F4EC] text-[#854D0E] flex items-center justify-center text-sm font-bold border border-[#E8DDCC]">
+              <div className="bg-white/90 dark:bg-slate-900/90 border border-[#E8DEC8] dark:border-slate-800 p-3 rounded-[16px] flex items-center gap-3 shadow-xs text-start">
+                <div className="w-8 h-8 shrink-0 rounded-full bg-[#FAF7F2] dark:bg-slate-800 text-[#8C6D53] dark:text-[#FDE68A] flex items-center justify-center text-sm font-bold border border-[#E8DEC8] dark:border-slate-700">
                   ★
                 </div>
-                <div className="text-[11px] font-bold text-[#0F172A] leading-tight">
+                <div className="text-[11px] font-bold text-[#0F172A] dark:text-slate-200 leading-tight">
                   سيرة ذاتية هجينة موحدة تجمع المشاريع البرمجية الحية والفيديو التعريفي
                 </div>
               </div>

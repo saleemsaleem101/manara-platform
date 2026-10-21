@@ -45,19 +45,22 @@ export const LoginPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] flex flex-col justify-between" dir="rtl">
+    <div className="min-h-screen bg-[#FDFBF7] dark:bg-[#0B1120] flex flex-col justify-between relative overflow-hidden" dir="rtl">
+      {/* Background Silk Ambient Glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(186,230,253,0.35),transparent_70%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(2,132,199,0.2),transparent_70%)] pointer-events-none" />
+
       {/* Top Bar */}
-      <header className="w-full bg-white/90 backdrop-blur-md border-b border-[#EAE4D9] px-6 sm:px-12 h-16 flex items-center justify-between text-xs">
+      <header className="relative z-10 w-full bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl border-b border-[#E8DEC8] dark:border-slate-800 px-6 sm:px-12 h-16 flex items-center justify-between text-xs">
         <div className="flex items-center gap-4">
           <BrandLogo size="sm" showSubline={false} />
-          <span className="text-slate-300">/</span>
-          <span className="text-[#0284C7] font-black text-[12px] bg-[#E8F4FC] px-3 py-1 rounded-full border border-[#BAE3F9]">
+          <span className="text-slate-300 dark:text-slate-700">/</span>
+          <span className="text-[#0284C7] dark:text-[#38BDF8] font-black text-[12px] bg-[#E0F2FE] dark:bg-sky-950/60 px-3 py-1 rounded-full border border-[#BAE6FD] dark:border-sky-500/40">
             تسجيل الدخول
           </span>
         </div>
         <div className="flex items-center gap-2.5">
           <ThemeToggle />
-          <Link to="/" className="text-[#64748B] hover:text-[#0284C7] font-semibold text-[13px] transition flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#EAE4D9] bg-white">
+          <Link to="/" className="text-[#64748B] dark:text-slate-300 hover:text-[#0284C7] dark:hover:text-[#38BDF8] font-semibold text-[13px] transition flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xs">
             <span>الرئيسية</span>
             <span>➔</span>
           </Link>
@@ -65,18 +68,25 @@ export const LoginPage: React.FC = () => {
       </header>
 
       {/* Main Centered Card */}
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-[1240px] bg-white border border-[#EAE4D9] rounded-[28px] shadow-[0_6px_24px_rgba(15,23,42,0.04)] overflow-hidden grid grid-cols-1 lg:grid-cols-2 min-h-[720px]">
+      <main className="relative z-10 flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div className="w-full max-w-[1240px] bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-[#E8DEC8] dark:border-slate-800 rounded-[32px] shadow-[0_20px_60px_-15px_rgba(200,180,155,0.25)] dark:shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2 min-h-[720px]">
           {/* Brand Visual Section */}
-          <div className="bg-[#FAF8F5] p-8 sm:p-14 flex flex-col items-center justify-center relative overflow-hidden text-center border-b lg:border-b-0 lg:border-e border-[#EAE4D9]">
+          <div className="bg-[#FAF7F2] dark:bg-slate-950/80 p-8 sm:p-14 flex flex-col items-center justify-center relative overflow-hidden text-center border-b lg:border-b-0 lg:border-e border-[#E8DEC8] dark:border-slate-800">
+            {/* Subtle Silk Texture */}
+            <img
+              src="/manarah_silk_bg.jpg"
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover opacity-15 dark:opacity-10 mix-blend-overlay pointer-events-none"
+            />
+
             {/* Halo light */}
-            <div className="w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-[#BAE6FD]/40 to-[#DCFCE7]/30 blur-3xl absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+            <div className="w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-[#BAE6FD]/40 to-[#E8DEC8]/30 dark:from-sky-500/20 dark:to-transparent blur-3xl absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
             <div className="relative z-10 space-y-6 max-w-md flex flex-col items-center">
               {/* Glowing Logo Card */}
               <div className="relative">
-                <div className="absolute -inset-2 bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#10B981] rounded-3xl blur-md opacity-70" />
-                <div className="relative w-44 h-44 sm:w-52 sm:h-52 bg-white dark:bg-slate-900 rounded-3xl p-5 shadow-xs border border-[#EAE4D9] dark:border-slate-700 flex items-center justify-center">
+                <div className="absolute -inset-3 bg-gradient-to-r from-[#38BDF8] via-[#BAE6FD] to-[#D4C3A3] rounded-3xl blur-xl opacity-75 animate-pulse" />
+                <div className="relative w-44 h-44 sm:w-52 sm:h-52 bg-white/95 dark:bg-slate-900/95 rounded-3xl p-6 shadow-2xl border border-white/90 dark:border-slate-700 flex items-center justify-center">
                   <img
                     src="/logo_trimmed.png"
                     alt="شعار منصة منارة الرسمي"
@@ -86,10 +96,10 @@ export const LoginPage: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <h2 className="text-[26px] sm:text-[28px] font-black text-[#0F172A]">
+                <h2 className="text-[26px] sm:text-[28px] font-black text-[#0F172A] dark:text-white">
                   تسجيل الدخول إلى منارة
                 </h2>
-                <p className="text-[14px] sm:text-[15px] font-bold text-[#0284C7]">
+                <p className="text-[14px] sm:text-[15px] font-bold text-[#6C4F3D] dark:text-[#FDE68A]">
                   بوابة الكفاءات والربط المهني الذكي
                 </p>
               </div>
@@ -100,15 +110,15 @@ export const LoginPage: React.FC = () => {
           <div className="p-8 sm:p-14 lg:p-16 flex flex-col justify-center">
             <div className="max-w-[460px] mx-auto w-full space-y-6">
               {/* Pill: بوابة الدخول */}
-              <div className="inline-block px-4 py-1.5 bg-[#E8F4FC] text-[#0284C7] border border-[#BAE3F9] text-[12px] font-black rounded-full">
+              <div className="inline-block px-4 py-1.5 bg-[#E0F2FE] dark:bg-sky-950/60 text-[#0284C7] dark:text-[#38BDF8] border border-[#BAE6FD] dark:border-sky-500/40 text-[12px] font-black rounded-full">
                 بوابة الدخول الموحدة
               </div>
 
               <div className="space-y-1">
-                <h1 className="text-[28px] font-black text-[#0F172A] tracking-tight">
+                <h1 className="text-[28px] font-black text-[#0F172A] dark:text-white tracking-tight">
                   مرحباً بعودتك
                 </h1>
-                <p className="text-[13px] text-[#64748B] leading-relaxed">
+                <p className="text-[13px] text-[#64748B] dark:text-slate-400 leading-relaxed">
                   أدخل بيانات اعتماد حسابك للوصول إلى لوحة التحكم والفرص المتاحة
                 </p>
               </div>
