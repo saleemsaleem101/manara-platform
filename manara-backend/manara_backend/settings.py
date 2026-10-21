@@ -75,10 +75,11 @@ from urllib.parse import urlparse
 is_vercel = bool(os.environ.get('VERCEL') or os.environ.get('VERCEL_ENV'))
 
 default_db_host = 'aws-0-eu-west-1.pooler.supabase.com' if is_vercel else 'localhost'
-default_db_port = '5432'
+default_db_port = '6543' if is_vercel else '5432'
 default_db_name = 'postgres' if is_vercel else 'manarah_db1'
 default_db_user = 'postgres.fkgyihcgkbumqanvmqvg' if is_vercel else 'postgres'
 default_db_password = 'Manara@2026Secure' if is_vercel else ''
+default_conn_max_age = 0 if is_vercel else 60
 
 DATABASE_URL = config('DATABASE_URL', default='')
 if DATABASE_URL:
@@ -90,8 +91,8 @@ if DATABASE_URL:
             'USER': _db_url.username,
             'PASSWORD': _db_url.password,
             'HOST': _db_url.hostname,
-            'PORT': _db_url.port or 5432,
-            'CONN_MAX_AGE': config('DB_CONN_MAX_AGE', default=60, cast=int),
+            'PORT': _db_url.port or (6543 if is_vercel else 5432),
+            'CONN_MAX_AGE': config('DB_CONN_MAX_AGE', default=default_conn_max_age, cast=int),
         }
     }
 else:
@@ -103,9 +104,12 @@ else:
             'PASSWORD': config('DB_PASSWORD', default=default_db_password),
             'HOST':     config('DB_HOST',     default=default_db_host),
             'PORT':     config('DB_PORT',     default=default_db_port),
-            'CONN_MAX_AGE': config('DB_CONN_MAX_AGE', default=60, cast=int),
+            'CONN_MAX_AGE': config('DB_CONN_MAX_AGE', default=default_conn_max_age, cast=int),
         }
     }
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
