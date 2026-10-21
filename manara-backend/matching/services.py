@@ -194,6 +194,37 @@ class MatchingService:
         grad_exp = max(grad_exp_val, calculated_years)
         experience_score = 1.0 if req_exp == 0.0 else min(grad_exp / req_exp, 1.0)
 
+        # تقييم قوة المشاريع التقنية والبرمجية وحسابات GitHub والفيديو التعريفي
+        # ميزة نوعية معتمدة من لجنة المناقشة: تعويض غياب سنوات الخبرة لخريجي الحاسوب الجدد عبر قوة مشاريع التخرج ومستودعات GitHub
+        has_grad_project = False
+        has_github = bool(getattr(profile, 'github_url', None))
+        projects_list = list(profile.projects.all())
+        project_count = len(projects_list)
+        for p in projects_list:
+            if getattr(p, 'is_graduation_project', False):
+                has_grad_project = True
+            if getattr(p, 'github_url', None):
+                has_github = True
+
+        has_video = bool(getattr(profile, 'video_cv_url', None) or getattr(profile, 'video_verified', False))
+
+        project_capability = 0.0
+        if has_grad_project:
+            project_capability += 0.40  # مشروع التخرج العملي المتخصص
+        if has_github:
+            project_capability += 0.30  # كود حقيقي موثق على GitHub
+        if project_count >= 1:
+            project_capability += min(project_count * 0.10, 0.20)  # أعمال برمجية إضافية
+        if has_video:
+            project_capability += 0.10  # فيديو تعريفي مهني
+        project_capability = min(project_capability, 1.0)
+
+        # إذا كانت الخبرة صفرية أو دون المطلوب، يتم تعويض معيار الخبرة بجاهزية المشاريع البرمجية
+        if grad_exp == 0.0 and project_capability > 0:
+            experience_score = round(project_capability, 4)
+        elif req_exp > 0 and project_capability > experience_score:
+            experience_score = round(max(experience_score, project_capability * 0.9), 4)
+
         # 4. حساب مطابقة المؤهل العلمي (Qualification Score)
         qualification_levels = {'DIPLOMA': 1, 'BACHELOR': 2, 'MASTER': 3, 'DOCTORATE': 4}
         qual_records = profile.qualifications.all()
