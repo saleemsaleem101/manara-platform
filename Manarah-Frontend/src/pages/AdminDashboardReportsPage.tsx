@@ -149,10 +149,10 @@ export const AdminDashboardReportsPage: React.FC = () => {
   const jobsCount = stats?.jobs?.total ?? 0
   const pendingCount = stats?.companies_verification?.pending ?? pendingCompanies.length
 
-  const displayGraduates = graduatesCount > 100 ? graduatesCount.toLocaleString() : '1,420'
-  const displayApprovedCompanies = approvedCompaniesCount > 50 ? approvedCompaniesCount : '68'
-  const displayJobs = jobsCount > 50 ? jobsCount : '245'
-  const displayPending = pendingCount > 5 ? pendingCount : '5'
+  const displayGraduates = graduatesCount.toLocaleString()
+  const displayApprovedCompanies = approvedCompaniesCount.toLocaleString()
+  const displayJobs = jobsCount.toLocaleString()
+  const displayPending = pendingCount.toLocaleString()
 
   // Sort companies so the 3 mockup companies appear in exact order matching 22_Admin_Dashboard_Reports
   const preferredOrder = [

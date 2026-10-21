@@ -511,15 +511,27 @@ export const SkillsPortfolioPage: React.FC = () => {
               </div>
 
               {/* Video Player Card Preview */}
-              <div className="w-full aspect-video rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex flex-col items-center justify-center relative overflow-hidden mb-4 shadow-inner text-white text-center p-4 border border-slate-700/50">
-                <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mb-2 backdrop-blur-xs">
-                  <div className="w-0 h-0 border-y-8 border-y-transparent border-e-12 border-e-white me-1" />
+              {videoInfo.video_cv_url ? (
+                <div className="w-full aspect-video rounded-2xl bg-black overflow-hidden mb-4 shadow-md border border-[#E8DEC8] dark:border-slate-800">
+                  <video
+                    controls
+                    className="w-full h-full object-cover"
+                    src={videoInfo.video_cv_url}
+                  >
+                    متصفحك لا يدعم تشغيل الفيديو.
+                  </video>
                 </div>
-                <span className="text-[12px] font-bold">فيديو تعريفي احترافي (60 - 90 ثانية)</span>
-                <span className="text-[10px] text-slate-300 mt-1">
-                  المدة المسجلة: <bdi dir="ltr">{videoInfo.video_duration_seconds}</bdi> ثانية • جودة عالية 1080p
-                </span>
-              </div>
+              ) : (
+                <div className="w-full aspect-video rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex flex-col items-center justify-center relative overflow-hidden mb-4 shadow-inner text-white text-center p-4 border border-slate-700/50">
+                  <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mb-2 backdrop-blur-xs">
+                    <div className="w-0 h-0 border-y-8 border-y-transparent border-e-12 border-e-white me-1" />
+                  </div>
+                  <span className="text-[12px] font-bold">فيديو تعريفي احترافي (60 - 90 ثانية)</span>
+                  <span className="text-[10px] text-slate-300 mt-1">
+                    لم يتم رفع فيديو تعريفي بعد • اضغط للتحديث والرفع
+                  </span>
+                </div>
+              )}
 
               {/* Video Info Meta */}
               <div className="space-y-2.5 text-[12px] text-[#475569] dark:text-slate-300 mb-4">
