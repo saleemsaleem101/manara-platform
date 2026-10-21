@@ -123,11 +123,11 @@ class AccountsSprint1TestCase(TestCase):
         self.assertIn("name", response.data)
 
     def test_tc_06_account_role_validation(self):
-        """TC-06: التحقق من نوع الحساب وضمان تسجيله بصلاحية خريج فقط ورفض أي صلاحية خارج سبرنت 1."""
+        """TC-06: التحقق من نوع الحساب وضمان تسجيله بصلاحيات مصرحة فقط ورفض أي صلاحية غير مصرحة كـ ADMIN."""
         payload = {
-            "name": "شركة غير مصرحة أحمد علي",
+            "name": "محاولة تسجيل مدير أحمد علي صالح",
             "email": "company_attempt@manara.edu.ye",
-            "role": "COMPANY",
+            "role": "ADMIN",
             "password": "SecurePassword@2026",
         }
         response = self.client.post("/api/auth/register/", payload)

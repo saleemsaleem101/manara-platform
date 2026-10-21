@@ -46,6 +46,15 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         django_validate_password(value)
         return value
 
+    def validate(self, attrs):
+        role = attrs.get('role', 'GRADUATE')
+        name = attrs.get('name', '').strip()
+        if role == 'GRADUATE' and name:
+            parts = [p for p in name.split() if p]
+            if len(parts) < 4:
+                raise serializers.ValidationError({'name': 'يجب إدخال الاسم الرباعي كاملاً.'})
+        return attrs
+
     @transaction.atomic
     def create(self, validated_data):
         company_name = validated_data.pop('company_name', '').strip()

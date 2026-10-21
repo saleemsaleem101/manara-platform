@@ -342,15 +342,25 @@ class UpdateApplicationStatusView(APIView):
             "REJECTED": "مرفوض",
         }
 
+        if new_status == "ACCEPTED":
+            title = "🎉 تهانينا! تم قبول طلبك للتوظيف"
+            message = (
+                f'وافقت منشأة "{application.job.company.company_name}" على طلبك لشغل وظيفة "{application.job.title}". '
+                f'تم فتح قنوات التواصل المباشر وتحديد موعد المقابلة.'
+            )
+        else:
+            title = "تحديث حالة طلبك"
+            message = (
+                f'تم تحديث حالة طلبك على وظيفة "{application.job.title}" '
+                f"إلى: {labels[new_status]}"
+            )
+
         # إشعار الخريج بتحديث الحالة (FR-22)
         create_notification(
             user=application.profile.user,
             notif_type="STATUS_UPDATE",
-            title="تحديث حالة طلبك",
-            message=(
-                f'تم تحديث حالة طلبك على وظيفة "{application.job.title}" '
-                f"إلى: {labels[new_status]}"
-            ),
+            title=title,
+            message=message,
             related_app_id=application.id,
         )
 

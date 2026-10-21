@@ -71,5 +71,17 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.email_verified = True
         self.save(update_fields=['email_verified'])
 
+    @classmethod
+    def register(cls, email, name, role='GRADUATE', password=None, phone=None):
+        """دالة تسجيل المستخدم (+ register في مخطط الأصناف UML الشكل 3-4)."""
+        user = cls.objects.create_user(
+            email=email,
+            name=name,
+            role=role,
+            password=password,
+            phone=phone or ''
+        )
+        return user
+
     def __str__(self) -> str:
         return f"{self.name} ({self.email}) - {self.get_role_display()}"

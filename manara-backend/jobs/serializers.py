@@ -299,17 +299,24 @@ class ApplicationSerializer(serializers.ModelSerializer):
     company_name             = serializers.ReadOnlyField(source='job.company.company_name')
     matching_score           = serializers.SerializerMethodField()
     score_breakdown          = serializers.SerializerMethodField()
+    has_graduation_project   = serializers.SerializerMethodField()
+    graduation_project_title = serializers.SerializerMethodField()
+    has_github               = serializers.SerializerMethodField()
+    github_url               = serializers.SerializerMethodField()
+    applicant_phone          = serializers.SerializerMethodField()
+    contact_unlocked         = serializers.SerializerMethodField()
     status_history           = ApplicationStatusHistorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Application
         fields = (
             'id', 'job', 'job_title', 'company_name',
-            'profile', 'applicant_name', 'applicant_email',
+            'profile', 'applicant_name', 'applicant_email', 'applicant_phone',
             'applicant_specialization', 'applicant_university',
             'applicant_qualification', 'applicant_experience',
             'applicant_city', 'applicant_gpa', 'applicant_graduation_year',
-            'has_video_cv', 'projects_count',
+            'has_video_cv', 'projects_count', 'has_graduation_project',
+            'graduation_project_title', 'has_github', 'github_url', 'contact_unlocked',
             'status', 'match_score', 'matching_score', 'score_breakdown', 'applied_at', 'updated_at',
             'status_history'
         )
@@ -324,11 +331,64 @@ class ApplicationSerializer(serializers.ModelSerializer):
             data['job'] = data['job_id']
         return super().to_internal_value(data)
 
+    def to_representation(self, obj):
+        data = super().to_representation(obj)
+        request = self.context.get('request')
+        user = getattr(request, 'user', None)
+        is_admin = getattr(user, 'role', '') == 'ADMIN'
+        is_owner_grad = hasattr(user, 'graduate_profile') and obj.profile_id == user.graduate_profile.id
+        if not (obj.status == 'ACCEPTED' or is_admin or is_owner_grad):
+            data['applicant_email'] = ''
+            data['applicant_phone'] = ''
+            data['contact_unlocked'] = False
+        else:
+            data['contact_unlocked'] = True
+            data['applicant_phone'] = obj.profile.phone or obj.profile.user.phone or ""
+        return data
+
     def get_has_video_cv(self, obj):
         try:
             return bool(obj.profile.video_cv_url or getattr(obj.profile, 'video_verified', False) or hasattr(obj.profile, 'video_cv'))
         except Exception:
             return False
+
+    def get_has_graduation_project(self, obj):
+        try:
+            return obj.profile.projects.filter(is_graduation_project=True).exists()
+        except Exception:
+            return False
+
+    def get_graduation_project_title(self, obj):
+        try:
+            gp = obj.profile.projects.filter(is_graduation_project=True).first()
+            return gp.title if gp else None
+        except Exception:
+            return None
+
+    def get_has_github(self, obj):
+        try:
+            if obj.profile.github_url:
+                return True
+            return obj.profile.projects.filter(github_url__isnull=False).exclude(github_url='').exists()
+        except Exception:
+            return False
+
+    def get_github_url(self, obj):
+        try:
+            if obj.profile.github_url:
+                return obj.profile.github_url
+            p = obj.profile.projects.filter(github_url__isnull=False).exclude(github_url='').first()
+            return p.github_url if p else None
+        except Exception:
+            return None
+
+    def get_contact_unlocked(self, obj):
+        return obj.status == 'ACCEPTED'
+
+    def get_applicant_phone(self, obj):
+        if obj.status == 'ACCEPTED':
+            return obj.profile.phone or obj.profile.user.phone or ""
+        return ""
 
     def get_projects_count(self, obj):
         try:
@@ -392,6 +452,20 @@ class CandidateApplicationProfileSerializer(serializers.ModelSerializer):
             'skills', 'projects', 'status', 'match_score', 'score_breakdown',
             'status_history', 'applied_at'
         )
+
+    def to_representation(self, obj):
+        data = super().to_representation(obj)
+        request = self.context.get('request')
+        user = getattr(request, 'user', None)
+        is_admin = getattr(user, 'role', '') == 'ADMIN'
+        is_owner_grad = hasattr(user, 'graduate_profile') and obj.profile_id == user.graduate_profile.id
+        if not (obj.status == 'ACCEPTED' or is_admin or is_owner_grad):
+            data['phone'] = ''
+            data['email'] = ''
+            data['contact_unlocked'] = False
+        else:
+            data['contact_unlocked'] = True
+        return data
 
     def get_full_name(self, obj):
         return obj.profile.user.name or f"{obj.profile.first_name} {obj.profile.last_name}".strip() or "مرشح معتمد"
