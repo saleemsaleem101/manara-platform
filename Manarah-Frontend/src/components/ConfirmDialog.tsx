@@ -28,17 +28,17 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   const confirmColor = {
     danger: 'bg-rose-600 hover:bg-rose-700 text-white',
     warning: 'bg-amber-500 hover:bg-amber-600 text-slate-950',
-    primary: 'bg-[#0F1E36] hover:bg-slate-900 text-white',
+    primary: 'bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white',
   }[variant]
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F1E36]/60 backdrop-blur-xs font-['Cairo'] text-start"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/50 backdrop-blur-xs font-['Cairo'] text-start"
       dir="rtl"
       onClick={onCancel}
     >
       <div
-        className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200 space-y-4 transition-all duration-150"
+        className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#EAE4D9] space-y-4 transition-all duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start gap-4">
@@ -54,7 +54,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             {variant === 'danger' ? '🗑️' : variant === 'warning' ? '⚠️' : 'ℹ️'}
           </div>
           <div className="flex-1 space-y-1">
-            <h3 className="text-base sm:text-lg font-black text-[#0F1E36]">{title}</h3>
+            <h3 className="text-base sm:text-lg font-black text-[#0F172A]">{title}</h3>
             <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">{message}</p>
           </div>
         </div>

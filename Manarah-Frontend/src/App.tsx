@@ -50,9 +50,9 @@ function RoleRoute({ children, allowedRoles }: RoleRouteProps) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FBF9F5] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <span className="w-8 h-8 border-3 border-[#0F1E36] border-t-transparent rounded-full animate-spin" />
+          <span className="w-8 h-8 border-3 border-[#0284C7] border-t-transparent rounded-full animate-spin" />
           <span className="text-xs font-bold text-[#64748B]">جاري التحقق من الجلسة والصلاحيات...</span>
         </div>
       </div>
@@ -78,7 +78,6 @@ function RoleRoute({ children, allowedRoles }: RoleRouteProps) {
 }
 
 /**
-/**
  * منع المستخدم المسجل من زيارة شاشات الدخول والتسجيل وإعادة توجيهه لواجهته الرئيسية
  */
 function PublicOnlyRoute({ children }: { children: React.ReactNode }) {
@@ -86,9 +85,9 @@ function PublicOnlyRoute({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FBF9F5] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <span className="w-8 h-8 border-3 border-[#0F1E36] border-t-transparent rounded-full animate-spin" />
+          <span className="w-8 h-8 border-3 border-[#0284C7] border-t-transparent rounded-full animate-spin" />
           <span className="text-xs font-bold text-[#64748B]">جاري التحقق من الجلسة...</span>
         </div>
       </div>
@@ -132,26 +131,26 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-6 text-start font-['Cairo']" dir="rtl">
-          <div className="max-w-[480px] w-full bg-white border border-slate-200 rounded-3xl p-8 shadow-sm text-center space-y-5">
-            <div className="w-16 h-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-3xl mx-auto">
+        <div className="min-h-screen bg-[#FBF9F5] flex items-center justify-center p-6 text-start font-sans" dir="rtl">
+          <div className="max-w-[480px] w-full bg-white border border-[#EAE4D9] rounded-3xl p-8 shadow-sm text-center space-y-5">
+            <div className="w-16 h-16 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center text-3xl mx-auto">
               ⚠️
             </div>
-            <h1 className="text-xl font-black text-[#0F1E36]">حدث خطأ غير متوقع في الواجهة</h1>
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <h1 className="text-xl font-black text-[#0F172A]">حدث خطأ غير متوقع في الواجهة</h1>
+            <p className="text-xs text-slate-500 font-medium leading-relaxed">
               واجه التطبيق مشكلة أثناء عرض هذه الصفحة. يمكنك محاولة إعادة التحميل أو العودة للرئيسية.
             </p>
             <div className="flex gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => window.location.reload()}
-                className="flex-1 h-11 rounded-xl bg-[#0F1E36] hover:bg-slate-900 text-white font-bold text-xs transition"
+                className="flex-1 h-11 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white font-black text-xs shadow-xs transition"
               >
                 إعادة المحاولة
               </button>
               <a
                 href="/"
-                className="flex-1 h-11 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center justify-center transition"
+                className="flex-1 h-11 rounded-xl border border-[#EAE4D9] bg-white hover:bg-[#F4EFE6]/60 text-[#0F172A] font-bold text-xs flex items-center justify-center transition shadow-2xs"
               >
                 الصفحة الرئيسية
               </a>

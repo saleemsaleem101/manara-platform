@@ -82,9 +82,9 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className = ''
     case 'HIDDEN':
       return (
         <span
-          className={`inline-flex items-center gap-1.5 rounded-full font-bold bg-purple-50 text-purple-700 border border-purple-200 ${sizeClasses} ${className}`}
+          className={`inline-flex items-center gap-1.5 rounded-full font-bold bg-[#F4EFE6] text-[#475569] border border-[#EAE4D9] ${sizeClasses} ${className}`}
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+          <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
           <span>مخفية</span>
         </span>
       )

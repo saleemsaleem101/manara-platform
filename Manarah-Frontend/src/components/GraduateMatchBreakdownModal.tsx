@@ -85,7 +85,7 @@ export const GraduateMatchBreakdownModal: React.FC<GraduateMatchBreakdownModalPr
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F1E36]/65 backdrop-blur-xs font-['Cairo'] text-start animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/65 backdrop-blur-xs font-['Cairo'] text-start animate-fadeIn"
       dir="rtl"
       onClick={onClose}
     >
@@ -94,19 +94,19 @@ export const GraduateMatchBreakdownModal: React.FC<GraduateMatchBreakdownModalPr
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header Banner */}
-        <div className="bg-[#0F1E36] px-6 py-5 rounded-t-3xl text-white flex items-start justify-between">
+        <div className="bg-[#FBF9F5] px-6 py-5 rounded-t-3xl border-b border-[#EAE4D9] flex items-start justify-between">
           <div>
-            <h3 className="text-lg sm:text-xl font-black">
+            <h3 className="text-lg sm:text-xl font-black text-[#0F172A]">
               تفاصيل نتيجة المطابقة مع متطلبات الوظيفة
             </h3>
-            <p className="text-xs text-slate-300 mt-1 font-medium">
+            <p className="text-xs text-[#64748B] mt-1 font-medium">
               وظيفة: {jobTitle} • {companyName} {applicationId ? `(طلب التوظيف #${applicationId})` : ''}
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition cursor-pointer"
+            className="w-8 h-8 rounded-full bg-[#F4EFE6] hover:bg-[#EAE4D9] text-[#475569] hover:text-[#0F172A] flex items-center justify-center transition cursor-pointer"
             aria-label="إغلاق"
           >
             ✕
@@ -157,7 +157,7 @@ export const GraduateMatchBreakdownModal: React.FC<GraduateMatchBreakdownModalPr
 
           {/* SECTION 2: 4 MATCHING CRITERIA BREAKDOWN */}
           <div>
-            <h4 className="text-sm font-black text-[#0F1E36] mb-3">
+            <h4 className="text-sm font-black text-[#0F172A] mb-3">
               تفصيل المعايير الأربعة المعتمدة وفق شروط الوظيفة المعلنة
             </h4>
 
@@ -173,7 +173,7 @@ export const GraduateMatchBreakdownModal: React.FC<GraduateMatchBreakdownModalPr
                     </svg>
                   </div>
                   <div>
-                    <h5 className="text-xs sm:text-sm font-bold text-[#0F1E36]">
+                    <h5 className="text-xs sm:text-sm font-bold text-[#0F172A]">
                       1. نسبة تشابه المهارات (معامل Jaccard)
                     </h5>
                     <p className="text-[11px] text-slate-500 mt-0.5">
@@ -207,7 +207,7 @@ export const GraduateMatchBreakdownModal: React.FC<GraduateMatchBreakdownModalPr
                     </svg>
                   </div>
                   <div>
-                    <h5 className="text-xs sm:text-sm font-bold text-[#0F1E36]">
+                    <h5 className="text-xs sm:text-sm font-bold text-[#0F172A]">
                       2. ملاءمة التخصص والمجال الدراسي الأكاديمي
                     </h5>
                     <p className="text-[11px] text-slate-500 mt-0.5">
@@ -242,7 +242,7 @@ export const GraduateMatchBreakdownModal: React.FC<GraduateMatchBreakdownModalPr
                     </svg>
                   </div>
                   <div>
-                    <h5 className="text-xs sm:text-sm font-bold text-[#0F1E36]">
+                    <h5 className="text-xs sm:text-sm font-bold text-[#0F172A]">
                       3. سنوات الخبرة العملية والمشاريع التطبيقية
                     </h5>
                     <p className="text-[11px] text-slate-500 mt-0.5">
@@ -269,15 +269,15 @@ export const GraduateMatchBreakdownModal: React.FC<GraduateMatchBreakdownModalPr
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-start gap-3">
                   {/* Modern Duotone Icon 4: Certified Emblem Rosette */}
-                  <div className="w-10 h-10 rounded-xl bg-purple-100 border border-purple-300 flex items-center justify-center shrink-0">
-                    <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
+                  <div className="w-10 h-10 rounded-xl bg-[#E8F8F2] border border-[#BDE8D2] flex items-center justify-center shrink-0">
+                    <svg className="w-5 h-5 text-[#0D6E44]" viewBox="0 0 24 24" fill="currentColor">
                       <circle cx="12" cy="10" r="7" />
                       <polygon points="12,17 7,22 9,15" opacity="0.8" />
                       <polygon points="12,17 17,22 15,15" opacity="0.8" />
                     </svg>
                   </div>
                   <div>
-                    <h5 className="text-xs sm:text-sm font-bold text-[#0F1E36]">
+                    <h5 className="text-xs sm:text-sm font-bold text-[#0F172A]">
                       4. المؤهل العلمي والدرجة الأكاديمية
                     </h5>
                     <p className="text-[11px] text-slate-500 mt-0.5">
@@ -289,13 +289,13 @@ export const GraduateMatchBreakdownModal: React.FC<GraduateMatchBreakdownModalPr
                 <div className="flex items-center gap-4 shrink-0">
                   <div className="p-2 rounded-lg bg-white border border-slate-200 text-center min-w-[120px]">
                     <span className="text-[10px] text-slate-500 block font-medium">الوزن: <bdi dir="ltr">{wq}%</bdi></span>
-                    <span className="text-xs font-black text-purple-600 font-mono">المكتسب: <bdi dir="ltr">{earnedQual}%</bdi></span>
+                    <span className="text-xs font-black text-[#0D6E44] font-mono">المكتسب: <bdi dir="ltr">{earnedQual}%</bdi></span>
                   </div>
                   <div className="w-24 text-start">
                     <div className="w-full bg-slate-200 rounded-full h-2">
-                      <div className="bg-purple-500 h-2 rounded-full" style={{ width: `${sQual}%` }} />
+                      <div className="bg-[#10B981] h-2 rounded-full" style={{ width: `${sQual}%` }} />
                     </div>
-                    <span className="text-[10px] font-black text-purple-600 block mt-1 font-mono"><bdi dir="ltr">{sQual}%</bdi></span>
+                    <span className="text-[10px] font-black text-[#0D6E44] block mt-1 font-mono"><bdi dir="ltr">{sQual}%</bdi></span>
                   </div>
                 </div>
               </div>
@@ -316,7 +316,7 @@ export const GraduateMatchBreakdownModal: React.FC<GraduateMatchBreakdownModalPr
                 <button
                   type="button"
                   onClick={onViewJobDetails}
-                  className="px-5 py-2.5 rounded-xl bg-[#0F1E36] hover:bg-[#1a3154] text-white text-xs font-bold transition cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white text-xs font-black transition cursor-pointer shadow-xs"
                 >
                   عرض تفاصيل الوظيفة الكاملة
                 </button>

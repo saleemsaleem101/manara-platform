@@ -55,12 +55,12 @@ export const AdminCompanyRejectModal: React.FC<AdminCompanyRejectModalProps> = (
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F1E36]/70 backdrop-blur-xs font-['Cairo'] text-start animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F172A]/50 backdrop-blur-xs font-['Cairo'] text-start animate-fadeIn"
       dir="rtl"
       onClick={handleClose}
     >
       <div
-        className="relative w-full max-w-2xl max-h-[92vh] overflow-y-auto bg-white rounded-3xl shadow-2xl border border-slate-200"
+        className="relative w-full max-w-2xl max-h-[92vh] overflow-y-auto bg-white rounded-3xl shadow-2xl border border-[#EAE4D9]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Banner - Crimson Tone */}
@@ -95,7 +95,7 @@ export const AdminCompanyRejectModal: React.FC<AdminCompanyRejectModalProps> = (
             </div>
 
             <div className="space-y-1 text-xs">
-              <h4 className="font-black text-sm text-[#0F1E36]">{company.company_name}</h4>
+              <h4 className="font-black text-sm text-[#0F172A]">{company.company_name}</h4>
               <p className="text-slate-600">
                 السجل التجاري:{' '}
                 <span className="font-mono font-bold text-slate-800">
@@ -112,7 +112,7 @@ export const AdminCompanyRejectModal: React.FC<AdminCompanyRejectModalProps> = (
           {/* Section 2: Rejection Reason Input */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-black text-[#0F1E36]">
+              <label className="text-xs font-black text-[#0F172A]">
                 سبب الرفض والملاحظات التوجيهية للشركة (إلزامي) *
               </label>
               <span className="text-[11px] text-slate-400 font-mono">{reason.length} / 500 حرف</span>

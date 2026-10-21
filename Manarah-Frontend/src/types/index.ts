@@ -214,6 +214,12 @@ export interface JobApplication {
   applicant_graduation_year?: string
   has_video_cv?: boolean
   projects_count?: number
+  has_graduation_project?: boolean
+  graduation_project_title?: string | null
+  has_github?: boolean
+  github_url?: string | null
+  applicant_phone?: string
+  contact_unlocked?: boolean
   status: 'SUBMITTED' | 'UNDER_REVIEW' | 'ACCEPTED' | 'REJECTED' | 'WITHDRAWN'
   match_score?: number
   matching_score?: number
@@ -347,6 +353,9 @@ export interface CandidateProfile {
     qualification_score: number
     final_score: number
   }
+  github_url?: string | null
+  linkedin_url?: string | null
+  contact_unlocked?: boolean
   status: 'SUBMITTED' | 'UNDER_REVIEW' | 'ACCEPTED' | 'REJECTED'
   status_history?: ApplicationStatusHistoryItem[]
   applied_at: string

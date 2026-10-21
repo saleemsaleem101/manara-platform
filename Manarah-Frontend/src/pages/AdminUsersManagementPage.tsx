@@ -103,29 +103,29 @@ export const AdminUsersManagementPage: React.FC = () => {
   const totalPages = Math.ceil(totalCount / pageSize) || 1
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans" dir="rtl">
+    <div className="min-h-screen bg-[#FBF9F5] text-[#0F172A] font-sans" dir="rtl">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb Navigation */}
         <div className="mb-8">
-          <div className="flex items-center gap-2 text-xs text-slate-500 mb-2">
-            <Link to="/admin" className="hover:text-slate-900 transition font-medium">
+          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-2 font-medium">
+            <Link to="/admin" className="hover:text-[#0284C7] transition">
               لوحة التحكم
             </Link>
             <span>/</span>
-            <span className="text-amber-600 font-bold">إدارة المستخدمين</span>
+            <span className="text-[#0284C7] font-bold">إدارة المستخدمين</span>
           </div>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-[#0F1E36]">
+              <h1 className="text-2xl sm:text-3xl font-black text-[#0F172A]">
                 إدارة مستخدمي المنصة
               </h1>
-              <p className="text-slate-500 text-sm mt-1">
+              <p className="text-[#64748B] text-xs sm:text-sm mt-1">
                 عرض حسابات الخريجين والشركات ومسؤولي النظام والتحكم في صلاحيات التفعيل والحذف
               </p>
             </div>
-            <div className="text-xs font-mono font-bold bg-white px-4 py-2.5 rounded-xl border border-slate-200/80 shadow-2xs">
+            <div className="text-xs font-mono font-black bg-white px-4 py-2.5 rounded-xl border border-[#EAE4D9] shadow-2xs text-[#0F172A]">
               إجمالي الحسابات: <bdi dir="ltr">{totalCount}</bdi>
             </div>
           </div>
@@ -134,9 +134,9 @@ export const AdminUsersManagementPage: React.FC = () => {
         {/* Feedback Alert */}
         {feedbackMsg && (
           <div
-            className={`mb-6 p-4 rounded-2xl flex items-center justify-between text-sm font-bold ${
+            className={`mb-6 p-4 rounded-2xl flex items-center justify-between text-sm font-bold shadow-2xs ${
               feedbackMsg.type === 'success'
-                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                ? 'bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2]'
                 : 'bg-rose-50 text-rose-800 border border-rose-200'
             }`}
           >
@@ -144,7 +144,7 @@ export const AdminUsersManagementPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setFeedbackMsg(null)}
-              className="text-xs text-slate-400 hover:text-slate-700 font-normal px-2 py-1"
+              className="text-xs text-slate-400 hover:text-slate-600 font-normal px-2 py-1 cursor-pointer"
             >
               إغلاق
             </button>
@@ -152,20 +152,20 @@ export const AdminUsersManagementPage: React.FC = () => {
         )}
 
         {/* Controls: Search and Tabs */}
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs mb-8">
+        <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 shadow-2xs mb-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Role Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-2xl bg-slate-100 w-full md:w-auto">
+            <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-2xl bg-[#F4EFE6]/70 border border-[#EAE4D9] w-full md:w-auto">
               <button
                 type="button"
                 onClick={() => {
                   setActiveTab('ALL')
                   setCurrentPage(1)
                 }}
-                className={`px-4 py-2 rounded-xl text-xs font-black transition ${
+                className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer ${
                   activeTab === 'ALL'
-                    ? 'bg-white text-[#0F1E36] shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs'
+                    : 'text-[#475569] hover:text-[#0F172A]'
                 }`}
               >
                 الكل
@@ -176,10 +176,10 @@ export const AdminUsersManagementPage: React.FC = () => {
                   setActiveTab('GRADUATE')
                   setCurrentPage(1)
                 }}
-                className={`px-4 py-2 rounded-xl text-xs font-black transition ${
+                className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer ${
                   activeTab === 'GRADUATE'
-                    ? 'bg-white text-[#0F1E36] shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs'
+                    : 'text-[#475569] hover:text-[#0F172A]'
                 }`}
               >
                 الخريجون
@@ -190,10 +190,10 @@ export const AdminUsersManagementPage: React.FC = () => {
                   setActiveTab('COMPANY')
                   setCurrentPage(1)
                 }}
-                className={`px-4 py-2 rounded-xl text-xs font-black transition ${
+                className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer ${
                   activeTab === 'COMPANY'
-                    ? 'bg-white text-[#0F1E36] shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs'
+                    : 'text-[#475569] hover:text-[#0F172A]'
                 }`}
               >
                 الشركات
@@ -204,10 +204,10 @@ export const AdminUsersManagementPage: React.FC = () => {
                   setActiveTab('ADMIN')
                   setCurrentPage(1)
                 }}
-                className={`px-4 py-2 rounded-xl text-xs font-black transition ${
+                className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer ${
                   activeTab === 'ADMIN'
-                    ? 'bg-white text-[#0F1E36] shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs'
+                    : 'text-[#475569] hover:text-[#0F172A]'
                 }`}
               >
                 مديرو النظام
@@ -221,11 +221,11 @@ export const AdminUsersManagementPage: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="ابحث بالاسم أو البريد..."
-                className="w-full px-4 py-2 rounded-xl border border-slate-200 text-xs font-medium bg-slate-50/50 focus:outline-hidden focus:ring-2 focus:ring-amber-500/40"
+                className="w-full px-4 py-2 rounded-xl border border-[#CBD5E1] text-xs font-semibold bg-[#FBF9F5] text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
               />
               <button
                 type="submit"
-                className="px-4 py-2 rounded-xl bg-[#0F1E36] text-white text-xs font-bold hover:bg-slate-900 transition shrink-0"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white text-xs font-black transition shadow-xs shrink-0 cursor-pointer"
               >
                 بحث
               </button>
@@ -234,7 +234,7 @@ export const AdminUsersManagementPage: React.FC = () => {
         </div>
 
         {/* Users Table */}
-        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden mb-6">
+        <div className="bg-white rounded-3xl border border-[#EAE4D9] shadow-2xs overflow-hidden mb-6">
           {isLoading ? (
             <div className="p-16">
               <LoadingState message="جاري تحميل سجلات المستخدمين..." />
@@ -250,7 +250,7 @@ export const AdminUsersManagementPage: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-start text-xs">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200/70 text-slate-500 font-bold">
+                  <tr className="bg-[#FBF9F5] border-b border-[#EAE4D9] text-[#475569] font-black">
                     <th className="py-4 px-6">المستخدم</th>
                     <th className="py-4 px-4">نوع الحساب</th>
                     <th className="py-4 px-4">حالة البريد</th>
@@ -259,17 +259,17 @@ export const AdminUsersManagementPage: React.FC = () => {
                     <th className="py-4 px-6 text-center">الإجراءات</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-[#EAE4D9]/60">
                   {users.map((user) => (
-                    <tr key={user.id} className="hover:bg-slate-50/60 transition">
+                    <tr key={user.id} className="hover:bg-[#F4EFE6]/30 transition">
                       {/* Name & Email */}
                       <td className="py-4 px-6">
-                        <div className="font-bold text-slate-900 text-sm">{user.name}</div>
-                        <div className="text-[11px] text-slate-500 font-mono" dir="ltr">
+                        <div className="font-black text-[#0F172A] text-sm">{user.name}</div>
+                        <div className="text-[11px] text-[#64748B] font-mono" dir="ltr">
                           {user.email}
                         </div>
                         {user.company_name && (
-                          <div className="text-[10px] text-amber-700 font-bold mt-0.5">
+                          <div className="text-[10px] text-[#0284C7] font-bold mt-0.5">
                             المنشأة: {user.company_name}
                           </div>
                         )}
@@ -278,12 +278,12 @@ export const AdminUsersManagementPage: React.FC = () => {
                       {/* Role Badge */}
                       <td className="py-4 px-4">
                         <span
-                          className={`inline-block px-2.5 py-1 rounded-lg text-[10px] font-black ${
+                          className={`inline-block px-2.5 py-1 rounded-xl text-[10px] font-black border ${
                             user.role === 'ADMIN'
-                              ? 'bg-purple-100 text-purple-800'
+                              ? 'bg-[#E8F4FC] text-[#0284C7] border-[#BAE6FD]'
                               : user.role === 'COMPANY'
-                              ? 'bg-amber-100 text-amber-900'
-                              : 'bg-blue-100 text-blue-900'
+                              ? 'bg-[#FBF9F5] text-[#0F172A] border-[#EAE4D9]'
+                              : 'bg-[#E8F8F2] text-[#0D6E44] border-[#BDE8D2]'
                           }`}
                         >
                           {user.role === 'ADMIN'
@@ -297,10 +297,10 @@ export const AdminUsersManagementPage: React.FC = () => {
                       {/* Email Verified */}
                       <td className="py-4 px-4">
                         <span
-                          className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
+                          className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-black border ${
                             user.email_verified
-                              ? 'bg-emerald-50 text-emerald-700'
-                              : 'bg-slate-100 text-slate-500'
+                              ? 'bg-[#E8F8F2] text-[#0D6E44] border-[#BDE8D2]'
+                              : 'bg-slate-100 text-[#64748B] border-slate-200'
                           }`}
                         >
                           {user.email_verified ? '✓ مفعل' : 'غير مفعل'}
@@ -310,10 +310,10 @@ export const AdminUsersManagementPage: React.FC = () => {
                       {/* Account Active */}
                       <td className="py-4 px-4">
                         <span
-                          className={`inline-block px-2.5 py-1 rounded-lg text-[10px] font-black ${
+                          className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-black border ${
                             user.is_active
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : 'bg-rose-100 text-rose-800'
+                              ? 'bg-[#E8F8F2] text-[#0D6E44] border-[#BDE8D2]'
+                              : 'bg-rose-50 text-rose-800 border-rose-200'
                           }`}
                         >
                           {user.is_active ? 'نشط' : 'معطل'}
@@ -321,7 +321,7 @@ export const AdminUsersManagementPage: React.FC = () => {
                       </td>
 
                       {/* Registration Date */}
-                      <td className="py-4 px-4 text-slate-500 font-mono text-[11px]">
+                      <td className="py-4 px-4 text-[#64748B] font-mono text-[11px]">
                         <bdi dir="ltr">{new Date(user.created_at).toLocaleDateString('ar-YE')}</bdi>
                       </td>
 
@@ -332,10 +332,10 @@ export const AdminUsersManagementPage: React.FC = () => {
                             type="button"
                             disabled={togglingUserId === user.id}
                             onClick={() => handleToggleStatus(user)}
-                            className={`px-3 py-1.5 rounded-xl font-bold text-[11px] transition ${
+                            className={`px-3 py-1.5 rounded-xl font-bold text-[11px] transition cursor-pointer border ${
                               user.is_active
-                                ? 'bg-amber-50 hover:bg-amber-100 text-amber-800'
-                                : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800'
+                                ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
+                                : 'bg-[#E8F8F2] hover:bg-[#D1FAE5] text-[#0D6E44] border-[#BDE8D2]'
                             }`}
                           >
                             {togglingUserId === user.id
@@ -348,7 +348,7 @@ export const AdminUsersManagementPage: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setUserToDelete(user)}
-                            className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition"
+                            className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] border border-rose-200 transition cursor-pointer"
                           >
                             حذف ✕
                           </button>
@@ -363,7 +363,7 @@ export const AdminUsersManagementPage: React.FC = () => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="p-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+            <div className="p-4 border-t border-[#EAE4D9] flex items-center justify-between text-xs text-[#64748B]">
               <span>
                 صفحة <bdi dir="ltr">{currentPage}</bdi> من <bdi dir="ltr">{totalPages}</bdi>
               </span>
@@ -372,7 +372,7 @@ export const AdminUsersManagementPage: React.FC = () => {
                   type="button"
                   disabled={currentPage <= 1}
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40 font-bold transition"
+                  className="px-3 py-1.5 rounded-xl border border-[#EAE4D9] bg-white hover:bg-[#F4EFE6]/60 disabled:opacity-40 font-bold transition cursor-pointer"
                 >
                   السابق
                 </button>
@@ -380,7 +380,7 @@ export const AdminUsersManagementPage: React.FC = () => {
                   type="button"
                   disabled={currentPage >= totalPages}
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                  className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40 font-bold transition"
+                  className="px-3 py-1.5 rounded-xl border border-[#EAE4D9] bg-white hover:bg-[#F4EFE6]/60 disabled:opacity-40 font-bold transition cursor-pointer"
                 >
                   التالي
                 </button>

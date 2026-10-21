@@ -60,39 +60,39 @@ export const CompanyJobsPage: React.FC = () => {
   })
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-['Cairo'] text-start" dir="rtl">
+    <div className="min-h-screen bg-[#FBF9F5] flex flex-col font-['Cairo'] text-start" dir="rtl">
       <Navbar />
 
       <main className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-1">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-[#0F1E36]">وظائفي (إدارة الشواغر الوظيفية)</h1>
-            <p className="text-xs text-slate-500 mt-1 font-medium">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#0F172A]">وظائفي (إدارة الشواغر الوظيفية)</h1>
+            <p className="text-xs sm:text-sm text-[#64748B] mt-1 font-medium">
               استعراض شواغر المنشأة، متابعة أعداد المتقدمين، وضبط حالات التقديم
             </p>
           </div>
           <Link
             to="/company/jobs/new"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0F1E36] hover:bg-[#1E293B] text-white text-xs font-black transition self-start sm:self-auto shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white text-xs font-black transition self-start sm:self-auto shadow-xs"
           >
-            <span>+ نشر وظيفة جديدة</span>
+            <span>+ نشر شاغر وظيفي جديد</span>
           </Link>
         </div>
 
         {/* Feedback Alert */}
         {feedback && (
           <div
-            className={`p-4 rounded-xl text-[13px] font-bold flex items-center justify-between shadow-sm transition ${
+            className={`p-4 rounded-2xl text-[13px] font-bold flex items-center justify-between shadow-2xs transition ${
               feedback.type === 'success'
-                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                ? 'bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2]'
                 : 'bg-rose-50 text-rose-800 border border-rose-200'
             }`}
           >
             <span>{feedback.text}</span>
             <button
               onClick={() => setFeedback(null)}
-              className="text-slate-400 hover:text-slate-600 font-bold"
+              className="text-slate-400 hover:text-slate-600 font-bold cursor-pointer"
             >
               ✕
             </button>
@@ -100,14 +100,14 @@ export const CompanyJobsPage: React.FC = () => {
         )}
 
         {/* Tabs: ALL, OPEN, CLOSED */}
-        <div className="flex items-center gap-2 border-b border-slate-200 pb-1">
+        <div className="flex items-center gap-2 border-b border-[#EAE4D9] pb-2">
           <button
             type="button"
             onClick={() => setActiveTab('ALL')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer ${
               activeTab === 'ALL'
-                ? 'bg-[#0F1E36] text-white shadow-xs'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                ? 'bg-[#0284C7] text-white shadow-xs'
+                : 'bg-white text-[#475569] hover:bg-[#F4EFE6]/60 border border-[#EAE4D9]'
             }`}
           >
             جميع الوظائف (<bdi dir="ltr">{jobs.length}</bdi>)
@@ -115,10 +115,10 @@ export const CompanyJobsPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveTab('OPEN')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer ${
               activeTab === 'OPEN'
-                ? 'bg-emerald-600 text-white shadow-xs'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                ? 'bg-[#10B981] text-white shadow-xs'
+                : 'bg-white text-[#475569] hover:bg-[#F4EFE6]/60 border border-[#EAE4D9]'
             }`}
           >
             الوظائف المفتوحة (<bdi dir="ltr">{jobs.filter((j) => j.status === 'OPEN').length}</bdi>)
@@ -126,10 +126,10 @@ export const CompanyJobsPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveTab('CLOSED')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-xs font-black transition cursor-pointer ${
               activeTab === 'CLOSED'
-                ? 'bg-slate-700 text-white shadow-xs'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                ? 'bg-[#475569] text-white shadow-xs'
+                : 'bg-white text-[#475569] hover:bg-[#F4EFE6]/60 border border-[#EAE4D9]'
             }`}
           >
             الوظائف المغلقة (<bdi dir="ltr">{jobs.filter((j) => j.status === 'CLOSED').length}</bdi>)
@@ -149,10 +149,10 @@ export const CompanyJobsPage: React.FC = () => {
             actionTo="/company/jobs/new"
           />
         ) : (
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div className="bg-white rounded-3xl border border-[#EAE4D9] shadow-2xs overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-start text-xs">
-                <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold">
+                <thead className="bg-[#FBF9F5] border-b border-[#EAE4D9] text-[#475569] font-black">
                   <tr>
                     <th className="p-4">المسمى الوظيفي</th>
                     <th className="p-4">تاريخ النشر</th>
@@ -162,7 +162,7 @@ export const CompanyJobsPage: React.FC = () => {
                     <th className="p-4 text-center">الإجراءات</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-[#EAE4D9]/60">
                   {filteredJobs.map((job) => {
                     const applicantsCount = job.applicants_count ?? 0
                     const minScore = job.minimum_match_score !== undefined
@@ -170,17 +170,17 @@ export const CompanyJobsPage: React.FC = () => {
                       : 60
 
                     return (
-                      <tr key={job.id} className="hover:bg-slate-50/70 transition">
+                      <tr key={job.id} className="hover:bg-[#F4EFE6]/30 transition">
                         {/* Title & Type */}
                         <td className="p-4">
-                          <span className="font-bold text-[#0F1E36] block text-[13px]">{job.title}</span>
-                          <span className="text-[11px] text-slate-500">
+                          <span className="font-black text-[#0F172A] block text-[13px]">{job.title}</span>
+                          <span className="text-[11px] text-[#64748B] font-medium">
                             {job.required_major} • {job.location}
                           </span>
                         </td>
 
                         {/* Created At */}
-                        <td className="p-4 text-slate-600 font-mono">
+                        <td className="p-4 text-[#64748B] font-mono">
                           {new Date(job.created_at).toLocaleDateString('ar-EG')}
                         </td>
 
@@ -188,7 +188,7 @@ export const CompanyJobsPage: React.FC = () => {
                         <td className="p-4 text-center">
                           <Link
                             to={`/company/jobs/${job.id}/applicants`}
-                            className="inline-flex items-center justify-center px-3 py-1 rounded-xl bg-blue-50 text-blue-800 hover:bg-blue-100 font-bold font-mono transition"
+                            className="inline-flex items-center justify-center px-3 py-1 rounded-xl bg-[#E8F4FC] text-[#0284C7] border border-[#BAE6FD] hover:bg-[#BAE6FD]/40 font-bold font-mono transition"
                             title="عرض قائمة المتقدمين"
                           >
                             <bdi dir="ltr">{applicantsCount}</bdi> متقدم
@@ -196,7 +196,7 @@ export const CompanyJobsPage: React.FC = () => {
                         </td>
 
                         {/* Minimum Match Score */}
-                        <td className="p-4 text-center font-bold text-slate-700 font-mono">
+                        <td className="p-4 text-center font-bold text-[#0F172A] font-mono">
                           <bdi dir="ltr">{minScore}%</bdi>
                         </td>
 
@@ -211,7 +211,7 @@ export const CompanyJobsPage: React.FC = () => {
                             {/* Applicants Link */}
                             <Link
                               to={`/company/jobs/${job.id}/applicants`}
-                              className="px-3 py-1.5 rounded-lg bg-[#0F1E36] hover:bg-[#1E293B] text-white font-bold text-[11px] transition shadow-xs"
+                              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white font-black text-[11px] transition shadow-2xs"
                             >
                               المتقدمون
                             </Link>
@@ -219,7 +219,7 @@ export const CompanyJobsPage: React.FC = () => {
                             {/* Edit Link */}
                             <Link
                               to={`/company/jobs/${job.id}/edit`}
-                              className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px] transition"
+                              className="px-3 py-1.5 rounded-xl border border-[#EAE4D9] bg-white hover:bg-[#F4EFE6]/60 text-[#0F172A] font-bold text-[11px] transition shadow-2xs"
                             >
                               تعديل
                             </Link>
@@ -229,7 +229,7 @@ export const CompanyJobsPage: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={() => setJobToClose(job)}
-                                className="px-2.5 py-1.5 rounded-lg text-rose-600 hover:bg-rose-50 font-bold text-[11px] transition cursor-pointer"
+                                className="px-2.5 py-1.5 rounded-xl text-rose-600 hover:bg-rose-50 font-bold text-[11px] transition cursor-pointer"
                                 title="إغلاق الشاغر"
                               >
                                 إغلاق

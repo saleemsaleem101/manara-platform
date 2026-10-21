@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import logoImg from '../assets/logo_transparent.png'
+import { BrandLogo } from '../components/BrandLogo'
+import { ThemeToggle } from '../components/ThemeToggle'
 import { api } from '../services/api'
 import { validatePassword } from '../utils/validators'
 
@@ -71,46 +72,54 @@ export const RegisterPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-between">
-      {/* Top Bar (48px) - Exact 01_Auth_Register.svg */}
-      <header className="w-full bg-white border-b border-[#E2E8F0] px-6 sm:px-12 h-12 flex items-center justify-between text-xs">
-        <span className="text-[#64748B] font-semibold text-[13px]">
-          منصة منارة لربط الخريجين بسوق العمل
-        </span>
-        <span className="text-[#0F1E36] font-bold text-[12px]">
-          إنشاء حساب جديد
-        </span>
+    <div className="min-h-screen bg-[#FBF9F5] flex flex-col justify-between" dir="rtl">
+      {/* Top Bar */}
+      <header className="w-full bg-white/90 backdrop-blur-md border-b border-[#EAE4D9] px-6 sm:px-12 h-16 flex items-center justify-between text-xs">
+        <div className="flex items-center gap-4">
+          <BrandLogo size="sm" showSubline={false} />
+          <span className="text-slate-300">/</span>
+          <span className="text-[#0284C7] font-black text-[12px] bg-[#E8F4FC] px-3 py-1 rounded-full border border-[#BAE3F9]">
+            إنشاء حساب جديد
+          </span>
+        </div>
+        <div className="flex items-center gap-2.5">
+          <ThemeToggle />
+          <Link to="/" className="text-[#64748B] hover:text-[#0284C7] font-semibold text-[13px] transition flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#EAE4D9] bg-white">
+            <span>الرئيسية</span>
+            <span>➔</span>
+          </Link>
+        </div>
       </header>
 
-      {/* Main Centered Card (1280px on desktop) */}
+      {/* Main Centered Card */}
       <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-[1280px] bg-white border border-[#E2E8F0] rounded-[24px] shadow-[0_6px_20px_rgba(15,30,54,0.06)] overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[760px]">
+        <div className="w-full max-w-[1240px] bg-white border border-[#EAE4D9] rounded-[28px] shadow-[0_6px_24px_rgba(15,23,42,0.04)] overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[740px]">
           
-          {/* Child 1 (RIGHT in RTL): Register Form (7 cols) - Exact 01_Auth_Register_Graduate.png */}
+          {/* Form (7 cols) */}
           <div className="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-center">
-            <div className="max-w-[500px] mx-auto w-full space-y-4">
+            <div className="max-w-[480px] mx-auto w-full space-y-4">
               {/* Role Switcher */}
-              <div className="inline-flex p-1 bg-[#F1F5F9] rounded-[12px] text-[12px]">
+              <div className="inline-flex p-1 bg-[#F4EFE6] rounded-xl text-[12px] border border-[#EAE4D9]">
                 <button
                   type="button"
-                  className="px-5 py-1.5 bg-[#0F1E36] text-white font-bold rounded-[10px] shadow-xs cursor-pointer"
+                  className="px-5 py-1.5 bg-[#0284C7] text-white font-bold rounded-lg shadow-2xs cursor-pointer"
                 >
-                  حساب خريج
+                  حساب باحث عن عمل
                 </button>
                 <Link
                   to="/company/register"
-                  className="px-4 py-1.5 text-slate-600 hover:text-slate-900 font-bold flex items-center gap-1.5 transition rounded-[10px]"
+                  className="px-4 py-1.5 text-[#475569] hover:text-[#0284C7] font-bold flex items-center gap-1.5 transition rounded-lg"
                 >
                   <span>حساب منشأة / شركة</span>
                 </Link>
               </div>
 
               <div>
-                <h1 className="text-[26px] font-black text-[#0F1E36] tracking-tight">
-                  إنشاء حساب خريج جديد
+                <h1 className="text-[26px] font-black text-[#0F172A] tracking-tight">
+                  إنشاء حساب جديد
                 </h1>
                 <p className="text-[13px] text-[#64748B] mt-1">
-                  الخطوة الأولى للربط المهني وبناء الملف الأكاديمي المعتمد
+                  الخطوة الأولى لبناء ملفك المهني الموثق واستقبال فرص العمل المتوافقة
                 </p>
               </div>
 
@@ -125,45 +134,45 @@ export const RegisterPage: React.FC = () => {
               <form onSubmit={handleSubmit} className="space-y-3.5 pt-1">
                 {/* Full Name */}
                 <div>
-                  <label className="block text-[12px] font-bold text-[#0F1E36] mb-1 text-start">
-                    الاسم الكامل (رباعي)
+                  <label className="block text-[12px] font-bold text-[#0F172A] mb-1 text-start">
+                    الاسم الكامل
                   </label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="جلال عبد الملك الصوفي"
-                    className="w-full h-[44px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
+                    placeholder=""
+                    className="w-full h-[46px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#FBF9F5] text-[13px] font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition text-start"
                   />
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label className="block text-[12px] font-bold text-[#0F1E36] mb-1 text-start">
-                    البريد الإلكتروني الجامعي أو الشخصي
+                  <label className="block text-[12px] font-bold text-[#0F172A] mb-1 text-start">
+                    البريد الإلكتروني
                   </label>
                   <input
                     type="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="jalal.matluq@gmail.com"
-                    className="w-full h-[44px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[13px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start font-mono"
+                    placeholder=""
+                    className="w-full h-[46px] px-4 rounded-[12px] border border-[#CBD5E1] bg-[#FBF9F5] text-[13px] font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition text-start font-mono"
                   />
                 </div>
 
                 {/* University & Major Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[12px] font-bold text-[#0F1E36] mb-1 text-start">
+                    <label className="block text-[12px] font-bold text-[#0F172A] mb-1 text-start">
                       الجامعة
                     </label>
                     <select
                       required
                       value={formData.university}
                       onChange={(e) => setFormData({ ...formData, university: e.target.value })}
-                      className="w-full h-[44px] px-3 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[12px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
+                      className="w-full h-[46px] px-3 rounded-[12px] border border-[#CBD5E1] bg-[#FBF9F5] text-[12px] font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition text-start"
                     >
                       <option value="">اختر الجامعة...</option>
                       <option value="جامعة العلوم والتكنولوجيا">جامعة العلوم والتكنولوجيا</option>
@@ -177,14 +186,14 @@ export const RegisterPage: React.FC = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[12px] font-bold text-[#0F1E36] mb-1 text-start">
-                      التخصص (اختر تخصص الحاسوب)
+                    <label className="block text-[12px] font-bold text-[#0F172A] mb-1 text-start">
+                      التخصص
                     </label>
                     <select
                       required
                       value={formData.major}
                       onChange={(e) => setFormData({ ...formData, major: e.target.value })}
-                      className="w-full h-[44px] px-3 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[12px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
+                      className="w-full h-[46px] px-3 rounded-[12px] border border-[#CBD5E1] bg-[#FBF9F5] text-[12px] font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition text-start"
                     >
                       <option value="">اختر التخصص...</option>
                       <option value="هندسة البرمجيات">هندسة البرمجيات (Software Eng)</option>
@@ -202,7 +211,7 @@ export const RegisterPage: React.FC = () => {
                 {/* Passwords Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[12px] font-bold text-[#0F1E36] mb-1 text-start">
+                    <label className="block text-[12px] font-bold text-[#0F172A] mb-1 text-start">
                       كلمة المرور
                     </label>
                     <div className="relative">
@@ -212,12 +221,12 @@ export const RegisterPage: React.FC = () => {
                         value={formData.password}
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         placeholder="••••••••••••"
-                        className="w-full h-[44px] px-4 pe-11 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[14px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
+                        className="w-full h-[46px] px-4 pe-11 rounded-[12px] border border-[#CBD5E1] bg-[#FBF9F5] text-[14px] font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition text-start"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute end-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F1E36] transition cursor-pointer p-0.5"
+                        className="absolute end-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F172A] transition cursor-pointer p-0.5"
                         tabIndex={-1}
                         aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
                       >
@@ -235,7 +244,7 @@ export const RegisterPage: React.FC = () => {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[12px] font-bold text-[#0F1E36] mb-1 text-start">
+                    <label className="block text-[12px] font-bold text-[#0F172A] mb-1 text-start">
                       تأكيد كلمة المرور
                     </label>
                     <div className="relative">
@@ -245,12 +254,12 @@ export const RegisterPage: React.FC = () => {
                         value={formData.confirmPassword}
                         onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                         placeholder="••••••••••••"
-                        className="w-full h-[44px] px-4 pe-11 rounded-[12px] border border-[#CBD5E1] bg-[#F8FAFC] text-[14px] font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
+                        className="w-full h-[46px] px-4 pe-11 rounded-[12px] border border-[#CBD5E1] bg-[#FBF9F5] text-[14px] font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition text-start"
                       />
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute end-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F1E36] transition cursor-pointer p-0.5"
+                        className="absolute end-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F172A] transition cursor-pointer p-0.5"
                         tabIndex={-1}
                         aria-label={showConfirmPassword ? 'إخفاء تأكيد كلمة المرور' : 'إظهار تأكيد كلمة المرور'}
                       >
@@ -276,7 +285,7 @@ export const RegisterPage: React.FC = () => {
                     id="agreeTerms"
                     checked={formData.agreeTerms}
                     onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })}
-                    className="w-4 h-4 rounded text-amber-500 focus:ring-amber-400 border-[#CBD5E1] cursor-pointer"
+                    className="w-4 h-4 rounded text-[#0284C7] focus:ring-[#BAE6FD] border-[#CBD5E1] cursor-pointer"
                   />
                   <label htmlFor="agreeTerms" className="text-[12px] text-[#475569] cursor-pointer">
                     أوافق على الشروط والأحكام وسياسة الخصوصية وحماية البيانات
@@ -287,15 +296,15 @@ export const RegisterPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isLoading || !isFormValid}
-                  className={`w-full h-[52px] rounded-[14px] transition-all duration-200 mt-2 flex items-center justify-center gap-2 text-[16px] font-black ${
+                  className={`w-full h-[52px] rounded-[14px] transition-all duration-200 mt-2 flex items-center justify-center gap-2 text-[15px] font-black ${
                     isFormValid && !isLoading
-                      ? 'bg-[#F59E0B] hover:bg-amber-600 text-[#0F1E36] cursor-pointer shadow-amber-500/25 shadow-md active:scale-[0.99]'
-                      : 'bg-[#CBD5E1] text-[#64748B] cursor-not-allowed opacity-70 shadow-none'
+                      ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white cursor-pointer shadow-sm active:scale-[0.99]'
+                      : 'bg-[#E2E8F0] text-[#94A3B8] cursor-not-allowed opacity-75 shadow-none'
                   }`}
                 >
                   {isLoading ? (
                     <>
-                      <span className="w-5 h-5 border-2 border-[#0F1E36] border-t-transparent rounded-full animate-spin" />
+                      <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       <span>جاري إنشاء الحساب...</span>
                     </>
                   ) : (
@@ -307,60 +316,62 @@ export const RegisterPage: React.FC = () => {
               {/* Footer */}
               <div className="text-center pt-2 text-[13px] text-[#64748B]">
                 لديك حساب مسبقاً؟{' '}
-                <Link to="/login" className="text-[#0F1E36] font-bold hover:underline">
+                <Link to="/login" className="text-[#0284C7] font-black hover:underline">
                   تسجيل الدخول
                 </Link>
               </div>
             </div>
           </div>
 
-          {/* Child 2 (LEFT in RTL): Brand & Features (5 cols) - Exact 01_Auth_Register_Graduate.png */}
-          <div className="lg:col-span-5 bg-[#F8FAFC] border-b lg:border-b-0 lg:border-e border-[#E2E8F0] p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden">
+          {/* Features Side (5 cols) */}
+          <div className="lg:col-span-5 bg-[#FAF8F5] border-b lg:border-b-0 lg:border-e border-[#EAE4D9] p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden">
             {/* Halo circle */}
-            <div className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] bg-[#FEF3C7]/60 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] bg-gradient-to-tr from-[#BAE6FD]/40 to-[#DCFCE7]/30 rounded-full blur-3xl pointer-events-none" />
 
             <div className="text-center my-auto py-6 relative z-10 space-y-4">
-              <img
-                src={logoImg}
-                alt="شعار منصة منارة الرسمي"
-                className="h-44 sm:h-52 w-auto mx-auto object-contain drop-shadow-sm"
-              />
+              <div className="relative mx-auto w-40 h-40 sm:w-48 sm:h-48">
+                <div className="absolute -inset-2 bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#10B981] rounded-3xl blur-md opacity-70" />
+                <div className="relative w-full h-full bg-white dark:bg-slate-900 rounded-3xl p-4 border border-[#EAE4D9] dark:border-slate-700 shadow-2xs flex items-center justify-center">
+                  <img
+                    src="/logo_trimmed.png"
+                    alt="شعار منصة منارة الرسمي"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              </div>
               <div>
-                <h2 className="text-[24px] font-black text-[#0F1E36]">
-                  منصة مَنَارَة لربط الخريجين بسوق العمل
+                <h2 className="text-[22px] font-black text-[#0F172A]">
+                  منصة مَنَارَة للربط المهني
                 </h2>
-                <p className="text-[13px] font-mono font-bold tracking-widest text-[#D97706] mt-1">
-                  CONNECT • GROW • SUCCEED
-                </p>
                 <p className="text-[13px] text-[#64748B] mt-2 max-w-sm mx-auto leading-relaxed">
-                  بوابتك الموثوقة لربط مؤهلاتك وتخصصك مباشرة مع شواغر الشركات
+                  بوابتك الموثوقة لربط مؤهلاتك وتخصصك مباشرة مع شواغر الشركات المعتمدة
                 </p>
               </div>
             </div>
 
-            {/* 3 Value Feature Cards - Matching 01_Auth_Register_Graduate.png */}
+            {/* Value Feature Cards */}
             <div className="space-y-2.5 relative z-10">
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="bg-white border border-[#E2E8F0] p-3.5 rounded-[16px] text-center shadow-xs">
-                  <div className="w-8 h-8 mx-auto mb-1.5 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold">
+                <div className="bg-white border border-[#EAE4D9] p-3.5 rounded-[16px] text-center shadow-2xs">
+                  <div className="w-8 h-8 mx-auto mb-1.5 rounded-full bg-[#E8F4FC] text-[#0284C7] flex items-center justify-center text-sm font-bold border border-[#BAE3F9]">
                     ✓
                   </div>
-                  <div className="text-[12px] font-black text-[#0F1E36]">ملف أكاديمي معتمد</div>
-                  <div className="text-[10px] font-semibold text-[#64748B] mt-0.5">توثيق بيانات التخصص والمهارات لسوق العمل</div>
+                  <div className="text-[12px] font-black text-[#0F172A]">ملف مهني معتمد</div>
+                  <div className="text-[10px] text-[#64748B] mt-0.5">توثيق مهاراتك ومشاريعك لسوق العمل</div>
                 </div>
-                <div className="bg-white border border-[#E2E8F0] p-3.5 rounded-[16px] text-center shadow-xs">
-                  <div className="w-8 h-8 mx-auto mb-1.5 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-sm font-bold">
+                <div className="bg-white border border-[#EAE4D9] p-3.5 rounded-[16px] text-center shadow-2xs">
+                  <div className="w-8 h-8 mx-auto mb-1.5 rounded-full bg-[#E8F8F2] text-[#0D6E44] flex items-center justify-center text-sm font-bold border border-[#BDE8D2]">
                     ⚡
                   </div>
-                  <div className="text-[12px] font-black text-[#0F1E36]">مطابقة موزونة دقيقة</div>
-                  <div className="text-[10px] font-semibold text-[#64748B] mt-0.5">خوارزمية قياس التوافق مع متطلبات الشركات</div>
+                  <div className="text-[12px] font-black text-[#0F172A]">مطابقة موزونة</div>
+                  <div className="text-[10px] text-[#64748B] mt-0.5">خوارزمية قياس التوافق مع متطلبات الشركات</div>
                 </div>
               </div>
-              <div className="bg-white border border-[#E2E8F0] p-3 rounded-[16px] flex items-center gap-3 shadow-xs text-start">
-                <div className="w-8 h-8 shrink-0 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-bold">
+              <div className="bg-white border border-[#EAE4D9] p-3 rounded-[16px] flex items-center gap-3 shadow-2xs text-start">
+                <div className="w-8 h-8 shrink-0 rounded-full bg-[#F8F4EC] text-[#854D0E] flex items-center justify-center text-sm font-bold border border-[#E8DDCC]">
                   ★
                 </div>
-                <div className="text-[11px] font-bold text-[#0F1E36] leading-tight">
+                <div className="text-[11px] font-bold text-[#0F172A] leading-tight">
                   سيرة ذاتية هجينة موحدة تجمع المشاريع البرمجية الحية والفيديو التعريفي
                 </div>
               </div>
@@ -373,3 +384,5 @@ export const RegisterPage: React.FC = () => {
     </div>
   )
 }
+
+export default RegisterPage

@@ -103,36 +103,36 @@ export const AdminJobsManagementPage: React.FC = () => {
   const totalPages = Math.ceil(totalCount / pageSize) || 1
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans" dir="rtl">
+    <div className="min-h-screen bg-[#FBF9F5] text-[#0F172A] font-sans" dir="rtl">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Breadcrumb Navigation & Header with Generous Spacing */}
         <div>
-          <div className="flex items-center gap-2 text-xs text-slate-500 mb-3">
-            <Link to="/admin" className="hover:text-slate-900 transition font-medium">
+          <div className="flex items-center gap-2 text-xs text-slate-500 mb-3 font-semibold">
+            <Link to="/admin" className="hover:text-[#0284C7] transition">
               لوحة التحكم
             </Link>
             <span>/</span>
-            <span className="text-amber-600 font-bold">إدارة الوظائف والشواغر</span>
+            <span className="text-[#0284C7] font-black">إدارة الوظائف والشواغر</span>
           </div>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-[#0F1E36]">
+              <h1 className="text-2xl sm:text-3xl font-black text-[#0F172A]">
                 إدارة شواغر المنصة
               </h1>
-              <p className="text-slate-500 text-sm mt-1.5">
+              <p className="text-slate-500 text-sm mt-1.5 font-medium">
                 متابعة الوظائف المعلنة من المنشآت المعتمدة، وضبط ظهور الشواغر أو حذفها
               </p>
             </div>
             <div className="flex items-center gap-3">
               <Link
                 to="/admin#approvals"
-                className="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition shadow-2xs"
+                className="px-4 py-2.5 rounded-xl border border-[#EAE4D9] bg-white hover:bg-[#F4EFE6]/60 text-[#0F172A] text-xs font-bold transition shadow-2xs"
               >
                 طلبات الاعتماد التجاري
               </Link>
-              <div className="text-xs font-mono font-bold bg-white px-4 py-2.5 rounded-xl border border-slate-200/80 shadow-2xs">
+              <div className="text-xs font-mono font-black text-[#0284C7] bg-[#E8F4FC] px-4 py-2.5 rounded-xl border border-[#BAE3F9] shadow-2xs">
                 إجمالي الشواغر: <bdi dir="ltr">{totalCount}</bdi>
               </div>
             </div>
@@ -160,10 +160,10 @@ export const AdminJobsManagementPage: React.FC = () => {
         )}
 
         {/* Filter Bar with Enhanced Spacing */}
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xs">
+        <div className="bg-white rounded-3xl border border-[#EAE4D9] p-5 sm:p-6 shadow-2xs">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             {/* Status Tabs: Clean, matching row statuses */}
-            <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-slate-100 w-full md:w-auto">
+            <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] w-full md:w-auto">
               <button
                 type="button"
                 onClick={() => {
@@ -172,8 +172,8 @@ export const AdminJobsManagementPage: React.FC = () => {
                 }}
                 className={`px-4 py-2 rounded-xl text-xs font-black transition ${
                   activeTab === 'ALL'
-                    ? 'bg-white text-[#0F1E36] shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-[#0F172A] hover:bg-[#F4EFE6]/50'
                 }`}
               >
                 الكل
@@ -186,8 +186,8 @@ export const AdminJobsManagementPage: React.FC = () => {
                 }}
                 className={`px-4 py-2 rounded-xl text-xs font-black transition ${
                   activeTab === 'OPEN'
-                    ? 'bg-white text-[#0F1E36] shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-[#0F172A] hover:bg-[#F4EFE6]/50'
                 }`}
               >
                 مفتوحة
@@ -200,8 +200,8 @@ export const AdminJobsManagementPage: React.FC = () => {
                 }}
                 className={`px-4 py-2 rounded-xl text-xs font-black transition ${
                   activeTab === 'CLOSED'
-                    ? 'bg-white text-[#0F1E36] shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-[#0F172A] hover:bg-[#F4EFE6]/50'
                 }`}
               >
                 مغلقة
@@ -214,8 +214,8 @@ export const AdminJobsManagementPage: React.FC = () => {
                 }}
                 className={`px-4 py-2 rounded-xl text-xs font-black transition ${
                   activeTab === 'HIDDEN'
-                    ? 'bg-white text-[#0F1E36] shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-[#0F172A] hover:bg-[#F4EFE6]/50'
                 }`}
               >
                 مخفية
@@ -229,11 +229,11 @@ export const AdminJobsManagementPage: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="ابحث بالمسمى أو الشركة أو التخصص..."
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium bg-slate-50/50 focus:outline-hidden focus:ring-2 focus:ring-amber-500/40"
+                className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
               />
               <button
                 type="submit"
-                className="px-4 py-2.5 rounded-xl bg-[#0F1E36] text-white text-xs font-bold hover:bg-slate-900 transition shrink-0"
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white text-xs font-black shadow-xs transition shrink-0"
               >
                 بحث
               </button>
@@ -242,7 +242,7 @@ export const AdminJobsManagementPage: React.FC = () => {
         </div>
 
         {/* Jobs Table */}
-        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
+        <div className="bg-white rounded-3xl border border-[#EAE4D9] shadow-2xs overflow-hidden">
           {isLoading ? (
             <div className="p-16">
               <LoadingState message="جاري استرجاع شواغر المنصة..." />
@@ -258,7 +258,7 @@ export const AdminJobsManagementPage: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-start text-xs">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200/70 text-slate-500 font-bold">
+                  <tr className="bg-[#FBF9F5] border-b border-[#EAE4D9] text-slate-500 font-bold">
                     <th className="py-4 px-6">المسمى الوظيفي والشركة</th>
                     <th className="py-4 px-4">التخصص المطلوب</th>
                     <th className="py-4 px-4">الخبرة المطلوبة</th>
@@ -268,35 +268,35 @@ export const AdminJobsManagementPage: React.FC = () => {
                     <th className="py-4 px-6 text-center">الإجراءات</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-[#EAE4D9]/60">
                   {jobs.map((job) => (
-                    <tr key={job.id} className="hover:bg-slate-50/60 transition">
+                    <tr key={job.id} className="hover:bg-[#FBF9F5]/70 transition">
                       {/* Title & Company */}
                       <td className="py-4 px-6">
-                        <div className="font-bold text-slate-900 text-sm">{job.title}</div>
+                        <div className="font-bold text-[#0F172A] text-sm">{job.title}</div>
                         <div className="text-[11px] text-slate-500 flex items-center gap-1.5 mt-0.5">
                           <span>{job.company_name}</span>
                           {job.company_verified && (
-                            <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded font-bold">
-                              معتمدة
+                            <span className="text-[10px] text-[#0D6E44] bg-[#E8F8F2] border border-[#BDE8D2] px-2 py-0.5 rounded-md font-black">
+                              معتمدة ✓
                             </span>
                           )}
                         </div>
                       </td>
 
                       {/* Major */}
-                      <td className="py-4 px-4 font-medium text-slate-700">
+                      <td className="py-4 px-4 font-semibold text-slate-700">
                         {job.required_major}
                       </td>
 
                       {/* Experience */}
-                      <td className="py-4 px-4 text-slate-600 font-mono">
+                      <td className="py-4 px-4 text-slate-600 font-mono font-bold">
                         {job.required_exp === 0 ? 'حديث تخرج' : `${job.required_exp} سنوات`}
                       </td>
 
                       {/* Applicants Count */}
                       <td className="py-4 px-4">
-                        <span className="font-bold font-mono text-slate-900 bg-slate-100 px-2.5 py-1 rounded-lg">
+                        <span className="font-bold font-mono text-[#0284C7] bg-[#E8F4FC] border border-[#BAE3F9] px-2.5 py-1 rounded-lg">
                           <bdi dir="ltr">{job.applicants_count}</bdi>
                         </span>
                       </td>
@@ -304,12 +304,12 @@ export const AdminJobsManagementPage: React.FC = () => {
                       {/* Status */}
                       <td className="py-4 px-4">
                         <span
-                          className={`inline-block px-2.5 py-1 rounded-lg text-[10px] font-black ${
+                          className={`inline-block px-2.5 py-1 rounded-lg text-[10px] font-black border ${
                             job.status === 'OPEN'
-                              ? 'bg-emerald-100 text-emerald-800'
+                              ? 'bg-[#E8F8F2] text-[#0D6E44] border-[#BDE8D2]'
                               : job.status === 'CLOSED'
-                              ? 'bg-slate-200 text-slate-700'
-                              : 'bg-rose-100 text-rose-800'
+                              ? 'bg-[#F4EFE6] text-slate-700 border-[#EAE4D9]'
+                              : 'bg-slate-100 text-slate-700 border-slate-200'
                           }`}
                         >
                           {job.status === 'OPEN'
@@ -332,10 +332,10 @@ export const AdminJobsManagementPage: React.FC = () => {
                             type="button"
                             disabled={togglingJobId === job.id}
                             onClick={() => handleToggleVisibility(job)}
-                            className={`px-3 py-1.5 rounded-xl font-bold text-[11px] transition ${
+                            className={`px-3 py-1.5 rounded-xl font-bold text-[11px] border transition ${
                               job.status === 'HIDDEN'
-                                ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800'
-                                : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                                ? 'bg-[#E8F8F2] hover:bg-[#D1FAE5] text-[#0D6E44] border-[#BDE8D2]'
+                                : 'bg-white hover:bg-[#F4EFE6] text-slate-700 border-[#EAE4D9]'
                             }`}
                           >
                             {togglingJobId === job.id
@@ -348,7 +348,7 @@ export const AdminJobsManagementPage: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setJobToDelete(job)}
-                            className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition"
+                            className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-[11px] transition shadow-2xs"
                           >
                             حذف ✕
                           </button>
@@ -363,7 +363,7 @@ export const AdminJobsManagementPage: React.FC = () => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="p-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+            <div className="p-4 border-t border-[#EAE4D9] bg-[#FBF9F5]/40 flex items-center justify-between text-xs text-slate-600">
               <span>
                 صفحة <bdi dir="ltr">{currentPage}</bdi> من <bdi dir="ltr">{totalPages}</bdi>
               </span>
@@ -372,7 +372,7 @@ export const AdminJobsManagementPage: React.FC = () => {
                   type="button"
                   disabled={currentPage <= 1}
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40 font-bold transition"
+                  className="px-3 py-1.5 rounded-lg border border-[#EAE4D9] bg-white hover:bg-[#F4EFE6] text-[#0F172A] disabled:opacity-40 font-bold transition shadow-2xs"
                 >
                   السابق
                 </button>
@@ -380,7 +380,7 @@ export const AdminJobsManagementPage: React.FC = () => {
                   type="button"
                   disabled={currentPage >= totalPages}
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                  className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40 font-bold transition"
+                  className="px-3 py-1.5 rounded-lg border border-[#EAE4D9] bg-white hover:bg-[#F4EFE6] text-[#0F172A] disabled:opacity-40 font-bold transition shadow-2xs"
                 >
                   التالي
                 </button>

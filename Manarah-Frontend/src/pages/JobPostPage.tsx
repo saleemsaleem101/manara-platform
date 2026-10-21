@@ -190,7 +190,7 @@ export const JobPostPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC]" dir="rtl">
+      <div className="min-h-screen bg-[#FBF9F5]" dir="rtl">
         <Navbar />
         <div className="max-w-4xl mx-auto px-4 py-20">
           <LoadingState message="جاري تحميل بيانات الوظيفة ودليل المهارات..." />
@@ -203,29 +203,29 @@ export const JobPostPage: React.FC = () => {
   const isApproved = companyProfile?.verification_status === 'APPROVED'
   if (!isApproved) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC]" dir="rtl">
+      <div className="min-h-screen bg-[#FBF9F5]" dir="rtl">
         <Navbar />
         <main className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-          <div className="bg-white rounded-3xl border border-amber-200 p-8 sm:p-10 shadow-xs text-center">
-            <div className="w-16 h-16 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
-              !
+          <div className="bg-white rounded-3xl border border-[#BAE6FD] p-8 sm:p-10 shadow-2xs text-center">
+            <div className="w-16 h-16 rounded-2xl bg-[#E8F4FC] text-[#0284C7] border border-[#BAE6FD] flex items-center justify-center mx-auto mb-6 text-2xl font-black">
+              ℹ
             </div>
-            <h1 className="text-2xl font-black text-[#0F1E36] mb-3">
+            <h1 className="text-2xl font-black text-[#0F172A] mb-3">
               نشر الوظائف غير متاح حالياً
             </h1>
-            <p className="text-sm text-slate-600 max-w-lg mx-auto mb-8 leading-relaxed">
+            <p className="text-sm text-[#475569] max-w-lg mx-auto mb-8 leading-relaxed">
               وفقاً لضوابط واعتمادات المنصة، لا يمكن للمنشأة نشر شواغر وظيفية جديدة أو تعديل الشواغر حتى يتم التحقق من السجل التجاري واعتماد الحساب رسمياً من قبل الإدارة.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 to="/company/status"
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm transition shadow-xs"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white font-black text-sm transition shadow-xs"
               >
                 متابعة حالة اعتماد المنشأة
               </Link>
               <Link
                 to="/company/jobs"
-                className="w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-sm transition"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl border border-[#EAE4D9] bg-white hover:bg-[#F4EFE6]/60 text-[#0F172A] font-bold text-sm transition"
               >
                 العودة لوظائفي
               </Link>
@@ -241,33 +241,33 @@ export const JobPostPage: React.FC = () => {
   )
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans" dir="rtl">
+    <div className="min-h-screen bg-[#FBF9F5] text-[#0F172A] font-sans" dir="rtl">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Breadcrumbs */}
         <div className="mb-8">
-          <div className="flex items-center gap-2 text-xs text-slate-500 mb-2">
-            <Link to="/company/jobs" className="hover:text-slate-900 transition font-medium">
+          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-2 font-medium">
+            <Link to="/company/jobs" className="hover:text-[#0284C7] transition">
               وظائفي
             </Link>
             <span>/</span>
-            <span className="text-amber-600 font-bold">
+            <span className="text-[#0284C7] font-bold">
               {isEditMode ? 'تعديل وظيفة وتحديد أوزان المطابقة' : 'نشر شاغر جديد وضبط أوزان المطابقة'}
             </span>
           </div>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-[#0F1E36]">
+              <h1 className="text-2xl sm:text-3xl font-black text-[#0F172A]">
                 {isEditMode ? 'تعديل بيانات الوظيفة وأوزان المطابقة' : 'نشر وظيفة جديدة وتحديد أوزان المطابقة'}
               </h1>
-              <p className="text-slate-500 text-sm mt-1">
+              <p className="text-[#64748B] text-xs sm:text-sm mt-1">
                 تحديد متطلبات الشاغر وضبط أوزان معايير التوافق الموزونة لحساب درجة التطابق بدقة
               </p>
             </div>
             <Link
               to="/company/jobs"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition shadow-xs self-start"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#EAE4D9] bg-white hover:bg-[#F4EFE6]/60 text-[#0F172A] text-xs font-bold transition shadow-2xs self-start"
             >
               العودة لقائمة وظائفي
             </Link>
@@ -277,9 +277,9 @@ export const JobPostPage: React.FC = () => {
         {/* Feedback message banner */}
         {feedbackMsg && (
           <div
-            className={`mb-6 p-4 rounded-2xl flex items-center justify-between text-sm font-bold ${
+            className={`mb-6 p-4 rounded-2xl flex items-center justify-between text-sm font-bold shadow-2xs ${
               feedbackMsg.type === 'success'
-                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                ? 'bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2]'
                 : 'bg-rose-50 text-rose-800 border border-rose-200'
             }`}
           >
@@ -287,7 +287,7 @@ export const JobPostPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setFeedbackMsg(null)}
-              className="text-xs text-slate-400 hover:text-slate-700 font-normal px-2 py-1"
+              className="text-xs text-slate-400 hover:text-slate-700 font-normal px-2 py-1 cursor-pointer"
             >
               إغلاق
             </button>
@@ -297,20 +297,20 @@ export const JobPostPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Section 1: تفاصيل الوظيفة والشروط (Col 7) */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xs">
-              <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
-                <div className="w-10 h-10 rounded-2xl bg-[#0F1E36] text-white font-black flex items-center justify-center text-base shadow-xs">
+            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 sm:p-8 shadow-2xs">
+              <div className="flex items-center gap-3 border-b border-[#EAE4D9] pb-4 mb-6">
+                <div className="w-10 h-10 rounded-2xl bg-[#0284C7] text-white font-black flex items-center justify-center text-base shadow-xs">
                   1
                 </div>
                 <div>
-                  <h2 className="text-lg font-black text-[#0F1E36]">تفاصيل الشاغر الوظيفي</h2>
-                  <p className="text-xs text-slate-500">المعلومات الأساسية ومتطلبات التأهيل والشروط الأكاديمية</p>
+                  <h2 className="text-lg font-black text-[#0F172A]">تفاصيل الشاغر الوظيفي</h2>
+                  <p className="text-xs text-[#64748B]">المعلومات الأساسية ومتطلبات التأهيل والشروط الأكاديمية</p>
                 </div>
               </div>
 
               <div className="space-y-5">
                 <div>
-                  <label htmlFor={titleInputId} className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label htmlFor={titleInputId} className="block text-xs font-bold text-[#475569] mb-1.5">
                     المسمى الوظيفي <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -319,14 +319,14 @@ export const JobPostPage: React.FC = () => {
                     required
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="مثال: مهندس برمجيات واجهات أمامية"
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-amber-500/40 text-sm font-medium bg-slate-50/50"
+                    placeholder=""
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs sm:text-sm font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor={majorSelectId} className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label htmlFor={majorSelectId} className="block text-xs font-bold text-[#475569] mb-1.5">
                       التخصص المطلوب <span className="text-rose-500">*</span>
                     </label>
                     <select
@@ -334,7 +334,7 @@ export const JobPostPage: React.FC = () => {
                       required
                       value={requiredMajor}
                       onChange={(e) => setRequiredMajor(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-amber-500/40 text-sm font-medium bg-slate-50/50"
+                      className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs sm:text-sm font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
                     >
                       <option value="">اختر التخصص الأكاديمي المطلوب</option>
                       <option value="علوم الحاسب">علوم الحاسب</option>
@@ -348,14 +348,14 @@ export const JobPostPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label htmlFor={expSelectId} className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label htmlFor={expSelectId} className="block text-xs font-bold text-[#475569] mb-1.5">
                       سنوات الخبرة المطلوبة <span className="text-rose-500">*</span>
                     </label>
                     <select
                       id={expSelectId}
                       value={requiredExp}
                       onChange={(e) => setRequiredExp(Number(e.target.value))}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-amber-500/40 text-sm font-medium bg-slate-50/50"
+                      className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs sm:text-sm font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
                     >
                       <option value={0}>حديث تخرج (بدون خبرة سابقة)</option>
                       <option value={1}>سنة واحدة</option>
@@ -369,14 +369,14 @@ export const JobPostPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor={qualSelectId} className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label htmlFor={qualSelectId} className="block text-xs font-bold text-[#475569] mb-1.5">
                       المؤهل التعليمي الأدنى <span className="text-rose-500">*</span>
                     </label>
                     <select
                       id={qualSelectId}
                       value={requiredQualification}
                       onChange={(e) => setRequiredQualification(e.target.value as 'DIPLOMA' | 'BACHELOR' | 'MASTER' | 'DOCTORATE')}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-amber-500/40 text-sm font-medium bg-slate-50/50"
+                      className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs sm:text-sm font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
                     >
                       <option value="DIPLOMA">دبلوم متوسط</option>
                       <option value="BACHELOR">بكالوريوس</option>
@@ -386,7 +386,7 @@ export const JobPostPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label htmlFor={locationInputId} className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label htmlFor={locationInputId} className="block text-xs font-bold text-[#475569] mb-1.5">
                       المدينة / مقر العمل
                     </label>
                     <input
@@ -394,22 +394,22 @@ export const JobPostPage: React.FC = () => {
                       type="text"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      placeholder="مثال: الرياض"
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-amber-500/40 text-sm font-medium bg-slate-50/50"
+                      placeholder=""
+                      className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs sm:text-sm font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor={jobTypeSelectId} className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label htmlFor={jobTypeSelectId} className="block text-xs font-bold text-[#475569] mb-1.5">
                       نمط ونوع العمل
                     </label>
                     <select
                       id={jobTypeSelectId}
                       value={jobType}
                       onChange={(e) => setJobType(e.target.value as 'FULL_TIME' | 'PART_TIME' | 'REMOTE' | 'HYBRID')}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-amber-500/40 text-sm font-medium bg-slate-50/50"
+                      className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs sm:text-sm font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
                     >
                       <option value="FULL_TIME">دوام كامل (حضوري)</option>
                       <option value="PART_TIME">دوام جزئي</option>
@@ -419,7 +419,7 @@ export const JobPostPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label htmlFor={deadlineInputId} className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label htmlFor={deadlineInputId} className="block text-xs font-bold text-[#475569] mb-1.5">
                       آخر موعد لاستقبال الطلبات
                     </label>
                     <input
@@ -427,7 +427,7 @@ export const JobPostPage: React.FC = () => {
                       type="date"
                       value={deadline}
                       onChange={(e) => setDeadline(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-amber-500/40 text-sm font-medium bg-slate-50/50"
+                      className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs sm:text-sm font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
                     />
                   </div>
                 </div>
@@ -435,14 +435,14 @@ export const JobPostPage: React.FC = () => {
                 {/* Skills Picker from Catalog */}
                 <div className="pt-2">
                   <div className="flex items-center justify-between mb-1.5">
-                    <label htmlFor={skillSearchInputId} className="block text-xs font-bold text-slate-700">
+                    <label htmlFor={skillSearchInputId} className="block text-xs font-bold text-[#475569]">
                       المهارات المطلوبة (من دليل المنصة المعتمد) <span className="text-rose-500">*</span>
                     </label>
-                    <span className="text-[11px] text-slate-500 font-medium">
+                    <span className="text-[11px] text-[#0284C7] font-bold">
                       المحدد: <bdi dir="ltr">{selectedSkillIds.length}</bdi> مهارات
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 mb-3">
+                  <p className="text-[11px] text-[#64748B] mb-3">
                     يتم اختيار المهارات من الدليل الموحد لضمان دقة حساب تشابه جاكارد الرياضي.
                   </p>
 
@@ -452,11 +452,11 @@ export const JobPostPage: React.FC = () => {
                     value={skillSearch}
                     onChange={(e) => setSkillSearch(e.target.value)}
                     placeholder="ابحث في دليل المهارات..."
-                    className="w-full px-4 py-2 rounded-xl border border-slate-200 text-xs font-medium mb-3 bg-slate-50/50"
+                    className="w-full px-4 py-2 rounded-xl border border-[#CBD5E1] text-xs font-medium mb-3 bg-[#FBF9F5] text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
                   />
 
                   {/* Skills Catalog Chips */}
-                  <div className="max-h-40 overflow-y-auto p-3 rounded-xl border border-slate-100 bg-slate-50/30 flex flex-wrap gap-1.5">
+                  <div className="max-h-40 overflow-y-auto p-3 rounded-xl border border-[#EAE4D9] bg-[#FBF9F5]/60 flex flex-wrap gap-1.5">
                     {filteredSkills.map((sk) => {
                       const isSelected = selectedSkillIds.includes(sk.id)
                       return (
@@ -464,10 +464,10 @@ export const JobPostPage: React.FC = () => {
                           key={sk.id}
                           type="button"
                           onClick={() => toggleSkill(sk.id)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
                             isSelected
-                              ? 'bg-amber-500 text-slate-950 shadow-2xs'
-                              : 'bg-white text-slate-700 border border-slate-200 hover:border-amber-400'
+                              ? 'bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2] font-black'
+                              : 'bg-white text-[#475569] border border-[#EAE4D9] hover:border-[#BAE6FD]'
                           }`}
                         >
                           <span>{sk.name}</span>
@@ -476,14 +476,14 @@ export const JobPostPage: React.FC = () => {
                       )
                     })}
                     {filteredSkills.length === 0 && (
-                      <span className="text-xs text-slate-400 p-2">لا توجد مهارات مطابقة للبحث</span>
+                      <span className="text-xs text-[#94A3B8] p-2">لا توجد مهارات مطابقة للبحث</span>
                     )}
                   </div>
                 </div>
 
                 {/* Description */}
                 <div>
-                  <label htmlFor={descTextareaId} className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label htmlFor={descTextareaId} className="block text-xs font-bold text-[#475569] mb-1.5">
                     الوصف الوظيفي والمسؤوليات الأساسية <span className="text-rose-500">*</span>
                   </label>
                   <textarea
@@ -493,7 +493,7 @@ export const JobPostPage: React.FC = () => {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="اكتب وصفاً مفصلاً للمهام والمسؤوليات ومواصفات المرشح..."
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-amber-500/40 text-sm font-medium bg-slate-50/50 leading-relaxed"
+                    className="w-full px-4 py-3 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs sm:text-sm font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition leading-relaxed"
                   />
                 </div>
               </div>
@@ -502,35 +502,89 @@ export const JobPostPage: React.FC = () => {
 
           {/* Section 2: أوزان معايير التوافق (Col 5) */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xs sticky top-24">
-              <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
-                <div className="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-base shadow-xs">
+            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 sm:p-8 shadow-2xs sticky top-24">
+              <div className="flex items-center gap-3 border-b border-[#EAE4D9] pb-4 mb-6">
+                <div className="w-10 h-10 rounded-2xl bg-[#10B981] text-white font-black flex items-center justify-center text-base shadow-xs">
                   2
                 </div>
                 <div>
-                  <h2 className="text-lg font-black text-[#0F1E36]">أوزان معايير التوافق</h2>
-                  <p className="text-xs text-slate-500">حدد أوزان العوامل الأربعة بشرط: المجموع = 1.0 (100%) تماماً</p>
+                  <h2 className="text-lg font-black text-[#0F172A]">أوزان معايير التوافق</h2>
+                  <p className="text-xs text-[#64748B]">حدد أوزان العوامل الأربعة بشرط: المجموع = 1.0 (100%) تماماً</p>
                 </div>
               </div>
 
               {/* Formula Badge */}
-              <div className="p-4 rounded-2xl bg-slate-900 text-white mb-6 text-xs">
-                <div className="flex items-center justify-between font-bold mb-2">
-                  <span className="text-amber-400">صيغة التوافق:</span>
-                  <span className="font-mono text-emerald-400">∑w = 1.00 (100%)</span>
+              <div className="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] mb-4 text-xs">
+                <div className="flex items-center justify-between font-black mb-2">
+                  <span className="text-[#0284C7]">صيغة التوافق الموزونة:</span>
+                  <span className="font-mono text-[#0D6E44] bg-[#E8F8F2] px-2 py-0.5 rounded-md border border-[#BDE8D2]">
+                    ∑w = 1.00 (100%)
+                  </span>
                 </div>
-                <p className="text-slate-300 text-[11px] leading-relaxed font-mono" dir="ltr">
+                <p className="text-[#475569] text-[11px] leading-relaxed font-mono" dir="ltr">
                   Score = (ws × Ss) + (wm × Sm) + (we × Se) + (wq × Sq)
                 </p>
+              </div>
+
+              {/* Quick Weight Presets */}
+              <div className="mb-5 space-y-2">
+                <span className="text-[11px] font-bold text-[#64748B] block">أنماط الأوزان السريعة والمخصصة:</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSkillsWeight(0.65)
+                      setMajorWeight(0.25)
+                      setExpWeight(0.0)
+                      setQualWeight(0.10)
+                    }}
+                    className={`p-2.5 rounded-xl border text-[11px] font-bold text-start transition cursor-pointer ${
+                      expWeight === 0.0 && skillsWeight === 0.65
+                        ? 'bg-[#E8F8F2] border-[#BDE8D2] text-[#0D6E44]'
+                        : 'bg-[#FBF9F5] border-[#EAE4D9] text-[#0F172A] hover:border-[#BAE6FD]'
+                    }`}
+                  >
+                    <div className="font-black flex items-center gap-1 mb-0.5">
+                      <span>🎓</span>
+                      <span>نمط خريجي الحاسوب الجدد</span>
+                    </div>
+                    <span className="text-[10px] text-[#64748B] block">
+                      خبرة 0% • تركيز كلي على المشاريع والمهارات
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSkillsWeight(0.45)
+                      setMajorWeight(0.25)
+                      setExpWeight(0.20)
+                      setQualWeight(0.10)
+                    }}
+                    className={`p-2.5 rounded-xl border text-[11px] font-bold text-start transition cursor-pointer ${
+                      expWeight === 0.20 && skillsWeight === 0.45
+                        ? 'bg-[#E8F4FC] border-[#BAE6FD] text-[#0284C7]'
+                        : 'bg-[#FBF9F5] border-[#EAE4D9] text-[#0F172A] hover:border-[#BAE6FD]'
+                    }`}
+                  >
+                    <div className="font-black flex items-center gap-1 mb-0.5">
+                      <span>⚖️</span>
+                      <span>النمط الموزون القياسي</span>
+                    </div>
+                    <span className="text-[10px] text-[#64748B] block">
+                      45% مهارات • 25% تخصص • 20% خبرة • 10% مؤهل
+                    </span>
+                  </button>
+                </div>
               </div>
 
               {/* 4 Weights Sliders */}
               <div className="space-y-4">
                 {/* Weight 1: Skills */}
-                <div className="p-3.5 rounded-2xl border border-slate-100 bg-slate-50/50">
+                <div className="p-3.5 rounded-2xl border border-[#EAE4D9] bg-[#FBF9F5]/70">
                   <div className="flex items-center justify-between text-xs font-bold mb-1.5">
-                    <label htmlFor={skillsWeightSliderId} className="text-slate-800">وزن المهارات (تشابه جاكارد)</label>
-                    <span className="font-mono text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">
+                    <label htmlFor={skillsWeightSliderId} className="text-[#0F172A]">وزن المهارات (تشابه جاكارد)</label>
+                    <span className="font-mono text-[#0284C7] bg-[#E8F4FC] px-2 py-0.5 rounded-md border border-[#BAE6FD]">
                       <bdi dir="ltr">{(skillsWeight * 100).toFixed(0)}% ({skillsWeight.toFixed(2)})</bdi>
                     </span>
                   </div>
@@ -542,15 +596,15 @@ export const JobPostPage: React.FC = () => {
                     step="0.05"
                     value={skillsWeight}
                     onChange={(e) => setSkillsWeight(parseFloat(e.target.value))}
-                    className="w-full accent-amber-500"
+                    className="w-full accent-[#0284C7] cursor-pointer"
                   />
                 </div>
 
                 {/* Weight 2: Major */}
-                <div className="p-3.5 rounded-2xl border border-slate-100 bg-slate-50/50">
+                <div className="p-3.5 rounded-2xl border border-[#EAE4D9] bg-[#FBF9F5]/70">
                   <div className="flex items-center justify-between text-xs font-bold mb-1.5">
-                    <label htmlFor={majorWeightSliderId} className="text-slate-800">وزن التخصص الأكاديمي</label>
-                    <span className="font-mono text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">
+                    <label htmlFor={majorWeightSliderId} className="text-[#0F172A]">وزن التخصص الأكاديمي</label>
+                    <span className="font-mono text-[#0284C7] bg-[#E8F4FC] px-2 py-0.5 rounded-md border border-[#BAE6FD]">
                       <bdi dir="ltr">{(majorWeight * 100).toFixed(0)}% ({majorWeight.toFixed(2)})</bdi>
                     </span>
                   </div>
@@ -562,15 +616,15 @@ export const JobPostPage: React.FC = () => {
                     step="0.05"
                     value={majorWeight}
                     onChange={(e) => setMajorWeight(parseFloat(e.target.value))}
-                    className="w-full accent-amber-500"
+                    className="w-full accent-[#0284C7] cursor-pointer"
                   />
                 </div>
 
                 {/* Weight 3: Experience */}
-                <div className="p-3.5 rounded-2xl border border-slate-100 bg-slate-50/50">
+                <div className="p-3.5 rounded-2xl border border-[#EAE4D9] bg-[#FBF9F5]/70">
                   <div className="flex items-center justify-between text-xs font-bold mb-1.5">
-                    <label htmlFor={expWeightSliderId} className="text-slate-800">وزن سنوات الخبرة العملية</label>
-                    <span className="font-mono text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">
+                    <label htmlFor={expWeightSliderId} className="text-[#0F172A]">وزن سنوات الخبرة العملية</label>
+                    <span className="font-mono text-[#0284C7] bg-[#E8F4FC] px-2 py-0.5 rounded-md border border-[#BAE6FD]">
                       <bdi dir="ltr">{(expWeight * 100).toFixed(0)}% ({expWeight.toFixed(2)})</bdi>
                     </span>
                   </div>
@@ -582,15 +636,15 @@ export const JobPostPage: React.FC = () => {
                     step="0.05"
                     value={expWeight}
                     onChange={(e) => setExpWeight(parseFloat(e.target.value))}
-                    className="w-full accent-amber-500"
+                    className="w-full accent-[#0284C7] cursor-pointer"
                   />
                 </div>
 
                 {/* Weight 4: Qualification */}
-                <div className="p-3.5 rounded-2xl border border-slate-100 bg-slate-50/50">
+                <div className="p-3.5 rounded-2xl border border-[#EAE4D9] bg-[#FBF9F5]/70">
                   <div className="flex items-center justify-between text-xs font-bold mb-1.5">
-                    <label htmlFor={qualWeightSliderId} className="text-slate-800">وزن المؤهل التعليمي</label>
-                    <span className="font-mono text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">
+                    <label htmlFor={qualWeightSliderId} className="text-[#0F172A]">وزن المؤهل التعليمي</label>
+                    <span className="font-mono text-[#0284C7] bg-[#E8F4FC] px-2 py-0.5 rounded-md border border-[#BAE6FD]">
                       <bdi dir="ltr">{(qualWeight * 100).toFixed(0)}% ({qualWeight.toFixed(2)})</bdi>
                     </span>
                   </div>
@@ -602,15 +656,15 @@ export const JobPostPage: React.FC = () => {
                     step="0.05"
                     value={qualWeight}
                     onChange={(e) => setQualWeight(parseFloat(e.target.value))}
-                    className="w-full accent-amber-500"
+                    className="w-full accent-[#0284C7] cursor-pointer"
                   />
                 </div>
 
                 {/* Total Weight Verification Badge */}
                 <div
-                  className={`p-4 rounded-2xl border flex items-center justify-between text-xs font-bold transition ${
+                  className={`p-4 rounded-2xl border flex items-center justify-between text-xs font-black transition ${
                     isWeightsValid
-                      ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                      ? 'bg-[#E8F8F2] border-[#BDE8D2] text-[#0D6E44]'
                       : 'bg-rose-50 border-rose-200 text-rose-800'
                   }`}
                 >
@@ -626,8 +680,8 @@ export const JobPostPage: React.FC = () => {
                 {/* Minimum Threshold */}
                 <div className="pt-2">
                   <div className="flex items-center justify-between text-xs font-bold mb-1.5">
-                    <label htmlFor={minScoreSliderId} className="text-slate-800">الحد الأدنى لنسبة التوافق للظهور</label>
-                    <span className="font-mono text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md">
+                    <label htmlFor={minScoreSliderId} className="text-[#0F172A]">الحد الأدنى لنسبة التوافق للظهور</label>
+                    <span className="font-mono text-[#0F172A] bg-[#FBF9F5] border border-[#EAE4D9] px-2 py-0.5 rounded-md">
                       <bdi dir="ltr">{(minMatchScore * 100).toFixed(0)}%</bdi>
                     </span>
                   </div>
@@ -639,23 +693,23 @@ export const JobPostPage: React.FC = () => {
                     step="0.05"
                     value={minMatchScore}
                     onChange={(e) => setMinMatchScore(parseFloat(e.target.value))}
-                    className="w-full accent-[#0F1E36]"
+                    className="w-full accent-[#0284C7] cursor-pointer"
                   />
-                  <p className="text-[11px] text-slate-500 mt-1">
+                  <p className="text-[11px] text-[#64748B] mt-1">
                     المرشحون الحاصلون على درجة أقل من هذا الحد لن يظهروا في قوائم الترشيح المباشرة.
                   </p>
                 </div>
               </div>
 
               {/* Submit Buttons */}
-              <div className="pt-6 border-t border-slate-100 space-y-3">
+              <div className="pt-6 border-t border-[#EAE4D9] space-y-3">
                 <button
                   type="submit"
                   disabled={isSubmitting || !isWeightsValid}
-                  className="w-full py-3.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 font-black text-sm transition shadow-sm flex items-center justify-center gap-2"
+                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-sm transition shadow-xs flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isSubmitting ? (
-                    <span className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <span>{isEditMode ? 'حفظ تعديلات الوظيفة والأوزان' : 'نشر الوظيفة واعتماد الأوزان'}</span>
                   )}
@@ -663,7 +717,7 @@ export const JobPostPage: React.FC = () => {
 
                 <Link
                   to="/company/jobs"
-                  className="block text-center py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition"
+                  className="block text-center py-2.5 text-xs font-bold text-[#64748B] hover:text-[#0F172A] transition"
                 >
                   إلغاء والعودة
                 </Link>

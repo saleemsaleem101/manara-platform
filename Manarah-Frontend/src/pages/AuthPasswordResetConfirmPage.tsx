@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import logoImg from '../assets/logo_transparent.png'
+import { BrandLogo } from '../components/BrandLogo'
+import { ThemeToggle } from '../components/ThemeToggle'
 import { api } from '../services/api'
 import { validatePassword } from '../utils/validators'
 
@@ -81,29 +82,34 @@ export const AuthPasswordResetConfirmPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-between font-['Cairo'] text-start text-slate-800" dir="rtl">
-      {/* Top Bar (48px) - Exact Screen 06 */}
-      <header className="w-full bg-white border-b border-[#E2E8F0] px-6 sm:px-12 h-12 flex items-center justify-between text-xs">
-        <span className="text-[#64748B] font-semibold text-[13px]">
-          منصة منارة لربط الخريجين بسوق العمل
-        </span>
-        <span className="text-[#0F1E36] font-bold text-[12px]">
-          تعيين كلمة مرور جديدة
-        </span>
+    <div className="min-h-screen bg-[#FBF9F5] flex flex-col justify-between font-['Cairo'] text-start text-[#0F172A]" dir="rtl">
+      {/* Top Bar */}
+      <header className="w-full bg-white/80 backdrop-blur-md border-b border-[#EAE4D9] px-6 sm:px-12 h-16 flex items-center justify-between text-xs sticky top-0 z-20">
+        <div className="flex items-center gap-4">
+          <BrandLogo size="sm" showSubline={false} />
+          <span className="text-slate-300">/</span>
+          <span className="text-[#0284C7] bg-[#E8F4FC] border border-[#BAE3F9] px-3 py-1 rounded-full font-bold text-[11px]">
+            تعيين كلمة مرور جديدة
+          </span>
+        </div>
+        <ThemeToggle />
       </header>
 
       {/* Main Centered Card Container */}
       <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
-        <div className="w-full max-w-[540px] bg-white border border-[#E2E8F0] rounded-[28px] shadow-[0_6px_20px_rgba(15,30,54,0.06)] p-8 sm:p-12 text-center space-y-6">
-          {/* Logo container */}
+        <div className="w-full max-w-[540px] bg-white border border-[#EAE4D9] rounded-3xl shadow-2xs p-8 sm:p-12 text-center space-y-6">
+          {/* Glowing Logo */}
           <div className="flex justify-center">
-            <Link to="/">
-              <img src={logoImg} alt="منارة" className="h-24 w-auto object-contain drop-shadow-sm hover:scale-105 transition" />
-            </Link>
+            <div className="relative">
+              <div className="absolute -inset-1.5 bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#10B981] rounded-2xl blur-xs opacity-75" />
+              <div className="relative w-14 h-14 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center p-2 border border-[#EAE4D9] shadow-xs">
+                <img src="/logo_trimmed.png" alt="منارة" className="w-full h-full object-contain" />
+              </div>
+            </div>
           </div>
 
           <div className="space-y-1.5">
-            <h1 className="text-2xl font-black text-[#0F1E36] tracking-tight">
+            <h1 className="text-2xl font-black text-[#0F172A] tracking-tight">
               تعيين كلمة المرور الجديدة
             </h1>
             <p className="text-xs text-[#64748B] leading-relaxed max-w-sm mx-auto">
@@ -113,12 +119,12 @@ export const AuthPasswordResetConfirmPage: React.FC = () => {
 
           {/* Success Notification */}
           {isSuccess ? (
-            <div className="p-6 rounded-2xl bg-emerald-50/80 border border-emerald-200 text-start space-y-4 transition-all duration-200">
+            <div className="p-6 rounded-2xl bg-[#E8F8F2] border border-[#BDE8D2] text-start space-y-4 transition-all duration-200">
               <div className="flex items-start gap-3">
-                <span className="text-2xl text-emerald-600">✓</span>
+                <span className="text-2xl text-[#0D6E44]">✓</span>
                 <div>
-                  <h4 className="text-sm font-black text-emerald-900">تم تحديث كلمة المرور بنجاح</h4>
-                  <p className="text-xs text-emerald-700 mt-1 leading-relaxed">
+                  <h4 className="text-sm font-black text-[#0D6E44]">تم تحديث كلمة المرور بنجاح</h4>
+                  <p className="text-xs text-[#0D6E44]/90 mt-1 leading-relaxed">
                     تم تغيير كلمة المرور الخاصة بحسابك بنجاح. جاري تحويلك تلقائياً لصفحة الدخول...
                   </p>
                 </div>
@@ -126,7 +132,7 @@ export const AuthPasswordResetConfirmPage: React.FC = () => {
               <div className="pt-2">
                 <Link
                   to="/login"
-                  className="w-full h-11 rounded-xl bg-[#0F1E36] text-white font-bold text-xs flex items-center justify-center hover:bg-slate-900 transition"
+                  className="w-full h-12 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white font-black text-xs flex items-center justify-center transition shadow-xs"
                 >
                   تسجيل الدخول الآن ➔
                 </Link>
@@ -147,7 +153,7 @@ export const AuthPasswordResetConfirmPage: React.FC = () => {
               <div className="pt-2">
                 <Link
                   to="/forgot-password"
-                  className="w-full h-11 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center transition"
+                  className="w-full h-11 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white font-black text-xs flex items-center justify-center transition shadow-xs"
                 >
                   طلب رابط استعادة جديد ➔
                 </Link>
@@ -165,7 +171,7 @@ export const AuthPasswordResetConfirmPage: React.FC = () => {
 
               {/* New Password */}
               <div>
-                <label className="block text-xs font-bold text-[#0F1E36] mb-1.5">
+                <label className="block text-xs font-bold text-[#0F172A] mb-1.5">
                   كلمة المرور الجديدة
                 </label>
                 <div className="relative">
@@ -175,12 +181,12 @@ export const AuthPasswordResetConfirmPage: React.FC = () => {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full h-12 px-4 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-xs font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
+                    className="w-full h-12 px-4 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition text-start"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute end-3.5 top-3.5 text-slate-400 hover:text-slate-600 text-xs font-bold"
+                    className="absolute end-3.5 top-3.5 text-[#64748B] hover:text-[#0F172A] text-xs font-bold"
                   >
                     {showPassword ? 'إخفاء' : 'عرض'}
                   </button>
@@ -189,7 +195,7 @@ export const AuthPasswordResetConfirmPage: React.FC = () => {
 
               {/* Confirm Password */}
               <div>
-                <label className="block text-xs font-bold text-[#0F1E36] mb-1.5">
+                <label className="block text-xs font-bold text-[#0F172A] mb-1.5">
                   تأكيد كلمة المرور
                 </label>
                 <input
@@ -198,21 +204,21 @@ export const AuthPasswordResetConfirmPage: React.FC = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full h-12 px-4 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] text-xs font-semibold text-[#0F1E36] focus:outline-none focus:border-[#F59E0B] focus:bg-white transition text-start"
+                  className="w-full h-12 px-4 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition text-start"
                 />
               </div>
 
               {/* Validation indicators */}
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 text-[11px] font-semibold">
-                <div className={`flex items-center gap-2 ${hasMinLength ? 'text-emerald-600' : 'text-slate-400'}`}>
+              <div className="p-3 rounded-xl bg-[#F4EFE6] border border-[#EAE4D9] space-y-1.5 text-[11px] font-semibold">
+                <div className={`flex items-center gap-2 ${hasMinLength ? 'text-[#0D6E44]' : 'text-slate-400'}`}>
                   <span>{hasMinLength ? '✓' : '○'}</span>
                   <span>8 خانات على الأقل</span>
                 </div>
-                <div className={`flex items-center gap-2 ${hasNumber && hasLetter ? 'text-emerald-600' : 'text-slate-400'}`}>
+                <div className={`flex items-center gap-2 ${hasNumber && hasLetter ? 'text-[#0D6E44]' : 'text-slate-400'}`}>
                   <span>{hasNumber && hasLetter ? '✓' : '○'}</span>
                   <span>تشتمل على أحرف وأرقام معاً</span>
                 </div>
-                <div className={`flex items-center gap-2 ${isMatch ? 'text-emerald-600' : 'text-slate-400'}`}>
+                <div className={`flex items-center gap-2 ${isMatch ? 'text-[#0D6E44]' : 'text-slate-400'}`}>
                   <span>{isMatch ? '✓' : '○'}</span>
                   <span>تطابق كلمتي المرور</span>
                 </div>
@@ -221,7 +227,7 @@ export const AuthPasswordResetConfirmPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-12 rounded-xl bg-[#0F1E36] hover:bg-slate-900 disabled:opacity-60 text-white font-bold text-sm transition shadow-xs flex items-center justify-center gap-2 cursor-pointer pt-0.5"
+                className="w-full h-12 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] disabled:opacity-50 text-white font-black text-sm transition shadow-xs flex items-center justify-center gap-2 cursor-pointer pt-0.5"
               >
                 {isLoading ? (
                   <>

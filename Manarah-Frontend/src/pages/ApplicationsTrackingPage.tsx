@@ -48,36 +48,36 @@ export const ApplicationsTrackingPage: React.FC = () => {
   })
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-['Cairo'] text-start" dir="rtl">
+    <div className="min-h-screen bg-[#FBF9F5] flex flex-col font-['Cairo'] text-start text-[#0F172A]" dir="rtl">
       <Navbar />
 
       <main className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-1">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-[#0F1E36]">طلباتي وسجل المتابعة</h1>
-            <p className="text-xs text-slate-500 mt-1 font-medium">
+            <h1 className="text-2xl font-black text-[#0F172A]">طلباتي وسجل المتابعة</h1>
+            <p className="text-xs text-[#64748B] mt-1 font-medium">
               متابعة حالة طلبات التوظيف المقدمة، وسجل التحديثات، وتفاصيل درجات التوافق
             </p>
           </div>
           <Link
             to="/jobs"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0F1E36] text-white text-xs font-bold hover:bg-[#1E293B] transition self-start sm:self-auto"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white text-xs font-black transition self-start sm:self-auto shadow-xs"
           >
             <span>استكشاف فرص وظيفية جديدة</span>
             <span>←</span>
           </Link>
         </div>
 
-        {/* Status Tabs (3 strictly required states: Under Review, Accepted, Rejected) */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-slate-200">
+        {/* Status Tabs */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[#EAE4D9]">
           <button
             type="button"
             onClick={() => setActiveTab('ALL')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
               activeTab === 'ALL'
-                ? 'bg-[#0F1E36] text-white shadow-xs'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs font-black'
+                : 'bg-white text-[#475569] hover:bg-[#F4EFE6]/60 border border-[#EAE4D9]'
             }`}
           >
             جميع الطلبات (<bdi dir="ltr">{applications.length}</bdi>)
@@ -87,8 +87,8 @@ export const ApplicationsTrackingPage: React.FC = () => {
             onClick={() => setActiveTab('UNDER_REVIEW')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
               activeTab === 'UNDER_REVIEW'
-                ? 'bg-amber-500 text-white shadow-xs'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                ? 'bg-[#0284C7] text-white shadow-xs font-black'
+                : 'bg-white text-[#475569] hover:bg-[#F4EFE6]/60 border border-[#EAE4D9]'
             }`}
           >
             قيد المراجعة (
@@ -102,8 +102,8 @@ export const ApplicationsTrackingPage: React.FC = () => {
             onClick={() => setActiveTab('ACCEPTED')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
               activeTab === 'ACCEPTED'
-                ? 'bg-emerald-600 text-white shadow-xs'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                ? 'bg-[#10B981] text-white shadow-xs font-black'
+                : 'bg-white text-[#475569] hover:bg-[#F4EFE6]/60 border border-[#EAE4D9]'
             }`}
           >
             مقبول (
@@ -117,8 +117,8 @@ export const ApplicationsTrackingPage: React.FC = () => {
             onClick={() => setActiveTab('REJECTED')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
               activeTab === 'REJECTED'
-                ? 'bg-rose-600 text-white shadow-xs'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                ? 'bg-rose-600 text-white shadow-xs font-black'
+                : 'bg-white text-[#475569] hover:bg-[#F4EFE6]/60 border border-[#EAE4D9]'
             }`}
           >
             مرفوض (
@@ -154,13 +154,13 @@ export const ApplicationsTrackingPage: React.FC = () => {
               return (
                 <div
                   key={app.id}
-                  className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs hover:border-slate-300 transition space-y-4"
+                  className="bg-white rounded-3xl p-6 border border-[#EAE4D9] shadow-2xs hover:border-[#BAE3F9] transition space-y-4"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                      <h3 className="text-base font-black text-[#0F1E36]">{app.job_title}</h3>
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 mt-1">
-                        <span className="font-bold text-slate-700">{app.company_name}</span>
+                      <h3 className="text-base font-black text-[#0F172A]">{app.job_title}</h3>
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-[#64748B] mt-1">
+                        <span className="font-bold text-[#475569]">{app.company_name}</span>
                         <span>•</span>
                         <span>
                           تاريخ التقديم: {new Date(app.applied_at).toLocaleDateString('ar-EG')}
@@ -170,7 +170,7 @@ export const ApplicationsTrackingPage: React.FC = () => {
 
                     <div className="flex items-center gap-3">
                       {scorePct !== null && (
-                        <div className="px-3 py-1 rounded-xl bg-slate-50 border border-slate-200 text-xs font-black text-[#0F1E36]">
+                        <div className="px-3 py-1 rounded-xl bg-[#E8F8F2] border border-[#BDE8D2] text-xs font-black text-[#0D6E44] font-mono">
                           التوافق: <bdi dir="ltr">{scorePct}%</bdi>
                         </div>
                       )}
@@ -179,37 +179,43 @@ export const ApplicationsTrackingPage: React.FC = () => {
                   </div>
 
                   {/* Status History Timeline */}
-                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-600 space-y-1.5">
-                    <div className="font-bold text-[#0F1E36] text-[11px]">سجل ومسار الطلب:</div>
+                  <div className="p-3.5 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] text-xs text-[#475569] space-y-1.5">
+                    <div className="font-bold text-[#0F172A] text-[11px]">سجل ومسار الطلب:</div>
                     <div className="flex flex-wrap items-center gap-2 text-[11px]">
-                      <span className="text-emerald-700 font-bold">1. تم إرسال الطلب</span>
+                      <span className="text-[#0D6E44] font-bold">1. تم إرسال الطلب</span>
                       <span>➔</span>
                       {app.status === 'UNDER_REVIEW' || app.status === 'SUBMITTED' ? (
-                        <span className="text-amber-700 font-bold">2. قيد مراجعة بيانات المرشح</span>
+                        <span className="text-[#0284C7] font-bold">2. قيد مراجعة بيانات المرشح</span>
                       ) : app.status === 'ACCEPTED' ? (
-                        <span className="text-emerald-700 font-bold">2. تم القبول بنجاح ✓</span>
+                        <span className="text-[#0D6E44] font-black">2. تم القبول بنجاح ✓ (تم فتح التواصل المباشر)</span>
                       ) : (
-                        <span className="text-rose-700 font-bold">2. تم الاعتذار عن القبول</span>
+                        <span className="text-rose-600 font-bold">2. تم الاعتذار عن القبول</span>
                       )}
                     </div>
+                    {app.status === 'ACCEPTED' && (
+                      <div className="mt-2 pt-2 border-t border-[#BDE8D2] text-[#0D6E44] font-bold text-[11px] flex items-center gap-1.5">
+                        <span>🎉</span>
+                        <span>تهانينا! وافقت المنشأة على طلبك وستتواصل معك لتحديد موعد المقابلة المباشرة.</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Action Row */}
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                  <div className="flex items-center justify-between pt-2 border-t border-[#EAE4D9]/60">
                     <button
                       type="button"
                       onClick={() => setSelectedMatchApp(app)}
-                      className="px-3.5 py-1.5 rounded-xl bg-[#0F1E36] hover:bg-[#1E293B] text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                      className="px-4 py-2 rounded-xl bg-[#E8F4FC] hover:bg-[#BAE6FD]/40 text-[#0284C7] border border-[#BAE3F9] text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
                     >
                       <span>تفاصيل المطابقة</span>
                       {scorePct !== null && (
-                        <span className="text-amber-400 font-mono">(<bdi dir="ltr">{scorePct}%</bdi>)</span>
+                        <span className="text-[#0284C7] font-black font-mono">(<bdi dir="ltr">{scorePct}%</bdi>)</span>
                       )}
                     </button>
 
                     <Link
                       to={`/jobs/${app.job}`}
-                      className="text-xs font-bold text-slate-600 hover:text-[#0F1E36] underline underline-offset-4"
+                      className="text-xs font-bold text-[#64748B] hover:text-[#0F172A] underline underline-offset-4"
                     >
                       عرض الشاغر الأصلي
                     </Link>

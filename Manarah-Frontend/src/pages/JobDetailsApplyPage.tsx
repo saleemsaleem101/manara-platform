@@ -93,7 +93,7 @@ export const JobDetailsApplyPage: React.FC = () => {
           <div className="text-center mt-6">
             <Link
               to="/jobs"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0F1E36] text-white text-xs font-bold hover:bg-[#1E293B] transition"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white text-xs font-black shadow-xs transition"
             >
               ← العودة لقائمة الفرص الوظيفية
             </Link>
@@ -108,7 +108,7 @@ export const JobDetailsApplyPage: React.FC = () => {
     : null
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-['Cairo'] text-start" dir="rtl">
+    <div className="min-h-screen bg-[#FBF9F5] flex flex-col font-['Cairo'] text-start text-[#0F172A]" dir="rtl">
       <Navbar />
 
       <main className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 space-y-6 flex-1">
@@ -116,13 +116,13 @@ export const JobDetailsApplyPage: React.FC = () => {
         <div className="flex items-center justify-between">
           <Link
             to="/jobs"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-[#0F1E36] transition"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#64748B] hover:text-[#0F172A] transition"
           >
             <span>←</span>
             <span>العودة إلى الفرص الوظيفية</span>
           </Link>
 
-          <span className="text-[11px] font-semibold text-slate-400">
+          <span className="text-[11px] font-semibold text-[#64748B]">
             تاريخ النشر: {new Date(job.created_at).toLocaleDateString('ar-EG')}
           </span>
         </div>
@@ -130,9 +130,9 @@ export const JobDetailsApplyPage: React.FC = () => {
         {/* Feedback Alert */}
         {feedback && (
           <div
-            className={`p-4 rounded-xl text-[13px] font-bold flex items-center justify-between shadow-sm transition ${
+            className={`p-4 rounded-xl text-[13px] font-bold flex items-center justify-between shadow-2xs transition ${
               feedback.type === 'success'
-                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                ? 'bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2]'
                 : 'bg-rose-50 text-rose-800 border border-rose-200'
             }`}
           >
@@ -147,23 +147,23 @@ export const JobDetailsApplyPage: React.FC = () => {
         )}
 
         {/* Main Job Header Card */}
-        <div className="bg-white rounded-[24px] p-6 sm:p-8 border border-slate-200 shadow-sm relative overflow-hidden">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EAE4D9] shadow-2xs relative overflow-hidden">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div className="space-y-3">
-              <h1 className="text-[22px] sm:text-[24px] font-black text-[#0F1E36] leading-tight">
+              <h1 className="text-[22px] sm:text-[24px] font-black text-[#0F172A] leading-tight">
                 {job.title}
               </h1>
 
-              <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate-600">
-                <span className="font-bold text-[#0F1E36] text-[13px]">{job.company_name}</span>
+              <div className="flex flex-wrap items-center gap-2.5 text-xs text-[#64748B]">
+                <span className="font-bold text-[#0F172A] text-[13px]">{job.company_name}</span>
                 <span>•</span>
                 <span>📍 {job.location}</span>
                 <span>•</span>
-                <span className="px-2.5 py-0.5 rounded-full bg-slate-100 font-bold text-slate-700">
+                <span className="px-2.5 py-0.5 rounded-full bg-[#F4EFE6] font-bold text-[#475569] border border-[#EAE4D9]">
                   {job.job_type === 'FULL_TIME' ? 'دوام كامل' : job.job_type === 'HYBRID' ? 'عمل هجين' : 'عن بعد'}
                 </span>
                 <span>•</span>
-                <span className="text-slate-500 font-semibold">
+                <span className="text-[#64748B] font-semibold">
                   حالة الشاغر: {job.status === 'OPEN' ? 'مفتوح للتقديم' : 'مغلق'}
                 </span>
               </div>
@@ -171,8 +171,8 @@ export const JobDetailsApplyPage: React.FC = () => {
 
             {/* Match Score Badge */}
             {matchPct !== null && (
-              <div className="self-start px-4 py-2 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-center">
-                <span className="block text-[11px] font-bold text-emerald-700">نسبة التوافق مع ملفك</span>
+              <div className="self-start px-4 py-2.5 rounded-2xl bg-[#E8F8F2] border border-[#BDE8D2] text-[#0D6E44] text-center">
+                <span className="block text-[11px] font-bold text-[#0D6E44]">نسبة التوافق مع ملفك</span>
                 <span className="text-[20px] font-black font-mono">
                   <bdi dir="ltr">{matchPct}%</bdi>
                 </span>
@@ -186,30 +186,30 @@ export const JobDetailsApplyPage: React.FC = () => {
           {/* Right 2 cols: Job Requirements & Details */}
           <div className="lg:col-span-2 space-y-6">
             {/* Description */}
-            <div className="bg-white rounded-[20px] p-6 border border-slate-200 shadow-xs space-y-3">
-              <h2 className="text-[15px] font-black text-[#0F1E36] border-b border-slate-100 pb-3">
+            <div className="bg-white rounded-3xl p-6 border border-[#EAE4D9] shadow-2xs space-y-3">
+              <h2 className="text-[15px] font-black text-[#0F172A] border-b border-[#EAE4D9]/60 pb-3">
                 الوصف الوظيفي والمسؤوليات
               </h2>
-              <div className="text-[13px] text-slate-700 leading-relaxed whitespace-pre-line">
+              <div className="text-[13px] text-[#475569] leading-relaxed whitespace-pre-line">
                 {job.description}
               </div>
             </div>
 
             {/* Requirements */}
             {job.requirements && (
-              <div className="bg-white rounded-[20px] p-6 border border-slate-200 shadow-xs space-y-3">
-                <h2 className="text-[15px] font-black text-[#0F1E36] border-b border-slate-100 pb-3">
+              <div className="bg-white rounded-3xl p-6 border border-[#EAE4D9] shadow-2xs space-y-3">
+                <h2 className="text-[15px] font-black text-[#0F172A] border-b border-[#EAE4D9]/60 pb-3">
                   المتطلبات والشروط
                 </h2>
-                <div className="text-[13px] text-slate-700 leading-relaxed whitespace-pre-line">
+                <div className="text-[13px] text-[#475569] leading-relaxed whitespace-pre-line">
                   {job.requirements}
                 </div>
               </div>
             )}
 
             {/* Required Skills */}
-            <div className="bg-white rounded-[20px] p-6 border border-slate-200 shadow-xs space-y-4">
-              <h2 className="text-[15px] font-black text-[#0F1E36] border-b border-slate-100 pb-3">
+            <div className="bg-white rounded-3xl p-6 border border-[#EAE4D9] shadow-2xs space-y-4">
+              <h2 className="text-[15px] font-black text-[#0F172A] border-b border-[#EAE4D9]/60 pb-3">
                 المهارات المطلوبة للوظيفة
               </h2>
 
@@ -218,16 +218,16 @@ export const JobDetailsApplyPage: React.FC = () => {
                   {job.required_skills.map((sk) => (
                     <div
                       key={sk.id}
-                      className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between"
+                      className="p-3.5 rounded-xl bg-[#FBF9F5] border border-[#EAE4D9] flex items-center justify-between"
                     >
                       <div>
-                        <span className="text-[13px] font-bold text-[#0F1E36] block">{sk.skill_name}</span>
-                        <span className="text-[11px] text-slate-500 font-semibold">
+                        <span className="text-[13px] font-bold text-[#0F172A] block">{sk.skill_name}</span>
+                        <span className="text-[11px] text-[#64748B] font-semibold">
                           المستوى المطلوب: {sk.required_level || 'متقدم'}
                         </span>
                       </div>
                       {sk.is_required && (
-                        <span className="text-[10px] px-2 py-0.5 rounded font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2]">
                           أساسية
                         </span>
                       )}
@@ -235,42 +235,42 @@ export const JobDetailsApplyPage: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <p className="text-[12px] text-slate-500">المهارات المحددة في معايير التخصص العام.</p>
+                <p className="text-[12px] text-[#64748B]">المهارات المحددة في معايير التخصص العام.</p>
               )}
             </div>
 
-            {/* Matching Weights Breakdown */}
-            <div className="bg-white rounded-[20px] p-6 border border-slate-200 shadow-xs space-y-4">
-              <h2 className="text-[15px] font-black text-[#0F1E36] border-b border-slate-100 pb-3">
+            {/* Matching Weights Breakdown (NO PURPLE) */}
+            <div className="bg-white rounded-3xl p-6 border border-[#EAE4D9] shadow-2xs space-y-4">
+              <h2 className="text-[15px] font-black text-[#0F172A] border-b border-[#EAE4D9]/60 pb-3">
                 أوزان معايير التوافق المعتمدة للشاغر
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                <div className="p-3 rounded-xl bg-blue-50 border border-blue-200">
-                  <span className="text-[11px] font-bold text-blue-700 block">المهارات</span>
-                  <span className="text-[16px] font-black text-blue-900 font-mono">
+                <div className="p-3.5 rounded-2xl bg-[#E8F4FC] border border-[#BAE3F9]">
+                  <span className="text-[11px] font-bold text-[#0284C7] block">المهارات</span>
+                  <span className="text-[16px] font-black text-[#0284C7] font-mono">
                     <bdi dir="ltr">{Math.round((job.skills_weight || 0.45) * 100)}%</bdi>
                   </span>
                 </div>
-                <div className="p-3 rounded-xl bg-purple-50 border border-purple-200">
-                  <span className="text-[11px] font-bold text-purple-700 block">التخصص</span>
-                  <span className="text-[16px] font-black text-purple-900 font-mono">
+                <div className="p-3.5 rounded-2xl bg-[#E8F8F2] border border-[#BDE8D2]">
+                  <span className="text-[11px] font-bold text-[#0D6E44] block">التخصص</span>
+                  <span className="text-[16px] font-black text-[#0D6E44] font-mono">
                     <bdi dir="ltr">{Math.round((job.specialization_weight || 0.25) * 100)}%</bdi>
                   </span>
                 </div>
-                <div className="p-3 rounded-xl bg-amber-50 border border-amber-200">
-                  <span className="text-[11px] font-bold text-amber-700 block">الخبرة</span>
-                  <span className="text-[16px] font-black text-amber-900 font-mono">
+                <div className="p-3.5 rounded-2xl bg-[#F4EFE6] border border-[#EAE4D9]">
+                  <span className="text-[11px] font-bold text-[#475569] block">الخبرة</span>
+                  <span className="text-[16px] font-black text-[#0F172A] font-mono">
                     <bdi dir="ltr">{Math.round((job.experience_weight || 0.20) * 100)}%</bdi>
                   </span>
                 </div>
-                <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
-                  <span className="text-[11px] font-bold text-emerald-700 block">المؤهل</span>
-                  <span className="text-[16px] font-black text-emerald-900 font-mono">
+                <div className="p-3.5 rounded-2xl bg-[#E8F4FC] border border-[#BAE3F9]">
+                  <span className="text-[11px] font-bold text-[#0284C7] block">المؤهل</span>
+                  <span className="text-[16px] font-black text-[#0284C7] font-mono">
                     <bdi dir="ltr">{Math.round((job.qualification_weight || 0.10) * 100)}%</bdi>
                   </span>
                 </div>
               </div>
-              <p className="text-[11px] text-slate-500 text-center">
+              <p className="text-[11px] text-[#64748B] text-center">
                 يتم احتساب درجة التوافق آلياً وفق الأوزان المحددة أعلاه ومقارنتها ببيانات ملفك المهني.
               </p>
             </div>
@@ -278,23 +278,23 @@ export const JobDetailsApplyPage: React.FC = () => {
 
           {/* Left Column: Apply Box & Application Status */}
           <div className="space-y-6">
-            <div className="bg-white rounded-[20px] p-6 border border-slate-200 shadow-sm space-y-4">
-              <h3 className="text-[15px] font-black text-[#0F1E36]">حالة التقديم</h3>
+            <div className="bg-white rounded-3xl p-6 border border-[#EAE4D9] shadow-2xs space-y-4">
+              <h3 className="text-[15px] font-black text-[#0F172A]">حالة التقديم</h3>
 
               {existingApplication ? (
-                /* Already Applied State (No apply button) */
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                /* Already Applied State */
+                <div className="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[12px] font-bold text-slate-600">حالة طلبك:</span>
+                    <span className="text-[12px] font-bold text-[#475569]">حالة طلبك:</span>
                     <StatusBadge status={existingApplication.status} />
                   </div>
-                  <div className="text-[11px] text-slate-500 font-medium pt-2 border-t border-slate-200/60">
+                  <div className="text-[11px] text-[#64748B] font-medium pt-2 border-t border-[#EAE4D9]/60">
                     تاريخ التقديم: {new Date(existingApplication.applied_at).toLocaleDateString('ar-EG')}
                   </div>
                   <div className="pt-2">
                     <Link
                       to="/applications"
-                      className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0F1E36] text-[12px] font-bold flex items-center justify-center gap-1.5 transition"
+                      className="w-full py-2.5 rounded-xl bg-white hover:bg-[#F4EFE6]/60 text-[#0F172A] border border-[#EAE4D9] text-[12px] font-bold flex items-center justify-center gap-1.5 transition"
                     >
                       <span>عرض الطلب في سجل «طلباتي»</span>
                       <span>←</span>
@@ -304,7 +304,7 @@ export const JobDetailsApplyPage: React.FC = () => {
               ) : (
                 /* Not yet applied */
                 <div className="space-y-4">
-                  <p className="text-[12px] text-slate-600 leading-relaxed">
+                  <p className="text-[12px] text-[#475569] leading-relaxed">
                     بالضغط على زر التقديم سيتم إرفاق ملفك المهني المعتمد والمشاريع والمهارات تلقائياً إلى إدارة توظيف الشركة.
                   </p>
 
@@ -317,7 +317,7 @@ export const JobDetailsApplyPage: React.FC = () => {
                       }
                       setShowConfirmModal(true)
                     }}
-                    className="w-full py-3.5 rounded-[12px] bg-[#0F1E36] hover:bg-[#1E293B] text-white text-[13px] font-black transition flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-[0.99]"
+                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white text-[13px] font-black transition flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-[0.99]"
                   >
                     <span>تأكيد وإرسال طلب التوظيف</span>
                     <span>✓</span>
@@ -327,19 +327,19 @@ export const JobDetailsApplyPage: React.FC = () => {
             </div>
 
             {/* Quick Meta Card */}
-            <div className="bg-white rounded-[20px] p-6 border border-slate-200 shadow-xs space-y-3 text-[12px]">
-              <h4 className="font-bold text-[#0F1E36] mb-2">معلومات إضافية</h4>
-              <div className="flex justify-between py-1.5 border-b border-slate-100">
-                <span className="text-slate-500">التخصص المطلوب:</span>
-                <span className="font-bold text-[#0F1E36]">{job.required_major}</span>
+            <div className="bg-white rounded-3xl p-6 border border-[#EAE4D9] shadow-2xs space-y-3 text-[12px]">
+              <h4 className="font-bold text-[#0F172A] mb-2">معلومات إضافية</h4>
+              <div className="flex justify-between py-1.5 border-b border-[#EAE4D9]/60">
+                <span className="text-[#64748B]">التخصص المطلوب:</span>
+                <span className="font-bold text-[#0F172A]">{job.required_major}</span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-100">
-                <span className="text-slate-500">المؤهل الأدنى:</span>
-                <span className="font-bold text-[#0F1E36]">{job.required_qualification || 'بكالوريوس'}</span>
+              <div className="flex justify-between py-1.5 border-b border-[#EAE4D9]/60">
+                <span className="text-[#64748B]">المؤهل الأدنى:</span>
+                <span className="font-bold text-[#0F172A]">{job.required_qualification || 'بكالوريوس'}</span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-100">
-                <span className="text-slate-500">الخبرة المطلوبة:</span>
-                <span className="font-bold text-[#0F1E36]">{job.required_exp ? `${job.required_exp} سنوات` : 'حديث التخرج'}</span>
+              <div className="flex justify-between py-1.5 border-b border-[#EAE4D9]/60">
+                <span className="text-[#64748B]">الخبرة المطلوبة:</span>
+                <span className="font-bold text-[#0F172A]">{job.required_exp ? `${job.required_exp} سنوات` : 'حديث التخرج'}</span>
               </div>
             </div>
           </div>

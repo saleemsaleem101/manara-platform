@@ -153,32 +153,32 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans" dir="rtl">
+    <div className="min-h-screen bg-[#FBF9F5] text-[#0F172A] font-sans" dir="rtl">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Breadcrumbs */}
         <div className="mb-8">
-          <div className="flex items-center gap-2 text-xs text-slate-500 mb-2">
-            <Link to="/company/jobs" className="hover:text-slate-900 transition font-medium">
+          <div className="flex items-center gap-2 text-xs text-[#64748B] mb-2 font-medium">
+            <Link to="/company/jobs" className="hover:text-[#0284C7] transition">
               وظائفي
             </Link>
             <span>/</span>
-            <span className="text-amber-600 font-bold">المتقدمون وفرز التوافق</span>
+            <span className="text-[#0284C7] font-bold">المتقدمون وفرز التوافق</span>
           </div>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-[#0F1E36]">
+              <h1 className="text-2xl sm:text-3xl font-black text-[#0F172A]">
                 المتقدمون وترتيب التوافق الموزون
               </h1>
-              <p className="text-slate-500 text-sm mt-1">
+              <p className="text-[#64748B] text-xs sm:text-sm mt-1">
                 فرز وترتيب المتقدمين وفق درجات التطابق الموزونة وسجل القرارات
               </p>
             </div>
             <div className="flex items-center gap-3">
               <Link
                 to="/company/jobs/new"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs transition shadow-xs"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white font-black text-xs transition shadow-xs"
               >
                 + نشر شاغر جديد
               </Link>
@@ -189,9 +189,9 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
         {/* Feedback Alert */}
         {feedbackMsg && (
           <div
-            className={`mb-6 p-4 rounded-2xl flex items-center justify-between text-sm font-bold ${
+            className={`mb-6 p-4 rounded-2xl flex items-center justify-between text-sm font-bold shadow-2xs ${
               feedbackMsg.type === 'success'
-                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                ? 'bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2]'
                 : 'bg-rose-50 text-rose-800 border border-rose-200'
             }`}
           >
@@ -199,7 +199,7 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setFeedbackMsg(null)}
-              className="text-xs text-slate-400 hover:text-slate-700 font-normal px-2 py-1"
+              className="text-xs text-slate-400 hover:text-slate-700 font-normal px-2 py-1 cursor-pointer"
             >
               إغلاق
             </button>
@@ -207,18 +207,18 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
         )}
 
         {/* Top Filter & Job Switcher */}
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs mb-8">
+        <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 shadow-2xs mb-8">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
             {/* Job Select Dropdown */}
             <div className="md:col-span-5">
-              <label htmlFor="job-select-dropdown" className="block text-xs font-bold text-slate-700 mb-1.5">
+              <label htmlFor="job-select-dropdown" className="block text-xs font-bold text-[#475569] mb-1.5">
                 الشاغر الوظيفي المستهدف:
               </label>
               <select
                 id="job-select-dropdown"
                 value={selectedJobId || ''}
                 onChange={(e) => setSelectedJobId(Number(e.target.value))}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-sm font-bold text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/40"
+                className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-sm font-bold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
               >
                 {jobs.map((j) => (
                   <option key={j.id} value={j.id}>
@@ -230,14 +230,14 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
 
             {/* Sort Select */}
             <div className="md:col-span-4">
-              <label htmlFor="sort-by-select" className="block text-xs font-bold text-slate-700 mb-1.5">
+              <label htmlFor="sort-by-select" className="block text-xs font-bold text-[#475569] mb-1.5">
                 ترتيب المتقدمين:
               </label>
               <select
                 id="sort-by-select"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'MATCH_SCORE' | 'NEWEST')}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-amber-500/40"
+                className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs font-bold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
               >
                 <option value="MATCH_SCORE">الأعلى نسبة توافق (تنازلياً)</option>
                 <option value="NEWEST">الأحدث تقديماً</option>
@@ -246,14 +246,14 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
 
             {/* Status Filter */}
             <div className="md:col-span-3">
-              <label htmlFor="status-filter-select" className="block text-xs font-bold text-slate-700 mb-1.5">
+              <label htmlFor="status-filter-select" className="block text-xs font-bold text-[#475569] mb-1.5">
                 تصفية الحالة:
               </label>
               <select
                 id="status-filter-select"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-amber-500/40"
+                className="w-full px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-xs font-bold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white transition"
               >
                 <option value="الكل">الكل ({applications.length})</option>
                 <option value="UNDER_REVIEW">قيد المراجعة</option>
@@ -267,11 +267,11 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
         {/* Candidates List */}
         <div className="space-y-4 mb-12">
           {isLoading ? (
-            <div className="bg-white rounded-3xl border border-slate-200/80 p-12 text-center">
+            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-12 text-center shadow-2xs">
               <LoadingState message="جاري تحميل وترتيب المتقدمين وفق درجات التوافق..." />
             </div>
           ) : filteredApplications.length === 0 ? (
-            <div className="bg-white rounded-3xl border border-slate-200/80 p-12 text-center">
+            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-12 text-center shadow-2xs">
               <EmptyState
                 title="لا يوجد متقدمون يطابقون المعايير المحددة"
                 description="لم يتم تسجيل طلبات تقديم مطابقة لشروط التصفية أو أن الشاغر لم يستقبل متقدمين بعد."
@@ -284,73 +284,117 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
               const minScore = ((selectedJob?.minimum_match_score || 0.6) * 100)
               const isBelowMin = scorePct < minScore
 
+              // النطاق القياسي الموحد (Standard Score Range) وفق توجيهات لجنة المناقشة
+              const rangeInfo = scorePct >= 80
+                ? { label: 'تطابق فائق (Highly Recommended)', badge: '⭐ ممتاز (80% - 100%)', color: 'text-[#0D6E44] bg-[#E8F8F2] border-[#BDE8D2]' }
+                : scorePct >= 60
+                ? { label: 'موصى به (Recommended)', badge: '✓ موصى به (60% - 79%)', color: 'text-[#0284C7] bg-[#E8F4FC] border-[#BAE6FD]' }
+                : { label: 'تطابق جزئي (Potential Match)', badge: 'دون 60%', color: 'text-[#64748B] bg-[#F1F5F9] border-[#CBD5E1]' }
+
+              const isZeroExp = !app.applicant_experience || app.applicant_experience === '0' || app.applicant_experience.includes('حديث') || app.applicant_experience.includes('بدون')
+              const isAccepted = app.status === 'ACCEPTED'
+
               return (
                 <div
                   key={app.id}
-                  className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xs hover:border-amber-300 transition"
+                  className="bg-white rounded-3xl border border-[#EAE4D9] p-6 sm:p-7 shadow-2xs hover:border-[#BAE6FD] transition"
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-                    {/* Col 1: Basic Info (4 cols) */}
+                    {/* Col 1: Basic Info & Project Strengths (4 cols) */}
                     <div className="lg:col-span-4 flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-[#0F1E36] text-amber-400 font-mono font-black text-lg flex items-center justify-center shrink-0 shadow-xs">
+                      <div className="w-12 h-12 rounded-2xl bg-[#E8F4FC] text-[#0284C7] border border-[#BAE6FD] font-mono font-black text-lg flex items-center justify-center shrink-0 shadow-2xs">
                         <bdi dir="ltr">#{index + 1}</bdi>
                       </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-base font-black text-[#0F1E36] truncate">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-1.5 mb-1">
+                          <h3 className="text-base font-black text-[#0F172A] truncate">
                             {app.applicant_name}
                           </h3>
-                          {app.has_video_cv && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-purple-100 text-purple-700 font-bold">
-                              فيديو
-                            </span>
-                          )}
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full border font-black ${rangeInfo.color}`}>
+                            {rangeInfo.badge}
+                          </span>
                         </div>
-                        <p className="text-xs text-slate-500 font-medium">
+                        <p className="text-xs text-[#64748B] font-medium">
                           {app.applicant_specialization} • {app.applicant_university}
                         </p>
-                        <div className="flex items-center gap-3 text-[11px] text-slate-400 mt-2 font-mono">
+                        <div className="flex items-center gap-2 text-[11px] text-[#64748B] mt-2 font-mono">
                           <span>الخبرة: {app.applicant_experience || 'حديث تخرج'}</span>
                           <span>•</span>
                           <span>المعدل: <bdi dir="ltr">{app.applicant_gpa || '90%'}</bdi></span>
+                        </div>
+
+                        {/* شارات إثبات القوة العملية ومشاريع GitHub والتخرج */}
+                        <div className="flex flex-wrap gap-1.5 mt-2.5">
+                          {(app.has_graduation_project || (app.projects_count && app.projects_count > 0)) && (
+                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A] font-bold flex items-center gap-1">
+                              <span>🎓</span>
+                              <span>{app.graduation_project_title ? `مشروع: ${app.graduation_project_title.slice(0, 22)}...` : 'مشروع تخرج نوعي'}</span>
+                            </span>
+                          )}
+
+                          {(app.has_github || app.github_url) && (
+                            <a
+                              href={app.github_url || 'https://github.com'}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-[10px] px-2 py-0.5 rounded-md bg-[#0F172A] text-white hover:bg-slate-800 font-bold flex items-center gap-1 transition"
+                            >
+                              <span>💻</span>
+                              <span>GitHub ↗</span>
+                            </a>
+                          )}
+
+                          {app.has_video_cv && (
+                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2] font-black flex items-center gap-1">
+                              <span>🎥</span>
+                              <span>فيديو موثق</span>
+                            </span>
+                          )}
+
+                          {isZeroExp && (app.has_graduation_project || app.has_github || (app.projects_count && app.projects_count > 0)) && (
+                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#E8F4FC] text-[#0284C7] border border-[#BAE6FD] font-bold">
+                              ✨ كفاءة مشاريع برمجية
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
 
                     {/* Col 2: Score Breakdown (4 cols) */}
-                    <div className="lg:col-span-4 border-y lg:border-y-0 lg:border-x border-slate-100 py-4 lg:py-0 lg:px-6">
-                      <div className="flex items-center justify-between text-xs font-bold text-slate-600 mb-2">
-                        <span>تفصيل معايير التوافق:</span>
+                    <div className="lg:col-span-4 border-y lg:border-y-0 lg:border-x border-[#EAE4D9] py-4 lg:py-0 lg:px-6">
+                      <div className="flex items-center justify-between text-xs font-bold text-[#475569] mb-2">
+                        <span>تفصيل معايير التوافق (المعادلة الموزونة):</span>
                         <button
                           type="button"
                           onClick={() => setMatchModalApp(app)}
-                          className="text-[11px] text-amber-600 hover:text-amber-800 font-bold"
+                          className="text-[11px] text-[#0284C7] hover:text-[#0369A1] font-black cursor-pointer"
                         >
-                          معادلة الأوزان ↗
+                          المعادلة ↗
                         </button>
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
-                          <span className="text-slate-500 text-[11px] block">المهارات (جاكارد):</span>
-                          <span className="font-bold text-slate-800 font-mono">
+                        <div className="p-2 rounded-xl bg-[#FBF9F5] border border-[#EAE4D9]">
+                          <span className="text-[#64748B] text-[11px] block font-semibold">المهارات (جاكارد):</span>
+                          <span className="font-bold text-[#0F172A] font-mono">
                             <bdi dir="ltr">{getBreakdownScore(app.score_breakdown?.skills_score, 45)}/45</bdi>
                           </span>
                         </div>
-                        <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
-                          <span className="text-slate-500 text-[11px] block">التخصص الأكاديمي:</span>
-                          <span className="font-bold text-slate-800 font-mono">
+                        <div className="p-2 rounded-xl bg-[#FBF9F5] border border-[#EAE4D9]">
+                          <span className="text-[#64748B] text-[11px] block font-semibold">التخصص الأكاديمي:</span>
+                          <span className="font-bold text-[#0F172A] font-mono">
                             <bdi dir="ltr">{getBreakdownScore(app.score_breakdown?.specialization_score, 25)}/25</bdi>
                           </span>
                         </div>
-                        <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
-                          <span className="text-slate-500 text-[11px] block">سنوات الخبرة:</span>
-                          <span className="font-bold text-slate-800 font-mono">
+                        <div className="p-2 rounded-xl bg-[#FBF9F5] border border-[#EAE4D9]">
+                          <span className="text-[#64748B] text-[11px] block font-semibold">الخبرة / المشاريع:</span>
+                          <span className="font-bold text-[#0F172A] font-mono">
                             <bdi dir="ltr">{getBreakdownScore(app.score_breakdown?.experience_score, 20)}/20</bdi>
                           </span>
                         </div>
-                        <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
-                          <span className="text-slate-500 text-[11px] block">المؤهل والدرجة:</span>
-                          <span className="font-bold text-slate-800 font-mono">
+                        <div className="p-2 rounded-xl bg-[#FBF9F5] border border-[#EAE4D9]">
+                          <span className="text-[#64748B] text-[11px] block font-semibold">المؤهل والدرجة:</span>
+                          <span className="font-bold text-[#0F172A] font-mono">
                             <bdi dir="ltr">{getBreakdownScore(app.score_breakdown?.qualification_score, 10)}/10</bdi>
                           </span>
                         </div>
@@ -361,29 +405,32 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
                     <div className="lg:col-span-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                       {/* Overall Match Score */}
                       <div className="text-center sm:text-start">
-                        <div className="text-[11px] font-bold text-slate-400 mb-1">نسبة التوافق:</div>
+                        <div className="text-[11px] font-bold text-[#64748B] mb-1">نسبة التوافق الموزونة:</div>
                         <div className="flex items-center gap-2">
                           <span
                             className={`text-2xl font-black font-mono ${
-                              scorePct >= 85
-                                ? 'text-emerald-600'
-                                : scorePct >= 70
-                                ? 'text-amber-600'
-                                : 'text-rose-600'
+                              scorePct >= 80
+                                ? 'text-[#0D6E44]'
+                                : scorePct >= 60
+                                ? 'text-[#0284C7]'
+                                : 'text-slate-600'
                             }`}
                           >
                             <bdi dir="ltr">{scorePct}%</bdi>
                           </span>
                           {isBelowMin ? (
-                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-rose-100 text-rose-700 font-bold">
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold">
                               دون الحد الأدنى
                             </span>
                           ) : (
-                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-bold">
-                              مؤهل
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2] font-black">
+                              مستوفٍ للشروط
                             </span>
                           )}
                         </div>
+                        <span className="text-[10px] text-[#64748B] font-medium block mt-1">
+                          {rangeInfo.label}
+                        </span>
                       </div>
 
                       {/* Status Selector & Decision */}
@@ -393,23 +440,47 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
                           value={app.status === 'SUBMITTED' ? 'UNDER_REVIEW' : app.status}
                           disabled={isUpdatingStatus === app.id}
                           onChange={(e) => handleStatusChange(app.id, e.target.value as 'UNDER_REVIEW' | 'ACCEPTED' | 'REJECTED')}
-                          className={`w-full text-xs font-black px-3 py-2 rounded-xl border focus:outline-hidden transition ${
+                          className={`w-full text-xs font-black px-3 py-2 rounded-xl border focus:outline-none transition ${
                             app.status === 'ACCEPTED'
-                              ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                              ? 'bg-[#E8F8F2] border-[#BDE8D2] text-[#0D6E44]'
                               : app.status === 'REJECTED'
-                              ? 'bg-rose-50 border-rose-300 text-rose-800'
-                              : 'bg-amber-50 border-amber-300 text-amber-900'
+                              ? 'bg-rose-50 border-rose-200 text-rose-800'
+                              : 'bg-[#E8F4FC] border-[#BAE6FD] text-[#0284C7]'
                           }`}
                         >
                           <option value="UNDER_REVIEW">قيد المراجعة ▾</option>
-                          <option value="ACCEPTED">مقبول ✓</option>
+                          <option value="ACCEPTED">مقبول ✓ (فتح التواصل)</option>
                           <option value="REJECTED">مرفوض ✕</option>
                         </select>
 
-                        {/* Link to Screen 21 (Candidate Profile) */}
+                        {/* Direct Contact Button when Accepted */}
+                        {isAccepted && (
+                          <div className="flex items-center gap-1.5">
+                            {app.applicant_phone && (
+                              <a
+                                href={`https://wa.me/${app.applicant_phone.replace(/[^0-9]/g, '')}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex-1 py-1 px-2 rounded-lg bg-[#25D366] hover:bg-[#1EBE5D] text-white text-[11px] font-bold text-center transition flex items-center justify-center gap-1"
+                              >
+                                <span>واتساب</span>
+                              </a>
+                            )}
+                            {app.applicant_email && (
+                              <a
+                                href={`mailto:${app.applicant_email}`}
+                                className="flex-1 py-1 px-2 rounded-lg bg-[#0284C7] hover:bg-[#0369A1] text-white text-[11px] font-bold text-center transition flex items-center justify-center gap-1"
+                              >
+                                <span>إيميل</span>
+                              </a>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Link to Candidate Profile */}
                         <Link
                           to={`/company/applications/${app.id}`}
-                          className="w-full text-xs font-bold text-[#0F1E36] bg-slate-100 hover:bg-slate-200 py-1.5 px-3 rounded-xl transition block text-center shadow-2xs"
+                          className="w-full text-xs font-bold text-[#0F172A] bg-white hover:bg-[#F4EFE6]/60 border border-[#EAE4D9] py-1.5 px-3 rounded-xl transition block text-center shadow-2xs"
                         >
                           عرض الملف الكامل ➔
                         </Link>
@@ -422,15 +493,15 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
           )}
         </div>
 
-        {/* Audit Log Section (Screen 20 - Without Bottom Clipping) */}
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xs">
-          <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-4">
-            <div className="w-8 h-8 rounded-xl bg-slate-900 text-amber-400 flex items-center justify-center text-sm font-bold">
+        {/* Audit Log Section */}
+        <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 sm:p-8 shadow-2xs">
+          <div className="flex items-center gap-3 border-b border-[#EAE4D9] pb-4 mb-4">
+            <div className="w-8 h-8 rounded-xl bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2] flex items-center justify-center text-sm font-black">
               ✓
             </div>
             <div>
-              <h2 className="text-base font-black text-[#0F1E36]">سجل تحديث حالات المتقدمين</h2>
-              <p className="text-xs text-slate-500">توثيق تاريخي لكل قرار اتخذه مسؤول التوظيف مع التوقيت المعتمد</p>
+              <h2 className="text-base font-black text-[#0F172A]">سجل تحديث حالات المتقدمين</h2>
+              <p className="text-xs text-[#64748B]">توثيق تاريخي لكل قرار اتخذه مسؤول التوظيف مع التوقيت المعتمد</p>
             </div>
           </div>
 
@@ -452,16 +523,16 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
                 return (
                   <div
                     key={log.history_id}
-                    className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-100 flex items-start gap-3 text-xs"
+                    className="p-3.5 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] flex items-start gap-3 text-xs"
                   >
-                    <span className="w-2 h-2 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                    <span className="w-2 h-2 rounded-full bg-[#0284C7] mt-1.5 shrink-0" />
                     <div className="flex-1">
-                      <p className="text-slate-700">
+                      <p className="text-[#475569]">
                         تم تحديث حالة الطلب <bdi dir="ltr">#{log.application}</bdi> من ({statusLabels[log.previous_status] || log.previous_status}) إلى (
-                        <span className="font-bold text-slate-900">{statusLabels[log.new_status] || log.new_status}</span>
-                        ) بواسطة مسؤول التوظيف <span className="text-slate-900 font-bold">{log.changed_by_name || 'مسؤول التوظيف'}</span>.
+                        <span className="font-black text-[#0F172A]">{statusLabels[log.new_status] || log.new_status}</span>
+                        ) بواسطة مسؤول التوظيف <span className="text-[#0F172A] font-black">{log.changed_by_name || 'مسؤول التوظيف'}</span>.
                       </p>
-                      <span className="text-[10px] text-slate-400 font-mono mt-0.5 block">
+                      <span className="text-[10px] text-[#94A3B8] font-mono mt-0.5 block">
                         <bdi dir="ltr">{formattedDate}</bdi>
                       </span>
                     </div>
@@ -469,7 +540,7 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
                 )
               })
             ) : (
-              <div className="text-xs text-slate-500 p-3 rounded-xl bg-slate-50">
+              <div className="text-xs text-[#64748B] p-3 rounded-xl bg-[#FBF9F5] border border-[#EAE4D9]">
                 • يتم توثيق قرارات مسؤولي التوظيف لحظياً في السجل التاريخي للطلبات.
               </div>
             )}

@@ -235,28 +235,28 @@ export const SkillsPortfolioPage: React.FC = () => {
   const softSkills = graduateSkills.filter((s) => s.skill_category === 'SOFT')
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-16 font-['Cairo'] text-start" dir="rtl">
+    <div className="min-h-screen bg-[#FBF9F5] pb-16 font-['Cairo'] text-start text-[#0F172A]" dir="rtl">
       <Navbar />
 
       {/* Main Container */}
       <div className="max-w-[1360px] mx-auto px-4 sm:px-6 pt-6">
         {isLoading && (
-          <div className="mb-4 p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl text-xs font-bold flex items-center justify-between animate-pulse">
+          <div className="mb-4 p-3 bg-[#E8F4FC] border border-[#BAE3F9] text-[#0284C7] rounded-xl text-xs font-bold flex items-center justify-between animate-pulse">
             <div className="flex items-center gap-2">
-              <span className="w-3.5 h-3.5 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
+              <span className="w-3.5 h-3.5 border-2 border-[#0284C7] border-t-transparent rounded-full animate-spin" />
               <span>جاري تحميل بيانات المهارات والمشاريع المحدثة...</span>
             </div>
-            <span className="text-[11px] text-amber-700">تحديث فوري من قاعدة البيانات</span>
+            <span className="text-[11px] text-[#0284C7]">تحديث فوري من قاعدة البيانات</span>
           </div>
         )}
 
         {/* Feedback Alert */}
         {feedbackMsg && (
           <div
-            className={`mb-4 p-4 rounded-xl text-[13px] font-bold flex items-center justify-between shadow-sm transition ${
+            className={`mb-4 p-4 rounded-xl text-[13px] font-bold flex items-center justify-between shadow-2xs transition ${
               feedbackMsg.type === 'success'
-                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                : 'bg-red-50 text-red-800 border border-red-200'
+                ? 'bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2]'
+                : 'bg-rose-50 text-rose-800 border border-rose-200'
             }`}
           >
             <span>{feedbackMsg.text}</span>
@@ -269,11 +269,11 @@ export const SkillsPortfolioPage: React.FC = () => {
           </div>
         )}
 
-        {/* Hero Title Card (Matching Figma Screen 07) */}
-        <div className="bg-white rounded-[20px] p-6 sm:p-7 border border-[#E2E8F0] shadow-sm mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-5 relative overflow-hidden">
-          <div className="absolute top-0 start-0 w-2 h-full bg-[#F59E0B]" />
+        {/* Hero Title Card */}
+        <div className="bg-white rounded-3xl p-6 sm:p-7 border border-[#EAE4D9] shadow-2xs mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-5 relative overflow-hidden">
+          <div className="absolute top-0 start-0 w-2 h-full bg-gradient-to-b from-[#0284C7] to-[#10B981]" />
           <div className="ps-2">
-            <h1 className="text-[20px] sm:text-[22px] font-black text-[#0F1E36] mb-1.5">
+            <h1 className="text-[20px] sm:text-[22px] font-black text-[#0F172A] mb-1.5">
               محفظة المهارات والمشاريع البرمجية والفيديو التعريفي
             </h1>
             <p className="text-[13px] font-medium text-[#64748B]">
@@ -285,13 +285,13 @@ export const SkillsPortfolioPage: React.FC = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowProjectModal(true)}
-              className="h-[44px] px-5 bg-[#0F1E36] hover:bg-[#1E293B] text-white text-[13px] font-bold rounded-[12px] shadow-sm transition flex items-center gap-2 cursor-pointer"
+              className="h-[44px] px-5 bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white text-[13px] font-black rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer"
             >
               <span>+ إضافة مشروع جديد</span>
             </button>
             <button
               onClick={() => setShowSkillModal(true)}
-              className="h-[44px] px-5 bg-[#FEF3C7] hover:bg-[#FDE68A] text-[#92400E] border border-[#FDE68A] text-[13px] font-bold rounded-[12px] transition flex items-center gap-2 cursor-pointer"
+              className="h-[44px] px-5 bg-[#E8F4FC] hover:bg-[#BAE6FD]/40 text-[#0284C7] border border-[#BAE3F9] text-[13px] font-bold rounded-xl transition flex items-center gap-2 cursor-pointer"
             >
               <span>+ مهارة تقنية جديدة</span>
             </button>
@@ -303,15 +303,15 @@ export const SkillsPortfolioPage: React.FC = () => {
           {/* RIGHT COLUMN: Skills & Projects (8 Cols) */}
           <div className="lg:col-span-8 space-y-6">
             {/* 1. المهارات المعتمدة */}
-            <div className="bg-white rounded-[20px] p-6 sm:p-7 border border-[#E2E8F0] shadow-sm">
-              <div className="flex items-center justify-between pb-4 border-b border-[#F1F5F9] mb-5">
+            <div className="bg-white rounded-3xl p-6 sm:p-7 border border-[#EAE4D9] shadow-2xs">
+              <div className="flex items-center justify-between pb-4 border-b border-[#EAE4D9]/60 mb-5">
                 <div className="flex items-center gap-2.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#10B981]" />
-                  <h2 className="text-[16px] font-black text-[#0F1E36]">
+                  <h2 className="text-[16px] font-black text-[#0F172A]">
                     1. المهارات المعتمدة (التقنية والشخصية)
                   </h2>
                 </div>
-                <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]">
+                <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#E8F8F2] text-[#0D6E44] border border-[#BDE8D2]">
                   بيانات المهارات مكتملة ✓
                 </span>
               </div>
@@ -324,14 +324,14 @@ export const SkillsPortfolioPage: React.FC = () => {
                   </h3>
                   <button
                     onClick={() => setShowSkillModal(true)}
-                    className="text-[12px] font-bold text-[#1D4ED8] hover:underline cursor-pointer"
+                    className="text-[12px] font-bold text-[#0284C7] hover:underline cursor-pointer"
                   >
                     + إضافة مهارة
                   </button>
                 </div>
 
                 {techSkills.length === 0 ? (
-                  <p className="text-[12px] text-[#94A3B8] italic bg-slate-50 p-4 rounded-xl border border-dashed border-slate-200">
+                  <p className="text-[12px] text-[#94A3B8] italic bg-[#FBF9F5] p-4 rounded-xl border border-dashed border-[#EAE4D9]">
                     لم تقم بإضافة مهارات تقنية بعد. اضغط على زر (+ مهارة) أعلاه لإضافة أول مهارة.
                   </p>
                 ) : (
@@ -339,15 +339,15 @@ export const SkillsPortfolioPage: React.FC = () => {
                     {techSkills.map((sk) => (
                       <div
                         key={sk.id}
-                        className="px-3.5 py-2 rounded-[10px] bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E40AF] text-[12px] font-bold flex items-center gap-2 group transition hover:border-[#93C5FD]"
+                        className="px-3.5 py-2 rounded-xl bg-[#E8F4FC] border border-[#BAE3F9] text-[#0284C7] text-[12px] font-bold flex items-center gap-2 group transition hover:border-[#7DD3FC]"
                       >
                         <span className="font-['Plus_Jakarta_Sans']">{sk.skill_name}</span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/80 text-[#1D4ED8] font-medium">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-white text-[#0284C7] font-bold">
                           {sk.proficiency_level_display || sk.proficiency_level}
                         </span>
                         <button
                           onClick={() => handleDeleteSkill(sk.id)}
-                          className="text-red-400 hover:text-red-600 transition text-[13px] font-bold pe-1 cursor-pointer"
+                          className="text-rose-400 hover:text-rose-600 transition text-[13px] font-bold pe-1 cursor-pointer"
                           title="حذف المهارة"
                         >
                           ✕
@@ -367,7 +367,7 @@ export const SkillsPortfolioPage: React.FC = () => {
                 </div>
 
                 {softSkills.length === 0 ? (
-                  <p className="text-[12px] text-[#94A3B8] italic bg-slate-50 p-4 rounded-xl border border-dashed border-slate-200">
+                  <p className="text-[12px] text-[#94A3B8] italic bg-[#FBF9F5] p-4 rounded-xl border border-dashed border-[#EAE4D9]">
                     لم تقم بإضافة مهارات شخصية بعد.
                   </p>
                 ) : (
@@ -375,15 +375,15 @@ export const SkillsPortfolioPage: React.FC = () => {
                     {softSkills.map((sk) => (
                       <div
                         key={sk.id}
-                        className="px-3.5 py-2 rounded-[10px] bg-[#FEF3C7] border border-[#FDE68A] text-[#92400E] text-[12px] font-bold flex items-center gap-2 group transition"
+                        className="px-3.5 py-2 rounded-xl bg-[#F4EFE6] border border-[#EAE4D9] text-[#0F172A] text-[12px] font-bold flex items-center gap-2 group transition"
                       >
                         <span>{sk.skill_name}</span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/80 text-[#B45309] font-medium">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-white text-[#475569] font-medium">
                           {sk.proficiency_level_display || sk.proficiency_level}
                         </span>
                         <button
                           onClick={() => handleDeleteSkill(sk.id)}
-                          className="text-red-400 hover:text-red-600 transition text-[13px] font-bold pe-1 cursor-pointer"
+                          className="text-rose-400 hover:text-rose-600 transition text-[13px] font-bold pe-1 cursor-pointer"
                           title="حذف المهارة"
                         >
                           ✕
@@ -396,31 +396,31 @@ export const SkillsPortfolioPage: React.FC = () => {
             </div>
 
             {/* 2. المشاريع البرمجية المنجزة */}
-            <div className="bg-white rounded-[20px] p-6 sm:p-7 border border-[#E2E8F0] shadow-sm">
-              <div className="flex items-center justify-between pb-4 border-b border-[#F1F5F9] mb-5">
+            <div className="bg-white rounded-3xl p-6 sm:p-7 border border-[#EAE4D9] shadow-2xs">
+              <div className="flex items-center justify-between pb-4 border-b border-[#EAE4D9]/60 mb-5">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#1D4ED8]" />
-                  <h2 className="text-[16px] font-black text-[#0F1E36]">
-                    2. المشاريع البرمجية ومشاريع التخرج الموثقة
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0284C7]" />
+                  <h2 className="text-[16px] font-black text-[#0F172A]">
+                    2. المشاريع البرمجية الموثقة
                   </h2>
                 </div>
                 <button
                   onClick={() => setShowProjectModal(true)}
-                  className="text-[12px] font-bold text-[#1D4ED8] hover:underline cursor-pointer"
+                  className="text-[12px] font-bold text-[#0284C7] hover:underline cursor-pointer"
                 >
                   + إضافة مشروع جديد
                 </button>
               </div>
 
               {projects.length === 0 ? (
-                <div className="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                  <p className="text-[13px] font-bold text-slate-600 mb-2">لا توجد مشاريع مضافة حتى الآن</p>
-                  <p className="text-[12px] text-slate-400 mb-4">
+                <div className="text-center py-10 bg-[#FBF9F5] rounded-2xl border border-dashed border-[#EAE4D9]">
+                  <p className="text-[13px] font-bold text-[#475569] mb-2">لا توجد مشاريع مضافة حتى الآن</p>
+                  <p className="text-[12px] text-[#64748B] mb-4">
                     أضف مشاريعك البرمجية ومشاريع التخرج لرفع درجة التوافق في المطابقة الموزونة للوظائف.
                   </p>
                   <button
                     onClick={() => setShowProjectModal(true)}
-                    className="px-4 py-2 bg-[#0F1E36] text-white text-[12px] font-bold rounded-xl"
+                    className="px-5 py-2.5 bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white text-[12px] font-black rounded-xl shadow-xs"
                   >
                     + إضافة أول مشروع
                   </button>
@@ -430,15 +430,16 @@ export const SkillsPortfolioPage: React.FC = () => {
                   {projects.map((proj) => (
                     <div
                       key={proj.id}
-                      className="p-5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#CBD5E1] transition shadow-xs"
+                      className="p-5 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] hover:border-[#CBD5E1] transition shadow-2xs"
                     >
                       <div className="flex items-start justify-between gap-4 mb-2.5">
                         <div>
                           <div className="flex items-center gap-2">
-                            <h3 className="text-[15px] font-bold text-[#0F1E36]">{proj.title}</h3>
+                            <h3 className="text-[15px] font-bold text-[#0F172A]">{proj.title}</h3>
                             {proj.is_graduation_project && (
-                              <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]">
-                                مشروع تخرج موثق ★
+                              <span className="text-[10px] px-2.5 py-0.5 rounded-full font-black bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A] flex items-center gap-1">
+                                <span>🎓</span>
+                                <span>مشروع تخرج نوعي موثق</span>
                               </span>
                             )}
                           </div>
@@ -449,14 +450,14 @@ export const SkillsPortfolioPage: React.FC = () => {
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => openEditProject(proj)}
-                            className="text-[#1D4ED8] hover:text-[#1E40AF] transition text-[12px] font-bold px-2.5 py-1 rounded-lg hover:bg-blue-50 cursor-pointer"
+                            className="text-[#0284C7] hover:text-[#0369A1] transition text-[12px] font-bold px-2.5 py-1 rounded-lg hover:bg-[#E8F4FC] cursor-pointer"
                             title="تعديل المشروع"
                           >
                             تعديل
                           </button>
                           <button
                             onClick={() => proj.id && handleDeleteProject(proj.id)}
-                            className="text-red-400 hover:text-red-600 transition text-[12px] font-bold px-2 py-1 rounded-lg hover:bg-red-50 cursor-pointer"
+                            className="text-rose-400 hover:text-rose-600 transition text-[12px] font-bold px-2 py-1 rounded-lg hover:bg-rose-50 cursor-pointer"
                             title="حذف المشروع"
                           >
                             حذف
@@ -464,9 +465,9 @@ export const SkillsPortfolioPage: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200/60 mt-3 text-[12px]">
+                      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#EAE4D9]/60 mt-3 text-[12px]">
                         <div className="text-[11px] font-bold text-[#64748B]">
-                          التقنيات: <span className="text-[#0F1E36] font-semibold">{proj.technologies}</span>
+                          التقنيات: <span className="text-[#0F172A] font-semibold">{proj.technologies}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           {proj.github_url && (
@@ -474,7 +475,7 @@ export const SkillsPortfolioPage: React.FC = () => {
                               href={proj.github_url}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-[12px] font-bold text-[#1D4ED8] hover:underline flex items-center gap-1"
+                              className="text-[12px] font-bold text-[#0284C7] hover:underline flex items-center gap-1"
                             >
                               <span>مستودع GitHub ↗</span>
                             </a>
@@ -484,7 +485,7 @@ export const SkillsPortfolioPage: React.FC = () => {
                               href={proj.project_url}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-[12px] font-bold text-[#059669] hover:underline flex items-center gap-1"
+                              className="text-[12px] font-bold text-[#0D6E44] hover:underline flex items-center gap-1"
                             >
                               <span>معاينة حية ↗</span>
                             </a>
@@ -501,16 +502,16 @@ export const SkillsPortfolioPage: React.FC = () => {
           {/* LEFT COLUMN: Video CV & Match Readiness (4 Cols) */}
           <div className="lg:col-span-4 space-y-6">
             {/* 3. الفيديو التعريفي المهني */}
-            <div className="bg-white rounded-[20px] p-6 border border-[#E2E8F0] shadow-sm">
-              <div className="flex items-center justify-between pb-3.5 border-b border-[#F1F5F9] mb-4">
-                <h2 className="text-[15px] font-black text-[#0F1E36]">3. الفيديو التعريفي المهني</h2>
-                <span className="text-[11px] font-bold text-[#10B981] bg-[#ECFDF5] px-2.5 py-0.5 rounded-full border border-[#A7F3D0]">
+            <div className="bg-white rounded-3xl p-6 border border-[#EAE4D9] shadow-2xs">
+              <div className="flex items-center justify-between pb-3.5 border-b border-[#EAE4D9]/60 mb-4">
+                <h2 className="text-[15px] font-black text-[#0F172A]">3. الفيديو التعريفي المهني</h2>
+                <span className="text-[11px] font-bold text-[#0D6E44] bg-[#E8F8F2] px-2.5 py-0.5 rounded-full border border-[#BDE8D2]">
                   معتمد وموثق ✓
                 </span>
               </div>
 
               {/* Video Player Card Preview */}
-              <div className="w-full aspect-video rounded-xl bg-[#0F1E36] flex flex-col items-center justify-center relative overflow-hidden mb-4 shadow-inner text-white text-center p-4">
+              <div className="w-full aspect-video rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col items-center justify-center relative overflow-hidden mb-4 shadow-inner text-white text-center p-4">
                 <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mb-2 backdrop-blur-xs">
                   <div className="w-0 h-0 border-y-8 border-y-transparent border-e-12 border-e-white me-1" />
                 </div>
@@ -522,9 +523,9 @@ export const SkillsPortfolioPage: React.FC = () => {
 
               {/* Video Info Meta */}
               <div className="space-y-2.5 text-[12px] text-[#475569] mb-4">
-                <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                  <span className="font-bold text-[#0F1E36]">مستوى الخصوصية:</span>
-                  <span className="font-semibold text-[#1D4ED8]">
+                <div className="flex justify-between items-center py-1 border-b border-[#EAE4D9]/60">
+                  <span className="font-bold text-[#0F172A]">مستوى الخصوصية:</span>
+                  <span className="font-semibold text-[#0284C7]">
                     {videoInfo.video_visibility === 'PUBLIC'
                       ? 'عام للجميع'
                       : videoInfo.video_visibility === 'COMPANIES_ONLY'
@@ -532,9 +533,9 @@ export const SkillsPortfolioPage: React.FC = () => {
                       : 'خاص'}
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                  <span className="font-bold text-[#0F1E36]">حالة الاعتماد:</span>
-                  <span className="font-semibold text-emerald-600">موثق ومطابق للشروط</span>
+                <div className="flex justify-between items-center py-1 border-b border-[#EAE4D9]/60">
+                  <span className="font-bold text-[#0F172A]">حالة الاعتماد:</span>
+                  <span className="font-semibold text-[#0D6E44]">موثق ومطابق للشروط</span>
                 </div>
               </div>
 
@@ -546,24 +547,24 @@ export const SkillsPortfolioPage: React.FC = () => {
                   setUploadProgress(null)
                   setShowVideoModal(true)
                 }}
-                className="w-full h-[42px] bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#0F1E36] border border-[#CBD5E1] font-bold text-[12px] rounded-xl transition cursor-pointer"
+                className="w-full h-11 bg-white hover:bg-[#F4EFE6]/60 text-[#0F172A] border border-[#EAE4D9] font-bold text-[12px] rounded-xl transition cursor-pointer"
               >
                 تحديث رابط أو إعدادات الفيديو
               </button>
             </div>
 
             {/* 4. مؤشر اكتمال الملف المهني */}
-            <div className="bg-white rounded-[20px] p-6 border border-[#E2E8F0] shadow-sm">
-              <div className="flex items-center justify-between pb-3.5 border-b border-[#F1F5F9] mb-4">
-                <h2 className="text-[15px] font-black text-[#0F1E36]">مؤشر اكتمال الملف المهني</h2>
-                <span className="text-[16px] font-black font-['Plus_Jakarta_Sans'] text-[#059669]">
+            <div className="bg-white rounded-3xl p-6 border border-[#EAE4D9] shadow-2xs">
+              <div className="flex items-center justify-between pb-3.5 border-b border-[#EAE4D9]/60 mb-4">
+                <h2 className="text-[15px] font-black text-[#0F172A]">مؤشر اكتمال الملف المهني</h2>
+                <span className="text-[16px] font-black font-['Plus_Jakarta_Sans'] text-[#0D6E44]">
                   <bdi dir="ltr">96%</bdi>
                 </span>
               </div>
 
               {/* Progress Bar */}
-              <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-4">
-                <div className="bg-[#10B981] h-full rounded-full transition-all duration-500 w-[96%]" />
+              <div className="w-full bg-[#F4EFE6] h-2.5 rounded-full overflow-hidden mb-4">
+                <div className="bg-gradient-to-r from-[#0284C7] to-[#10B981] h-full rounded-full transition-all duration-500 w-[96%]" />
               </div>
 
               <p className="text-[11px] text-[#64748B] leading-relaxed mb-3">
@@ -572,15 +573,15 @@ export const SkillsPortfolioPage: React.FC = () => {
 
               <div className="space-y-2 text-[11px] font-medium text-[#475569]">
                 <div className="flex items-center gap-2">
-                  <span className="text-emerald-500 font-bold">✓</span>
+                  <span className="text-[#0D6E44] font-bold">✓</span>
                   <span>المهارات التقنية: {techSkills.length} مهارات مسجلة</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-emerald-500 font-bold">✓</span>
+                  <span className="text-[#0D6E44] font-bold">✓</span>
                   <span>المشاريع المنجزة: {projects.length} مشاريع برمجية</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-emerald-500 font-bold">✓</span>
+                  <span className="text-[#0D6E44] font-bold">✓</span>
                   <span>الفيديو التعريفي: معتمد ومتاح لأصحاب العمل</span>
                 </div>
               </div>
@@ -591,37 +592,46 @@ export const SkillsPortfolioPage: React.FC = () => {
 
       {/* MODAL 1: Add Skill */}
       {showSkillModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-[480px] w-full p-6 shadow-xl border border-slate-200">
-            <h3 className="text-[17px] font-black text-[#0F1E36] mb-3">إضافة مهارة إلى ملفك المهني</h3>
-            <p className="text-[12px] text-slate-500 mb-4">
+        <div className="fixed inset-0 bg-[#0F172A]/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-[480px] w-full p-6 sm:p-7 shadow-2xl border border-[#EAE4D9]">
+            <h3 className="text-[17px] font-black text-[#0F172A] mb-2">إضافة مهارة إلى ملفك المهني</h3>
+            <p className="text-[12px] text-[#64748B] mb-4">
               اختر المهارة من الدليل المعتمد وحدد مستوى إتقانك لها.
             </p>
 
             <form onSubmit={handleAddSkill} className="space-y-4">
               <div>
-                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1">المهارة المعتمدة *</label>
+                <label className="block text-[12px] font-bold text-[#0F172A] mb-1.5">المهارة المعتمدة (دليل تخصصات الحاسوب والتقنية) *</label>
                 <select
                   required
                   value={selectedSkillId}
                   onChange={(e) => setSelectedSkillId(Number(e.target.value))}
-                  className="w-full h-11 px-3 rounded-xl border border-slate-300 bg-slate-50 text-[13px] font-bold text-slate-800"
+                  className="w-full h-11 px-3.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-[13px] font-bold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white"
                 >
-                  <option value="">-- اختر مهارة --</option>
-                  {availableSkills.map((sk) => (
-                    <option key={sk.id} value={sk.id}>
-                      {sk.name} ({sk.category === 'TECHNICAL' ? 'تقنية' : 'شخصية'})
-                    </option>
-                  ))}
+                  <option value="">-- اختر من دليل المهارات المهيكلة المعتمدة --</option>
+                  <optgroup label="💻 المهارات البرمجية والتقنية (Computer Science & Tech)">
+                    {availableSkills.filter(s => s.category === 'TECHNICAL').map((sk) => (
+                      <option key={sk.id} value={sk.id}>
+                        {sk.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="🌟 المهارات الشخصية والقيادية (Soft Skills)">
+                    {availableSkills.filter(s => s.category === 'SOFT').map((sk) => (
+                      <option key={sk.id} value={sk.id}>
+                        {sk.name}
+                      </option>
+                    ))}
+                  </optgroup>
                 </select>
               </div>
 
               <div>
-                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1">مستوى الإتقان *</label>
+                <label className="block text-[12px] font-bold text-[#0F172A] mb-1.5">مستوى الإتقان *</label>
                 <select
                   value={selectedProficiency}
                   onChange={(e) => setSelectedProficiency(e.target.value)}
-                  className="w-full h-11 px-3 rounded-xl border border-slate-300 bg-slate-50 text-[13px] font-bold text-slate-800"
+                  className="w-full h-11 px-3.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-[13px] font-bold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white"
                 >
                   <option value="BEGINNER">مبتدئ (Beginner)</option>
                   <option value="INTERMEDIATE">متوسط (Intermediate)</option>
@@ -634,13 +644,13 @@ export const SkillsPortfolioPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowSkillModal(false)}
-                  className="px-4 py-2 rounded-xl text-[12px] font-bold text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2.5 rounded-xl text-[12px] font-bold text-[#475569] hover:bg-[#F4EFE6]/60 transition"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl text-[12px] font-bold bg-[#0F1E36] text-white hover:bg-[#1E293B]"
+                  className="px-5 py-2.5 rounded-xl text-[12px] font-black bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white shadow-xs transition"
                 >
                   حفظ المهارة
                 </button>
@@ -652,9 +662,9 @@ export const SkillsPortfolioPage: React.FC = () => {
 
       {/* MODAL 2: Add/Edit Project */}
       {showProjectModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-[560px] w-full p-6 shadow-xl border border-slate-200">
-            <h3 className="text-[17px] font-black text-[#0F1E36] mb-3">
+        <div className="fixed inset-0 bg-[#0F172A]/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-[560px] w-full p-6 sm:p-7 shadow-2xl border border-[#EAE4D9]">
+            <h3 className="text-[17px] font-black text-[#0F172A] mb-3">
               {editingProjectId ? 'تعديل بيانات المشروع البرمجي' : 'إضافة مشروع برمجي جديد'}
             </h3>
 
@@ -667,74 +677,74 @@ export const SkillsPortfolioPage: React.FC = () => {
 
             <form onSubmit={handleSaveProject} className="space-y-3.5">
               <div>
-                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1">عنوان المشروع *</label>
+                <label className="block text-[12px] font-bold text-[#0F172A] mb-1">عنوان المشروع *</label>
                 <input
                   type="text"
                   required
                   value={projectTitle}
                   onChange={(e) => setProjectTitle(e.target.value)}
-                  placeholder="مثال: منصة التجارة الإلكترونية"
-                  className="w-full h-10 px-3 rounded-xl border border-slate-300 bg-slate-50 text-[13px] font-semibold"
+                  placeholder=""
+                  className="w-full h-10 px-3 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-[13px] font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1">وصف المشروع ومميزاته *</label>
+                <label className="block text-[12px] font-bold text-[#0F172A] mb-1">وصف المشروع ومميزاته *</label>
                 <textarea
                   required
                   rows={3}
                   value={projectDesc}
                   onChange={(e) => setProjectDesc(e.target.value)}
-                  placeholder="اكتب نبذة مختصرة عن دورك في المشروع وأبرز المشاكل التي قمت بحلها..."
-                  className="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-[12px] font-medium"
+                  placeholder=""
+                  className="w-full p-3 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-[12px] font-medium text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1">التقنيات المستخدمة *</label>
+                <label className="block text-[12px] font-bold text-[#0F172A] mb-1">التقنيات المستخدمة *</label>
                 <input
                   type="text"
                   required
                   value={projectTechs}
                   onChange={(e) => setProjectTechs(e.target.value)}
-                  placeholder="React, Node.js, PostgreSQL, Tailwind"
-                  className="w-full h-10 px-3 rounded-xl border border-slate-300 bg-slate-50 text-[13px] font-semibold"
+                  placeholder=""
+                  className="w-full h-10 px-3 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-[13px] font-semibold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[12px] font-bold text-[#0F1E36] mb-1">رابط GitHub</label>
+                  <label className="block text-[12px] font-bold text-[#0F172A] mb-1">رابط GitHub</label>
                   <input
                     type="url"
                     value={projectGithub}
                     onChange={(e) => setProjectGithub(e.target.value)}
-                    placeholder="https://github.com/..."
-                    className="w-full h-10 px-3 rounded-xl border border-slate-300 bg-slate-50 text-[12px]"
+                    placeholder=""
+                    className="w-full h-10 px-3 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-[12px] text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-bold text-[#0F1E36] mb-1">رابط المعاينة المباشرة</label>
+                  <label className="block text-[12px] font-bold text-[#0F172A] mb-1">رابط المعاينة المباشرة</label>
                   <input
                     type="url"
                     value={projectLiveUrl}
                     onChange={(e) => setProjectLiveUrl(e.target.value)}
-                    placeholder="https://myproject.ye"
-                    className="w-full h-10 px-3 rounded-xl border border-slate-300 bg-slate-50 text-[12px]"
+                    placeholder=""
+                    className="w-full h-10 px-3 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-[12px] text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white"
                   />
                 </div>
               </div>
 
               {/* Project Image Attachment with 5MB validation */}
               <div>
-                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1">
+                <label className="block text-[12px] font-bold text-[#0F172A] mb-1">
                   صورة توضيحية أو ملخص المشروع (اختياري - أقصى حد 5MB)
                 </label>
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/webp,application/pdf"
                   onChange={handleProjectFileChange}
-                  className="w-full text-[12px] text-slate-600 file:ms-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-[#0F1E36] file:text-white hover:file:bg-[#1E293B]"
+                  className="w-full text-[12px] text-slate-600 file:ms-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-black file:bg-gradient-to-r file:from-[#0284C7] file:to-[#10B981] file:text-white hover:file:opacity-90"
                 />
               </div>
 
@@ -744,10 +754,10 @@ export const SkillsPortfolioPage: React.FC = () => {
                   id="gradProj"
                   checked={isGraduationProject}
                   onChange={(e) => setIsGraduationProject(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#0F1E36]"
+                  className="w-4 h-4 rounded text-[#0284C7] focus:ring-[#0284C7]"
                 />
-                <label htmlFor="gradProj" className="text-[12px] font-bold text-[#0F1E36]">
-                  هذا المشروع هو مشروع التخرج الجامعي الرسمي ★
+                <label htmlFor="gradProj" className="text-[12px] font-bold text-[#0F172A]">
+                  هذا المشروع هو مشروع رئيسي موثق ★
                 </label>
               </div>
 
@@ -759,13 +769,13 @@ export const SkillsPortfolioPage: React.FC = () => {
                     setEditingProjectId(null)
                     setProjectFileError(null)
                   }}
-                  className="px-4 py-2 rounded-xl text-[12px] font-bold text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2.5 rounded-xl text-[12px] font-bold text-[#475569] hover:bg-[#F4EFE6]/60 transition"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl text-[12px] font-bold bg-[#0F1E36] text-white hover:bg-[#1E293B]"
+                  className="px-5 py-2.5 rounded-xl text-[12px] font-black bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white shadow-xs transition"
                 >
                   {editingProjectId ? 'تحديث المشروع' : 'حفظ ونشر المشروع'}
                 </button>
@@ -777,9 +787,9 @@ export const SkillsPortfolioPage: React.FC = () => {
 
       {/* MODAL 3: Update Video */}
       {showVideoModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-[480px] w-full p-6 shadow-xl border border-slate-200">
-            <h3 className="text-[17px] font-black text-[#0F1E36] mb-3">تحديث إعدادات الفيديو التعريفي</h3>
+        <div className="fixed inset-0 bg-[#0F172A]/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-[480px] w-full p-6 sm:p-7 shadow-2xl border border-[#EAE4D9]">
+            <h3 className="text-[17px] font-black text-[#0F172A] mb-3">تحديث إعدادات الفيديو التعريفي</h3>
 
             {videoFileError && (
               <div className="mb-3 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-[12px] font-bold flex items-center gap-2">
@@ -790,29 +800,29 @@ export const SkillsPortfolioPage: React.FC = () => {
 
             <form onSubmit={handleUpdateVideo} className="space-y-4">
               <div>
-                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1">رابط الفيديو (URL)</label>
+                <label className="block text-[12px] font-bold text-[#0F172A] mb-1">رابط الفيديو (URL)</label>
                 <input
                   type="url"
                   value={videoUrlInput}
                   onChange={(e) => setVideoUrlInput(e.target.value)}
-                  placeholder="https://..."
-                  className="w-full h-11 px-3 rounded-xl border border-slate-300 bg-slate-50 text-[13px]"
+                  placeholder=""
+                  className="w-full h-11 px-3.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-[13px] text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white"
                 />
               </div>
 
-              {/* Direct File Upload with 50MB check (FR-27) */}
+              {/* Direct File Upload with 50MB check */}
               <div>
-                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1">
+                <label className="block text-[12px] font-bold text-[#0F172A] mb-1">
                   أو رفع ملف فيديو مباشر (الحد الأقصى: 50MB، المدة 60-90 ثانية)
                 </label>
                 <input
                   type="file"
                   accept="video/mp4,video/webm"
                   onChange={handleVideoFileChange}
-                  className="w-full text-[12px] text-slate-600 file:ms-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-[#0F1E36] file:text-white hover:file:bg-[#1E293B]"
+                  className="w-full text-[12px] text-slate-600 file:ms-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-black file:bg-gradient-to-r file:from-[#0284C7] file:to-[#10B981] file:text-white hover:file:opacity-90"
                 />
                 {uploadProgress !== null && (
-                  <div className="mt-2 text-[11px] text-emerald-600 font-bold flex items-center gap-1.5">
+                  <div className="mt-2 text-[11px] text-[#0D6E44] font-bold flex items-center gap-1.5">
                     <span>✓</span>
                     <span>تم فحص الملف وجاهزيته للرفع بنجاح (100%)</span>
                   </div>
@@ -820,11 +830,11 @@ export const SkillsPortfolioPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-[12px] font-bold text-[#0F1E36] mb-1">مستوى الخصوصية *</label>
+                <label className="block text-[12px] font-bold text-[#0F172A] mb-1">مستوى الخصوصية *</label>
                 <select
                   value={videoVisibilityInput}
                   onChange={(e) => setVideoVisibilityInput(e.target.value as 'PUBLIC' | 'COMPANIES_ONLY' | 'PRIVATE')}
-                  className="w-full h-11 px-3 rounded-xl border border-slate-300 bg-slate-50 text-[13px] font-bold"
+                  className="w-full h-11 px-3.5 rounded-xl border border-[#CBD5E1] bg-[#FBF9F5] text-[13px] font-bold text-[#0F172A] focus:outline-none focus:border-[#0284C7] focus:bg-white"
                 >
                   <option value="COMPANIES_ONLY">للشركات المعتمدة فقط (موصى به)</option>
                   <option value="PUBLIC">عام لجميع الزوار</option>
@@ -839,13 +849,13 @@ export const SkillsPortfolioPage: React.FC = () => {
                     setShowVideoModal(false)
                     setVideoFileError(null)
                   }}
-                  className="px-4 py-2 rounded-xl text-[12px] font-bold text-slate-600 hover:bg-slate-100"
+                  className="px-4 py-2.5 rounded-xl text-[12px] font-bold text-[#475569] hover:bg-[#F4EFE6]/60 transition"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl text-[12px] font-bold bg-[#0F1E36] text-white hover:bg-[#1E293B]"
+                  className="px-5 py-2.5 rounded-xl text-[12px] font-black bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white shadow-xs transition"
                 >
                   حفظ الإعدادات
                 </button>

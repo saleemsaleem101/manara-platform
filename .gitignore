@@ -23,6 +23,8 @@ media/profiles/*
 !media/profiles/.gitkeep
 *.zip
 *.xlsx
+*.docx
+*.doc
 
 # OS / Editor
 .DS_Store

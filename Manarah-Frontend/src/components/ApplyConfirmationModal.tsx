@@ -25,12 +25,12 @@ export const ApplyConfirmationModal: React.FC<ApplyConfirmationModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4" dir="rtl">
-      <div className="w-full max-w-[520px] bg-white rounded-[24px] shadow-2xl border border-slate-200 overflow-hidden text-start transition-all duration-150">
+      <div className="w-full max-w-[520px] bg-white rounded-3xl shadow-2xl border border-[#EAE4D9] overflow-hidden text-start transition-all duration-150">
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 flex items-start justify-between">
+        <div className="p-6 border-b border-[#EAE4D9] bg-[#FBF9F5] flex items-start justify-between">
           <div>
-            <h3 className="text-[18px] font-black text-[#0F1E36]">تأكيد تقديم طلب التوظيف</h3>
-            <p className="text-[12px] text-slate-500 mt-1">
+            <h3 className="text-[18px] font-black text-[#0F172A]">تأكيد تقديم طلب التوظيف</h3>
+            <p className="text-[12px] text-[#64748B] mt-1">
               مراجعة البيانات التي ستُرسل إلى جهة التوظيف
             </p>
           </div>
@@ -47,13 +47,13 @@ export const ApplyConfirmationModal: React.FC<ApplyConfirmationModalProps> = ({
         {/* Content */}
         <div className="p-6 space-y-4">
           {/* Job & Company summary card */}
-          <div className="p-4 rounded-[16px] bg-[#F8FAFC] border border-slate-200 flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] flex items-center justify-between">
             <div>
-              <h4 className="text-[15px] font-black text-[#0F1E36]">{jobTitle}</h4>
+              <h4 className="text-[15px] font-black text-[#0F172A]">{jobTitle}</h4>
               <p className="text-[12px] text-slate-600 font-semibold mt-0.5">{companyName}</p>
             </div>
             {pct !== null && (
-              <div className="px-3 py-1.5 rounded-[10px] bg-emerald-50 border border-emerald-200 text-emerald-800 text-[12px] font-black font-mono">
+              <div className="px-3 py-1.5 rounded-xl bg-[#E8F8F2] border border-[#BDE8D2] text-[#0D6E44] text-[12px] font-black font-mono">
                 نسبة التوافق: <bdi dir="ltr">{pct}%</bdi>
               </div>
             )}
@@ -61,7 +61,7 @@ export const ApplyConfirmationModal: React.FC<ApplyConfirmationModalProps> = ({
 
           {/* Included Data Checklist */}
           <div className="space-y-2.5">
-            <h5 className="text-[12px] font-black text-[#0F1E36]">
+            <h5 className="text-[12px] font-black text-[#0F172A]">
               سيتم إرفاق البيانات التالية تلقائياً من ملفك المهني:
             </h5>
 
@@ -107,7 +107,7 @@ export const ApplyConfirmationModal: React.FC<ApplyConfirmationModalProps> = ({
             type="button"
             onClick={onConfirm}
             disabled={isApplying}
-            className="px-5 py-2.5 rounded-[12px] bg-[#0F1E36] hover:bg-[#1E293B] disabled:opacity-60 text-white text-[12px] font-black transition flex items-center gap-2 cursor-pointer shadow-sm"
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] disabled:opacity-60 text-white text-[12px] font-black transition flex items-center gap-2 cursor-pointer shadow-xs"
           >
             {isApplying ? (
               <>

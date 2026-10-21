@@ -1,34 +1,107 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Cairo', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'Plus Jakarta Sans', ui-monospace, monospace;
 
-  --color-brand-navy: #0F1E36;
+  --color-brand-navy: #0F172A;
   --color-brand-navy-light: #1E293B;
-  --color-brand-amber: #F59E0B;
-  --color-brand-amber-hover: #D97706;
-  --color-brand-amber-light: #FEF3C7;
-  --color-brand-canvas: #F8FAFC;
+  --color-brand-primary: #0284C7;
+  --color-brand-primary-hover: #0369A1;
+  --color-brand-primary-light: #E8F4FC;
+  --color-brand-mint: #10B981;
+  --color-brand-mint-light: #E8F8F2;
+  --color-brand-sand: #F4EFE6;
+  --color-brand-canvas: #FBF9F5;
   --color-brand-card: #FFFFFF;
-  --color-brand-border: #E2E8F0;
-  --color-brand-muted: #64748B;
-  --color-brand-success: #10B981;
-  --color-brand-success-light: #ECFDF5;
-  --color-brand-error: #EF4444;
-  --color-brand-error-light: #FEF2F2;
+  --color-brand-border: #EAE4D9;
 }
 
 body {
   font-family: 'Cairo', system-ui, -apple-system, sans-serif;
-  background-color: #F8FAFC;
-  color: #0F1E36;
+  background-color: #FBF9F5;
+  color: #0F172A;
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* الرسوم المتحركة الخفيفة للنوافذ المنبثقة والإشعارات */
+/* ==========================================================
+   Global Dark Mode Engine (Seamless, Luxury Dark Theme)
+   ========================================================== */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #0B1120 !important;
+  color: #F8FAFC !important;
+}
+
+/* Seamless token adaptation in dark mode */
+html.dark .bg-\[\#FBF9F5\] {
+  background-color: #0B1120 !important;
+}
+
+html.dark .bg-\[\#F4EFE6\],
+html.dark .bg-\[\#F4EFE6\]\/60,
+html.dark .bg-\[\#F4EFE6\]\/50 {
+  background-color: #1E293B !important;
+}
+
+html.dark .bg-white {
+  background-color: #0F172A !important;
+}
+
+html.dark .bg-white\/90,
+html.dark .bg-white\/95 {
+  background-color: rgba(15, 23, 42, 0.95) !important;
+}
+
+html.dark .border-\[\#EAE4D9\],
+html.dark .border-\[\#EAE4D9\]\/80,
+html.dark .border-\[\#EAE4D9\]\/70,
+html.dark .border-\[\#EAE4D9\]\/60 {
+  border-color: #1E293B !important;
+}
+
+html.dark .border-\[\#CBD5E1\] {
+  border-color: #334155 !important;
+}
+
+html.dark .text-\[\#0F172A\] {
+  color: #F8FAFC !important;
+}
+
+html.dark .text-\[\#475569\],
+html.dark .text-slate-700,
+html.dark .text-slate-600 {
+  color: #94A3B8 !important;
+}
+
+html.dark .text-slate-500 {
+  color: #64748B !important;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F8FAFC !important;
+}
+
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  background-color: #0F172A !important;
+  border-color: #0284C7 !important;
+}
+
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -41,7 +114,7 @@ body {
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.97);
   }
   to {
     opacity: 1;
@@ -56,4 +129,3 @@ body {
 .animate-scaleIn {
   animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-

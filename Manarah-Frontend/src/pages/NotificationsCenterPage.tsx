@@ -77,30 +77,30 @@ export const NotificationsCenterPage: React.FC = () => {
   const unreadCount = notifications.filter((n) => !n.is_read).length
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans" dir="rtl">
+    <div className="min-h-screen bg-[#FBF9F5] text-[#0F172A] font-sans" dir="rtl">
       <Navbar />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Breadcrumbs & Title */}
         <div className="mb-8">
-          <div className="flex items-center gap-2 text-xs text-slate-500 mb-2">
-            <Link to="/profile" className="hover:text-slate-900 transition font-medium">
+          <div className="flex items-center gap-2 text-xs text-slate-500 mb-2 font-semibold">
+            <Link to="/profile" className="hover:text-[#0284C7] transition">
               الرئيسية
             </Link>
             <span>/</span>
-            <span className="text-amber-600 font-bold">مركز الإشعارات والتنبيهات المباشرة</span>
+            <span className="text-[#0284C7] font-black">مركز الإشعارات والتنبيهات المباشرة</span>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-[#0F1E36]">
+              <h1 className="text-2xl sm:text-3xl font-black text-[#0F172A]">
                 مركز الإشعارات والتنبيهات المباشرة
               </h1>
-              <p className="text-slate-500 text-sm mt-1">
+              <p className="text-slate-500 text-sm mt-1 font-medium">
                 إشعارات تحديث طلبات التوظيف والفرص والتنبيهات الرسمية
               </p>
             </div>
             {unreadCount > 0 && (
-              <span className="self-start sm:self-center px-3 py-1.5 rounded-full bg-amber-500 text-slate-950 font-black text-xs shadow-2xs">
+              <span className="self-start sm:self-center px-3.5 py-1.5 rounded-full bg-[#E8F8F2] border border-[#BDE8D2] text-[#0D6E44] font-black text-xs shadow-2xs">
                 {unreadCount} إشعار جديد غير مقروء
               </span>
             )}
@@ -111,7 +111,7 @@ export const NotificationsCenterPage: React.FC = () => {
         {feedbackMsg && (
           <div
             className={`mb-6 p-4 rounded-2xl border text-sm font-bold flex items-center justify-between animate-fadeIn ${feedbackMsg.type === 'success'
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                ? 'bg-[#E8F8F2] border-[#BDE8D2] text-[#0D6E44]'
                 : 'bg-rose-50 border-rose-200 text-rose-800'
               }`}
           >
@@ -129,26 +129,26 @@ export const NotificationsCenterPage: React.FC = () => {
         )}
 
         {/* Card Header & Controls */}
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-6 mb-6 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+        <div className="bg-white rounded-3xl border border-[#EAE4D9] p-5 sm:p-6 mb-6 shadow-2xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE4D9] pb-4">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-black text-[#0F1E36]">الإشعارات والتحديثات اللحظية</span>
-              <span className="text-xs text-slate-400">({notifications.length})</span>
+              <span className="text-sm font-black text-[#0F172A]">الإشعارات والتحديثات اللحظية</span>
+              <span className="text-xs text-slate-400 font-mono">({notifications.length})</span>
             </div>
 
             <button
               type="button"
               disabled={isMarkingAll || unreadCount === 0}
               onClick={handleMarkAllRead}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${unreadCount === 0
-                  ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer'
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border ${unreadCount === 0
+                  ? 'bg-[#FBF9F5] text-slate-400 border-[#EAE4D9]/60 cursor-not-allowed'
+                  : 'bg-white hover:bg-[#F4EFE6]/60 text-[#0F172A] border-[#EAE4D9] cursor-pointer shadow-2xs'
                 }`}
             >
               {isMarkingAll ? (
-                <span className="w-3 h-3 border-2 border-slate-600 border-t-transparent rounded-full animate-spin" />
+                <span className="w-3 h-3 border-2 border-[#0284C7] border-t-transparent rounded-full animate-spin" />
               ) : (
-                <span>✓</span>
+                <span className="text-[#0D6E44]">✓</span>
               )}
               <span>تحديد الكل كمقروء</span>
             </button>
@@ -159,9 +159,9 @@ export const NotificationsCenterPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setActiveFilter('ALL')}
-              className={`px-3 py-1.5 rounded-xl transition ${activeFilter === 'ALL'
-                  ? 'bg-[#0F1E36] text-white shadow-2xs'
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+              className={`px-3.5 py-1.5 rounded-xl transition ${activeFilter === 'ALL'
+                  ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs font-black'
+                  : 'bg-[#FBF9F5] border border-[#EAE4D9] text-slate-600 hover:text-[#0F172A] hover:bg-[#F4EFE6]/50'
                 }`}
             >
               الكل ({notifications.length})
@@ -169,9 +169,9 @@ export const NotificationsCenterPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setActiveFilter('UNREAD')}
-              className={`px-3 py-1.5 rounded-xl transition ${activeFilter === 'UNREAD'
-                  ? 'bg-[#0F1E36] text-white shadow-2xs'
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+              className={`px-3.5 py-1.5 rounded-xl transition ${activeFilter === 'UNREAD'
+                  ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs font-black'
+                  : 'bg-[#FBF9F5] border border-[#EAE4D9] text-slate-600 hover:text-[#0F172A] hover:bg-[#F4EFE6]/50'
                 }`}
             >
               غير المقروءة ({unreadCount})
@@ -179,9 +179,9 @@ export const NotificationsCenterPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setActiveFilter('APPLICATIONS')}
-              className={`px-3 py-1.5 rounded-xl transition ${activeFilter === 'APPLICATIONS'
-                  ? 'bg-[#0F1E36] text-white shadow-2xs'
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+              className={`px-3.5 py-1.5 rounded-xl transition ${activeFilter === 'APPLICATIONS'
+                  ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs font-black'
+                  : 'bg-[#FBF9F5] border border-[#EAE4D9] text-slate-600 hover:text-[#0F172A] hover:bg-[#F4EFE6]/50'
                 }`}
             >
               طلبات التوظيف
@@ -189,9 +189,9 @@ export const NotificationsCenterPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setActiveFilter('SYSTEM')}
-              className={`px-3 py-1.5 rounded-xl transition ${activeFilter === 'SYSTEM'
-                  ? 'bg-[#0F1E36] text-white shadow-2xs'
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+              className={`px-3.5 py-1.5 rounded-xl transition ${activeFilter === 'SYSTEM'
+                  ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] text-white shadow-xs font-black'
+                  : 'bg-[#FBF9F5] border border-[#EAE4D9] text-slate-600 hover:text-[#0F172A] hover:bg-[#F4EFE6]/50'
                 }`}
             >
               تنبيهات النظام
@@ -202,19 +202,19 @@ export const NotificationsCenterPage: React.FC = () => {
         {/* Notifications List */}
         <div className="space-y-3 mb-8">
           {isLoading ? (
-            <div className="bg-white rounded-3xl border border-slate-200/80 p-12 text-center">
-              <span className="inline-block w-8 h-8 border-3 border-amber-500 border-t-transparent rounded-full animate-spin mb-3" />
+            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-12 text-center shadow-2xs">
+              <span className="inline-block w-8 h-8 border-3 border-[#0284C7] border-t-transparent rounded-full animate-spin mb-3" />
               <p className="text-xs font-bold text-slate-500">جاري تحميل الإشعارات والتنبيهات المباشرة...</p>
             </div>
           ) : filteredNotifications.length === 0 ? (
-            <div className="bg-white rounded-3xl border border-slate-200/80 p-12 text-center">
-              <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4 text-slate-400">
+            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-12 text-center shadow-2xs">
+              <div className="w-16 h-16 rounded-2xl bg-[#FBF9F5] border border-[#EAE4D9] flex items-center justify-center mx-auto mb-4 text-[#0284C7]">
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
               </div>
-              <h3 className="text-base font-black text-[#0F1E36] mb-1">صندوق الإشعارات فارغ</h3>
-              <p className="text-xs text-slate-500">لا توجد إشعارات حالياً ضمن التصفية المحددة.</p>
+              <h3 className="text-base font-black text-[#0F172A] mb-1">صندوق الإشعارات فارغ</h3>
+              <p className="text-xs text-slate-500 font-medium">لا توجد إشعارات حالياً ضمن التصفية المحددة.</p>
             </div>
           ) : (
             filteredNotifications.map((item) => {
@@ -230,17 +230,17 @@ export const NotificationsCenterPage: React.FC = () => {
                   key={item.id}
                   onClick={() => handleMarkAsRead(item.id)}
                   className={`p-5 rounded-3xl border transition flex items-start gap-4 cursor-pointer hover:shadow-xs ${item.is_read
-                      ? 'bg-white border-slate-200/80'
-                      : 'bg-amber-50/20 border-amber-300 ring-1 ring-amber-200/50'
+                      ? 'bg-white border-[#EAE4D9] shadow-2xs'
+                      : 'bg-white border-2 border-[#0284C7]/50 shadow-xs ring-4 ring-[#0284C7]/5'
                     }`}
                 >
                   {/* Icon Indicator */}
                   <div
-                    className={`w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-bold shrink-0 ${item.type === 'STATUS_UPDATE'
-                        ? 'bg-emerald-100 text-emerald-800'
+                    className={`w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-bold shrink-0 border ${item.type === 'STATUS_UPDATE'
+                        ? 'bg-[#E8F8F2] border-[#BDE8D2] text-[#0D6E44]'
                         : item.type === 'NEW_APPLICATION'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-amber-100 text-amber-800'
+                          ? 'bg-[#E8F4FC] border-[#BAE3F9] text-[#0284C7]'
+                          : 'bg-[#F4EFE6] border-[#EAE4D9] text-[#0F172A]'
                       }`}
                   >
                     {item.type === 'STATUS_UPDATE' ? '✓' : item.type === 'NEW_APPLICATION' ? '📋' : '🔔'}
@@ -250,40 +250,40 @@ export const NotificationsCenterPage: React.FC = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2 mb-1">
                       <h3
-                        className={`text-sm font-black truncate ${item.is_read ? 'text-slate-800' : 'text-[#0F1E36]'
+                        className={`text-sm font-black truncate ${item.is_read ? 'text-slate-800' : 'text-[#0F172A]'
                           }`}
                       >
                         {item.title}
                       </h3>
                       {!item.is_read && (
-                        <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" title="إشعار غير مقروء" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#0284C7] shrink-0" title="إشعار غير مقروء" />
                       )}
                     </div>
                     <p className="text-xs text-slate-600 leading-relaxed mb-2 font-medium">
                       {item.message}
                     </p>
-                    <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400 font-medium">
                       <span>{formattedDate}</span>
 
                       {/* Action Links based on type */}
                       {item.type === 'STATUS_UPDATE' ? (
                         <Link
                           to="/applications"
-                          className="text-amber-600 hover:text-amber-700 font-bold flex items-center gap-1"
+                          className="text-[#0284C7] hover:underline font-bold flex items-center gap-1"
                         >
                           <span>عرض الطلب في «طلباتي» ➔</span>
                         </Link>
                       ) : item.type === 'NEW_APPLICATION' ? (
                         <Link
                           to="/company/jobs"
-                          className="text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1"
+                          className="text-[#0284C7] hover:underline font-bold flex items-center gap-1"
                         >
                           <span>مراجعة طلبات التوظيف ➔</span>
                         </Link>
                       ) : item.type === 'COMPANY_VERIFIED' ? (
                         <Link
                           to="/company/status"
-                          className="text-emerald-600 hover:text-emerald-700 font-bold flex items-center gap-1"
+                          className="text-[#0D6E44] hover:underline font-bold flex items-center gap-1"
                         >
                           <span>عرض حالة الاعتماد ➔</span>
                         </Link>
@@ -297,10 +297,12 @@ export const NotificationsCenterPage: React.FC = () => {
         </div>
 
         {/* Footer Note */}
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 text-center text-xs text-slate-500 shadow-2xs">
+        <div className="p-4 rounded-2xl bg-white border border-[#EAE4D9] text-center text-xs text-slate-500 font-medium shadow-2xs">
           تفضيلات الإشعارات: يمكنك التحكم بإشعارات البريد الإلكتروني والتنبيهات اللحظية من إعدادات حسابك.
         </div>
       </main>
     </div>
   )
 }
+
+export default NotificationsCenterPage

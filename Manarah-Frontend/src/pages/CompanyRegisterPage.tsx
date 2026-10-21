@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import logoImg from '../assets/logo_transparent.png'
+import { BrandLogo } from '../components/BrandLogo'
+import { ThemeToggle } from '../components/ThemeToggle'
 import { api } from '../services/api'
 import { validatePassword } from '../utils/validators'
 
@@ -130,40 +131,36 @@ export const CompanyRegisterPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-['Cairo'] text-start text-slate-800 pb-16" dir="rtl">
-      {/* Top Bar (48px) - Exact 02_Auth_Register_Company.png */}
-      <header className="w-full bg-white border-b border-[#E2E8F0] px-6 sm:px-12 h-12 flex items-center justify-between text-xs">
-        <div className="flex items-center gap-3">
-          <Link to="/" className="flex items-center gap-2">
-            <img src={logoImg} alt="منارة" className="h-7 w-auto object-contain" />
-            <span className="text-[#0F1E36] font-bold text-[13px] tracking-tight">
-              منارة MANARA PLATFORM
-            </span>
-          </Link>
+    <div className="min-h-screen bg-[#FBF9F5] font-['Cairo'] text-start text-slate-800 pb-16" dir="rtl">
+      {/* Top Bar */}
+      <header className="w-full bg-white/90 backdrop-blur-md border-b border-[#EAE4D9] px-6 sm:px-12 h-16 flex items-center justify-between text-xs">
+        <div className="flex items-center gap-4">
+          <BrandLogo size="sm" showSubline={false} />
           <span className="text-slate-300">/</span>
           <span className="text-[#64748B] font-semibold text-[12px]">
-            تسجيل حساب شركة جديد والاعتماد التجاري
+            تسجيل حساب منشأة جديد والاعتماد المؤسسي
           </span>
         </div>
-        <div>
+        <div className="flex items-center gap-2.5">
+          <ThemeToggle />
           <Link
             to="/login"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[10px] bg-slate-100 hover:bg-slate-200 text-[#0F1E36] font-bold text-[12px] transition"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white border border-[#EAE4D9] hover:bg-[#F4EFE6]/60 text-[#0F172A] font-bold text-[12px] transition shadow-2xs"
           >
             <span>العودة لتسجيل الدخول</span>
-            <span className="text-amber-600 font-bold">➔</span>
+            <span className="text-[#0284C7] font-bold">➔</span>
           </Link>
         </div>
       </header>
 
-      {/* Hero Banner Header - Exact 02_Auth_Register_Company.png */}
+      {/* Hero Banner Header */}
       <div className="max-w-[1360px] mx-auto px-4 sm:px-6 pt-8 pb-6">
-        <div className="bg-white border border-slate-200 rounded-[20px] p-6 sm:p-7 shadow-xs relative overflow-hidden flex items-center justify-between">
-          <div className="ps-4 border-s-4 border-blue-600">
-            <h1 className="text-2xl sm:text-3xl font-black text-[#0F1E36] tracking-tight">
-              بوابة تسجيل الشركات والاعتماد التجاري
+        <div className="bg-white border border-[#EAE4D9] rounded-[24px] p-6 sm:p-7 shadow-2xs relative overflow-hidden flex items-center justify-between">
+          <div className="ps-4 border-s-4 border-[#0284C7]">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight">
+              بوابة تسجيل المنشآت والاعتماد المؤسسي
             </h1>
-            <p className="text-slate-500 text-sm mt-1.5 font-medium">
+            <p className="text-[#64748B] text-sm mt-1.5 font-medium">
               إنشاء حساب جهة عمل وتوثيق السجل التجاري والبيانات الرسمية للمنشأة
             </p>
           </div>
@@ -198,10 +195,10 @@ export const CompanyRegisterPage: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Right Column: Registration Form (7 cols) */}
-          <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+          <div className="lg:col-span-7 bg-white rounded-3xl border border-[#EAE4D9] p-6 sm:p-8 shadow-xs">
             <div className="mb-6">
-              <h2 className="text-xl font-black text-[#0F1E36]">إنشاء حساب جهة عمل / منشأة جديدة</h2>
-              <p className="text-xs text-slate-500 mt-1 font-medium">
+              <h2 className="text-xl font-black text-[#0F172A]">إنشاء حساب جهة عمل / منشأة جديدة</h2>
+              <p className="text-xs text-[#64748B] mt-1 font-medium">
                 سجل منشأتك لاستقطاب أفضل الكفاءات الأكاديمية والمهنية عبر خوارزمية المطابقة الموزونة
               </p>
             </div>
@@ -210,7 +207,7 @@ export const CompanyRegisterPage: React.FC = () => {
               {/* Row 1: Company Name & Representative Name (users.name) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1E36] mb-2">
+                  <label className="block text-xs font-bold text-[#0F172A] mb-2">
                     اسم المنشأة أو الشركة الرسمي <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
@@ -219,8 +216,8 @@ export const CompanyRegisterPage: React.FC = () => {
                       required
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
-                      placeholder="مثال: شركة يمن تك للحلول الرقمية"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm bg-slate-50/50"
+                      placeholder=""
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:border-transparent text-sm bg-slate-50/50"
                     />
                     <div className="absolute end-3.5 top-3.5 text-slate-400">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
@@ -231,7 +228,7 @@ export const CompanyRegisterPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1E36] mb-2">
+                  <label className="block text-xs font-bold text-[#0F172A] mb-2">
                     اسم ممثل المنشأة / مسؤول الحساب <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
@@ -240,8 +237,8 @@ export const CompanyRegisterPage: React.FC = () => {
                       required
                       value={representativeName}
                       onChange={(e) => setRepresentativeName(e.target.value)}
-                      placeholder="مثال: م. عبد الله محمد العريقي"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm bg-slate-50/50"
+                      placeholder=""
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:border-transparent text-sm bg-slate-50/50"
                     />
                     <div className="absolute end-3.5 top-3.5 text-slate-400">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
@@ -252,10 +249,10 @@ export const CompanyRegisterPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Two Column Row: Commercial Register & Website - Exact 02_Auth_Register_Company.png */}
+              {/* Two Column Row: Commercial Register & Website */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1E36] mb-2">
+                  <label className="block text-xs font-bold text-[#0F172A] mb-2">
                     رقم السجل التجاري / الترخيص الرسمي <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
@@ -264,8 +261,8 @@ export const CompanyRegisterPage: React.FC = () => {
                       required
                       value={commercialReg}
                       onChange={(e) => setCommercialReg(e.target.value)}
-                      placeholder="CR-2026-984210"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm font-mono bg-slate-50/50"
+                      placeholder=""
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:border-transparent text-sm font-mono bg-slate-50/50"
                     />
                     <div className="absolute end-3.5 top-3.5 text-slate-400">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
@@ -276,7 +273,7 @@ export const CompanyRegisterPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1E36] mb-2">
+                  <label className="block text-xs font-bold text-[#0F172A] mb-2">
                     الموقع الإلكتروني الرسمي للمنشأة
                   </label>
                   <div className="relative">
@@ -284,8 +281,8 @@ export const CompanyRegisterPage: React.FC = () => {
                       type="url"
                       value={website}
                       onChange={(e) => setWebsite(e.target.value)}
-                      placeholder="https://www.yemen-tech.ye"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm font-mono bg-slate-50/50 text-start"
+                      placeholder=""
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:border-transparent text-sm font-mono bg-slate-50/50 text-start"
                       dir="ltr"
                     />
                     <div className="absolute end-3.5 top-3.5 text-slate-400">
@@ -300,7 +297,7 @@ export const CompanyRegisterPage: React.FC = () => {
               {/* Two Column Row: Email & Phone */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1E36] mb-2">
+                  <label className="block text-xs font-bold text-[#0F172A] mb-2">
                     البريد الإلكتروني المؤسسي الرسمي <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
@@ -309,8 +306,8 @@ export const CompanyRegisterPage: React.FC = () => {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="careers@yemen-tech.ye"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm font-mono bg-slate-50/50"
+                      placeholder=""
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:border-transparent text-sm font-mono bg-slate-50/50"
                     />
                     <div className="absolute end-3.5 top-3.5 text-slate-400">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -321,7 +318,7 @@ export const CompanyRegisterPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1E36] mb-2">
+                  <label className="block text-xs font-bold text-[#0F172A] mb-2">
                     رقم الهاتف والتواصل المعتمد <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
@@ -330,8 +327,8 @@ export const CompanyRegisterPage: React.FC = () => {
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      placeholder="+967 1 456789"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm font-mono bg-slate-50/50"
+                      placeholder=""
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:border-transparent text-sm font-mono bg-slate-50/50"
                     />
                     <div className="absolute end-3.5 top-3.5 text-slate-400">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -345,13 +342,13 @@ export const CompanyRegisterPage: React.FC = () => {
               {/* Two Column Row: Industry & Location */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1E36] mb-2">
+                  <label className="block text-xs font-bold text-[#0F172A] mb-2">
                     مجال عمل الشركة / القطاع <span className="text-rose-500">*</span>
                   </label>
                   <select
                     value={industry}
                     onChange={(e) => setIndustry(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm bg-slate-50/50 font-bold"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:border-transparent text-sm bg-slate-50/50 font-bold"
                   >
                     <option value="تكنولوجيا المعلومات والبرمجيات">تكنولوجيا المعلومات والبرمجيات</option>
                     <option value="المصارف والبنوك والتمويل">المصارف والبنوك والتمويل</option>
@@ -363,7 +360,7 @@ export const CompanyRegisterPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1E36] mb-2">
+                  <label className="block text-xs font-bold text-[#0F172A] mb-2">
                     المدينة والمقر الرئيسي <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -371,8 +368,8 @@ export const CompanyRegisterPage: React.FC = () => {
                     required
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    placeholder="اليمن - صنعاء (حدة)"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm bg-slate-50/50"
+                    placeholder=""
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0284C7] focus:border-transparent text-sm bg-slate-50/50"
                   />
                 </div>
               </div>
@@ -380,7 +377,7 @@ export const CompanyRegisterPage: React.FC = () => {
               {/* Password & Confirm */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1E36] mb-2">
+                  <label className="block text-xs font-bold text-[#0F172A] mb-2">
                     كلمة المرور الأمنية للحساب <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
@@ -395,7 +392,7 @@ export const CompanyRegisterPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute end-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F1E36] transition cursor-pointer p-0.5"
+                      className="absolute end-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F172A] transition cursor-pointer p-0.5"
                       tabIndex={-1}
                       aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
                     >
@@ -414,7 +411,7 @@ export const CompanyRegisterPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#0F1E36] mb-2">
+                  <label className="block text-xs font-bold text-[#0F172A] mb-2">
                     تأكيد كلمة المرور <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
@@ -429,7 +426,7 @@ export const CompanyRegisterPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute end-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F1E36] transition cursor-pointer p-0.5"
+                      className="absolute end-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F172A] transition cursor-pointer p-0.5"
                       tabIndex={-1}
                       aria-label={showConfirmPassword ? 'إخفاء تأكيد كلمة المرور' : 'إظهار تأكيد كلمة المرور'}
                     >
@@ -458,7 +455,7 @@ export const CompanyRegisterPage: React.FC = () => {
                   className="w-4 h-4 rounded text-amber-500 focus:ring-amber-400 border-slate-300 cursor-pointer"
                 />
                 <label htmlFor="companyAgreeTerms" className="text-xs text-slate-600 font-medium cursor-pointer">
-                  أوافق على <span className="text-[#0F1E36] font-bold underline">الشروط والأحكام</span> و<span className="text-[#0F1E36] font-bold underline">سياسة الخصوصية</span> لمنصة منارة
+                  أوافق على <span className="text-[#0F172A] font-bold underline">الشروط والأحكام</span> و<span className="text-[#0F172A] font-bold underline">سياسة الخصوصية</span> لمنصة منارة
                 </label>
               </div>
 
@@ -469,7 +466,7 @@ export const CompanyRegisterPage: React.FC = () => {
                   disabled={isLoading || !isFormValid}
                   className={`w-full py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition-all duration-200 shadow-sm ${
                     isFormValid && !isLoading
-                      ? 'bg-[#0F1E36] hover:bg-[#162a4a] text-white cursor-pointer shadow-md hover:shadow-lg active:scale-[0.99]'
+                      ? 'bg-gradient-to-r from-[#0284C7] to-[#10B981] hover:from-[#0369A1] hover:to-[#059669] text-white cursor-pointer shadow-md hover:shadow-lg active:scale-[0.99]'
                       : 'bg-[#CBD5E1] text-[#64748B] cursor-not-allowed opacity-70 shadow-none'
                   }`}
                 >
@@ -481,20 +478,20 @@ export const CompanyRegisterPage: React.FC = () => {
                   ) : (
                     <>
                       <span>إنشاء حساب المنشأة وإرسال طلب التحقق</span>
-                      <span className={isFormValid ? "text-amber-400 font-bold" : "text-slate-400 font-bold"}>➔</span>
+                      <span className={isFormValid ? "text-[#BAE6FD] font-bold" : "text-slate-400 font-bold"}>➔</span>
                     </>
                   )}
                 </button>
               </div>
 
               {/* Security & Verification Notice */}
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-slate-500 text-[11px] leading-relaxed">
+              <div className="p-4 rounded-2xl bg-[#F4EFE6]/50 border border-[#EAE4D9] text-[#64748B] text-[11px] leading-relaxed">
                 <div className="flex items-start gap-2.5">
-                  <svg className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-[#0284C7] shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                   <div>
-                    <span className="font-bold text-slate-700 block mb-0.5">حماية البيانات والتحقق المؤسسي:</span>
+                    <span className="font-bold text-[#0F172A] block mb-0.5">حماية البيانات والتحقق المؤسسي:</span>
                     تخضع جميع حسابات الشركات لرقابة وتدقيق إدارة المنصة قبل تمكينها من نشر الوظائف والاطلاع على بيانات المتقدمين لضمان الشفافية وموثوقية الفرص.
                   </div>
                 </div>
@@ -505,65 +502,65 @@ export const CompanyRegisterPage: React.FC = () => {
           {/* Left Column: Verification Tracker & Document Upload (5 cols) */}
           <div className="lg:col-span-5 space-y-6">
             {/* Verification Steps Card */}
-            <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 shadow-sm">
+            <div className="bg-white rounded-3xl border border-[#EAE4D9] p-6 sm:p-7 shadow-xs">
               <div className="mb-6">
-                <h3 className="text-lg font-black text-[#0F1E36]">توثيق المنشأة والاعتماد الرسمي</h3>
-                <p className="text-xs text-slate-500 mt-1">مراحل تدقيق حسابات جهات العمل لضمان موثوقية الفرص المعلنة</p>
+                <h3 className="text-lg font-black text-[#0F172A]">توثيق المنشأة والاعتماد الرسمي</h3>
+                <p className="text-xs text-[#64748B] mt-1">مراحل تدقيق حسابات جهات العمل لضمان موثوقية الفرص المعلنة</p>
               </div>
 
-              {/* 5-Step Progression Tracker (Matching Screen 17) */}
+              {/* 5-Step Progression Tracker */}
               <div className="grid grid-cols-5 gap-1.5 text-center mb-6">
                 <div className="flex flex-col items-center">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shadow-xs ${
-                    currentStep >= 1 ? 'bg-[#0F1E36] text-white' : 'bg-slate-100 text-slate-500'
+                    currentStep >= 1 ? 'bg-[#0284C7] text-white' : 'bg-slate-100 text-slate-500'
                   }`}>
                     1
                   </div>
-                  <span className="text-[10px] font-bold text-[#0F1E36] mt-1.5">التسجيل</span>
+                  <span className="text-[10px] font-bold text-[#0F172A] mt-1.5">التسجيل</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black ${
-                    currentStep >= 2 ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500'
+                    currentStep >= 2 ? 'bg-[#10B981] text-white' : 'bg-slate-100 text-slate-500'
                   }`}>
                     2
                   </div>
-                  <span className="text-[10px] font-bold text-slate-500 mt-1.5">رابط تفعيل البريد</span>
+                  <span className="text-[10px] font-bold text-[#64748B] mt-1.5">تفعيل البريد</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-black">
                     3
                   </div>
-                  <span className="text-[10px] font-bold text-slate-500 mt-1.5">رفع الوثائق</span>
+                  <span className="text-[10px] font-bold text-[#64748B] mt-1.5">رفع الوثائق</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-black">
                     4
                   </div>
-                  <span className="text-[10px] font-bold text-slate-500 mt-1.5">مراجعة الإدارة</span>
+                  <span className="text-[10px] font-bold text-[#64748B] mt-1.5">المراجعة</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-black">
                     5
                   </div>
-                  <span className="text-[10px] font-bold text-slate-500 mt-1.5">نشر الوظائف</span>
+                  <span className="text-[10px] font-bold text-[#64748B] mt-1.5">نشر الوظائف</span>
                 </div>
               </div>
 
               {/* Document Upload Area */}
-              <div className="border-2 border-dashed border-amber-300/80 bg-amber-50/40 rounded-2xl p-6 text-center hover:border-amber-400 transition">
-                <div className="w-12 h-12 mx-auto rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mb-3">
+              <div className="border-2 border-dashed border-[#BAE3F9] bg-[#E8F4FC]/40 rounded-2xl p-6 text-center hover:border-[#0284C7] transition">
+                <div className="w-12 h-12 mx-auto rounded-full bg-[#E8F4FC] text-[#0284C7] border border-[#BAE3F9] flex items-center justify-center mb-3">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
                 </div>
-                <h4 className="text-xs sm:text-sm font-bold text-[#0F1E36]">
+                <h4 className="text-xs sm:text-sm font-bold text-[#0F172A]">
                   رفع صورة أو ملف السجل التجاري الرسمي (PDF, PNG, JPG)
                 </h4>
-                <p className="text-[11px] text-slate-500 mt-1 mb-4">
+                <p className="text-[11px] text-[#64748B] mt-1 mb-4">
                   التحقق من صحة المستند: بحد أقصى 10 ميجابايت للملف المرفق
                 </p>
 
-                <label className="inline-block px-5 py-2.5 rounded-xl bg-[#0F1E36] hover:bg-[#162a4a] text-white text-xs font-bold cursor-pointer transition shadow-xs">
+                <label className="inline-block px-5 py-2.5 rounded-xl bg-[#0284C7] hover:bg-[#0369A1] text-white text-xs font-bold cursor-pointer transition shadow-2xs">
                   <span>{crDocumentFile ? 'تغيير الملف المحدد' : 'اختر الملف من جهازك'}</span>
                   <input
                     type="file"
@@ -574,9 +571,9 @@ export const CompanyRegisterPage: React.FC = () => {
                 </label>
 
                 {crDocumentFile && (
-                  <div className="mt-3 p-2.5 rounded-xl bg-white border border-amber-200 text-xs font-bold text-amber-900 flex items-center justify-between">
+                  <div className="mt-3 p-2.5 rounded-xl bg-white border border-[#BDE8D2] text-xs font-bold text-[#0D6E44] flex items-center justify-between">
                     <span className="truncate max-w-[220px]">📄 {crDocumentFile.name}</span>
-                    <span className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md font-bold">جاهز للإرسال ✓</span>
+                    <span className="text-[10px] text-[#0D6E44] bg-[#E8F8F2] px-2 py-0.5 rounded-md font-bold">جاهز للإرسال ✓</span>
                   </div>
                 )}
               </div>
