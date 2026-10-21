@@ -410,7 +410,7 @@ class ReportsView(APIView):
         elif export_param == "csv":
             csv_content = generate_csv_report(report_type, data)
             response = HttpResponse(csv_content, content_type="text/csv; charset=utf-8-sig")
-            response["Content-Disposition"] = f'attachment; filename="manarah_report_{report_type}.csv"'
+            response["Content-Disposition"] = f'attachment; filename="report_{report_type}.csv"'
             return response
 
         is_empty = False

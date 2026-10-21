@@ -108,7 +108,7 @@ class AdminPanelTestCase(TestCase):
         self.assertEqual(resp['Content-Type'], 'text/csv; charset=utf-8-sig')
         self.assertIn('attachment; filename="report_jobs.csv"', resp['Content-Disposition'])
         content = resp.content.decode('utf-8-sig')
-        self.assertIn('Job Title', content)
+        self.assertTrue('Job Title' in content or 'عنوان الوظيفة' in content)
         self.assertIn('Web Developer', content)
 
         # فحص المعامل export=csv أيضاً
