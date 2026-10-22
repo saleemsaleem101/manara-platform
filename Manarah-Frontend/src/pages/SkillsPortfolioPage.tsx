@@ -33,6 +33,113 @@ export const SkillsPortfolioPage: React.FC = () => {
   // Skill Form State
   const [selectedSkillId, setSelectedSkillId] = useState<number | ''>('')
   const [selectedProficiency, setSelectedProficiency] = useState<string>('ADVANCED')
+  const [skillModalSearch, setSkillModalSearch] = useState('')
+  const [selectedTaxonomyTab, setSelectedTaxonomyTab] = useState<'LANGUAGES' | 'SOFTWARE' | 'AI_DATA' | 'CYBER_NET' | 'EMBEDDED_IOT' | 'DATABASES_CLOUD' | 'SOFT'>('LANGUAGES')
+  const [showFullTaxonomyExplorer, setShowFullTaxonomyExplorer] = useState(false)
+
+  const TAXONOMY_TRACKS = [
+    {
+      id: 'LANGUAGES' as const,
+      name: 'لغات البرمجة والأنظمة',
+      badge: '22 لغة',
+      icon: '💻',
+      desc: 'لغات البرمجة المعتمدة في كليات الحاسبات والهندسة للأنظمة والخوارزميات والتطبيقات',
+      skills: [
+        'Python', 'Java', 'C', 'C++', 'C# (.NET)', 'JavaScript', 'TypeScript', 'Go (Golang)', 'Rust',
+        'PHP', 'Kotlin', 'Swift', 'Dart', 'Ruby', 'R Language', 'MATLAB', 'Scala',
+        'Shell Scripting (Bash / PowerShell)', 'Assembly (x86 / ARM)', 'VHDL & Verilog (Hardware Description)',
+        'SQL (Structured Query Language)', 'HTML5 & CSS3'
+      ]
+    },
+    {
+      id: 'SOFTWARE' as const,
+      name: 'هندسة البرمجيات والويب',
+      badge: '23 تقنية',
+      icon: '🌐',
+      desc: 'أطر العمل وتطوير النظم وبنيات المايكروسيرفس وضمان الجودة واختبار البرمجيات',
+      skills: [
+        'React.js', 'Next.js', 'Vue.js', 'Angular', 'Node.js & Express', 'Django & DRF',
+        'FastAPI', 'Flask', 'ASP.NET Core', 'Spring Boot', 'Laravel (PHP)', 'Tailwind CSS',
+        'Bootstrap', 'GraphQL', 'RESTful APIs', 'WebSockets', 'Microservices Architecture',
+        'Design Patterns & SOLID Principles', 'Clean Code & Software Architecture',
+        'Software Testing & QA (Unit/Integration)', 'Automated Testing (Selenium / Cypress)',
+        'Agile & Scrum Methodologies', 'Git & GitHub Version Control'
+      ]
+    },
+    {
+      id: 'AI_DATA' as const,
+      name: 'الذكاء الاصطناعي وعلم البيانات',
+      badge: '12 مجال',
+      icon: '🤖',
+      desc: 'تعلم الآلة والتعلم العميق وتحليل البيانات الضخمة والرؤية الحاسوبية ونماذج LLM',
+      skills: [
+        'Machine Learning (ML)', 'Deep Learning (DL)', 'Artificial Intelligence (AI)',
+        'Natural Language Processing (NLP)', 'Computer Vision (OpenCV)', 'TensorFlow & PyTorch',
+        'Scikit-Learn', 'Data Analysis (Pandas & NumPy)', 'Big Data Analytics (Spark & Hadoop)',
+        'Business Intelligence & Power BI', 'Data Mining & Warehousing', 'Large Language Models (LLMs) & Prompting'
+      ]
+    },
+    {
+      id: 'CYBER_NET' as const,
+      name: 'الأمن السيبراني والشبكات',
+      badge: '14 تخصص',
+      icon: '🛡️',
+      desc: 'اختبار الاختراق والتحقيق الجنائي وأمن السيرفرات وشبكات سيسكو والبروتوكولات الأمنية',
+      skills: [
+        'Cybersecurity & InfoSec', 'Penetration Testing & Ethical Hacking', 'Network Security & Firewalls',
+        'Web Application Security (OWASP Top 10)', 'Cryptography & Encryption Protocols',
+        'SOC & Incident Response', 'Vulnerability Assessment & Nessus', 'Digital Forensics',
+        'Kali Linux & Penetration Tools', 'Computer Networking (TCP/IP & OSI)',
+        'Cisco Networking (CCNA / CCNP Routing & Switching)', 'Network Administration & Wireshark',
+        'VPN & Remote Access Technologies', 'VoIP & Telecommunication Systems'
+      ]
+    },
+    {
+      id: 'EMBEDDED_IOT' as const,
+      name: 'هندسة الحاسوب والأنظمة المدمجة و IoT',
+      badge: '11 مجال',
+      icon: '⚙️',
+      desc: 'المتحكمات الدقيقة وإنترنت الأشياء وتصميم الدوائر الرقمية ومعمارية الحاسوب والروبوتات والتحكم الصناعي',
+      skills: [
+        'Embedded Systems & Embedded C/C++', 'Internet of Things (IoT & Protocols MQTT/CoAP)',
+        'Microcontrollers (Arduino, STM32, PIC, ESP32)', 'Single-Board Computers (Raspberry Pi)',
+        'RTOS (Real-Time Operating Systems)', 'Digital Logic Design & Circuits',
+        'Computer Organization & Architecture', 'FPGA & Digital Systems Design',
+        'Robotics & Control Systems (ROS)', 'Industrial Automation (PLC & SCADA)',
+        'Sensors, Actuators & Signal Processing'
+      ]
+    },
+    {
+      id: 'DATABASES_CLOUD' as const,
+      name: 'قواعد البيانات والحوسبة السحابية و DevOps',
+      badge: '22 أداة',
+      icon: '☁️',
+      desc: 'إدارة قواعد البيانات ونظم الكاش والحاويات والحوسبة السحابية وأتمتة النشر والتطبيقات الهجينة',
+      skills: [
+        'PostgreSQL', 'MySQL', 'Microsoft SQL Server', 'Oracle Database', 'SQLite',
+        'MongoDB (NoSQL)', 'Redis (In-Memory Cache)', 'Firebase & Supabase',
+        'Database Design & Normalization', 'DevOps & Automation', 'Docker & Containerization',
+        'Kubernetes (K8s)', 'CI/CD Pipelines (GitHub Actions / GitLab CI)', 'Linux System Administration',
+        'AWS Cloud Services', 'Microsoft Azure', 'Google Cloud Platform (GCP)',
+        'Infrastructure as Code (Terraform)', 'Nginx & Reverse Proxy Architecture', 'Flutter & Dart',
+        'React Native', 'Android Native (Kotlin)', 'iOS Native (Swift)'
+      ]
+    },
+    {
+      id: 'SOFT' as const,
+      name: 'المهارات الشخصية والهندسية القيادية',
+      badge: '10 مهارات',
+      icon: '🌟',
+      desc: 'القدرات القيادية والهندسية وإدارة المشاريع الرشيقة وحل المشكلات المعقدة والتواصل الفني',
+      skills: [
+        'حل المشكلات والخوارزميات (Problem Solving)', 'العمل الجماعي والتعاون البرمجي (Teamwork)',
+        'إدارة المشاريع الهندسية والتقنية (Project Management)', 'التفكير التحليلي والمنطقي (Analytical Thinking)',
+        'التواصل الفعال وعرض المشاريع (Effective Communication)', 'القيادة وتحمل المسؤولية (Leadership & Initiative)',
+        'كتابة التوثيق والتقارير الفنية (Technical Writing)', 'إدارة الوقت والمهام (Time Management)',
+        'التفكير النقدي واتخاذ القرار (Critical Thinking)', 'أخلاقيات مهنة الهندسة والحاسوب (Engineering Ethics)'
+      ]
+    }
+  ]
 
   // Project Form State
   const [projectTitle, setProjectTitle] = useState('')
@@ -316,17 +423,99 @@ export const SkillsPortfolioPage: React.FC = () => {
                 </span>
               </div>
 
-              {/* Taxonomy Notice Card for Committee / Quality Assurance */}
-              <div className="mb-5 p-3.5 rounded-2xl bg-[#E0F2FE]/60 dark:bg-sky-950/40 border border-[#BAE6FD] dark:border-sky-800 flex items-start gap-3">
-                <span className="text-base">💡</span>
-                <div className="text-xs">
-                  <span className="font-black text-[#0284C7] dark:text-[#38BDF8] block mb-0.5">
-                    إدخال المهارات المهيكلة (Predefined Skills Taxonomy):
-                  </span>
-                  <p className="text-[#475569] dark:text-slate-300 text-[11px] leading-relaxed">
-                    يتم اختيار المهارات ومستويات إتقانها وفق تصنيف مقترح ومهيكل لتخصصات كليات الحاسوب (مثل: Python, React, DevOps, SQL). يمنع هذا التصنيف تباين المسميات اللغوية العشوائية ويوفر مدخلات قياسية دقيقة لخوارزمية المطابقة الموزونة (معامل تشابه Jaccard).
-                  </p>
+              {/* Comprehensive Faculty Taxonomy Catalog Showcase */}
+              <div className="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-sky-50/70 via-sky-50/30 to-amber-50/40 dark:from-sky-950/40 dark:via-slate-900 dark:to-amber-950/20 border border-sky-200 dark:border-sky-900/60 shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-sky-200/60 dark:border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">🎓</span>
+                    <div>
+                      <h4 className="text-[13px] sm:text-[14px] font-black text-[#0F172A] dark:text-white">
+                        دليل المهارات المهيكلة المعتمد لكلية الحاسبات والهندسة (Predefined Taxonomy)
+                      </h4>
+                      <p className="text-[11px] text-[#0284C7] dark:text-sky-400 font-semibold">
+                        149 مهارة ولغة برمجية معتمدة تغطي كافة مسارات وأقسام كلية الحاسبات والهندسة بالكامل
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowFullTaxonomyExplorer(!showFullTaxonomyExplorer)}
+                    className="self-start sm:self-auto px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-[11px] font-bold text-[#0284C7] dark:text-sky-300 hover:bg-sky-50 dark:hover:bg-slate-700 transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+                  >
+                    <span>{showFullTaxonomyExplorer ? 'إخفاء تفاصيل الدليل ▲' : 'استعراض تصنيفات الدليل الشامل (149 مهارة) ▼'}</span>
+                  </button>
                 </div>
+
+                <p className="text-[#475569] dark:text-slate-300 text-[11.5px] leading-relaxed mt-2.5">
+                  تعتمد المنصة دليلاً مهيكلاً شاملاً لكافة أقسام كلية الحاسبات والهندسة يمنع تباين المسميات اللغوية العشوائية ويوفر مدخلات قياسية ذات معرفات فريدة لخوارزمية المطابقة الموزونة (معامل تشابه جاكارد الرياضي). يشمل الدليل: 22 لغة برمجة وأنظمة أساسية، 23 تقنية لهندسة البرمجيات والويب، 12 مجالاً للذكاء الاصطناعي وعلم البيانات، 14 تخصصاً للأمن السيبراني والشبكات، 11 مجالاً لهندسة الحاسوب والأنظمة المدمجة و IoT، 22 أداة لقواعد البيانات والسحابة و DevOps، و 10 مهارات قيادية وهندسية.
+                </p>
+
+                {/* Categorized Track Chips */}
+                {showFullTaxonomyExplorer && (
+                  <div className="mt-4 pt-3.5 border-t border-sky-200/50 dark:border-slate-800">
+                    {/* Track Tabs */}
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      {TAXONOMY_TRACKS.map((track) => (
+                        <button
+                          key={track.id}
+                          type="button"
+                          onClick={() => setSelectedTaxonomyTab(track.id)}
+                          className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                            selectedTaxonomyTab === track.id
+                              ? 'bg-[#0284C7] text-white shadow-xs'
+                              : 'bg-white dark:bg-slate-800 text-[#475569] dark:text-slate-300 border border-[#E8DEC8] dark:border-slate-700 hover:border-[#0284C7]'
+                          }`}
+                        >
+                          <span>{track.icon}</span>
+                          <span>{track.name}</span>
+                          <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                            selectedTaxonomyTab === track.id ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300'
+                          }`}>
+                            {track.badge}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Active Track Skills List */}
+                    {(() => {
+                      const activeTrack = TAXONOMY_TRACKS.find(t => t.id === selectedTaxonomyTab)
+                      if (!activeTrack) return null
+                      return (
+                        <div className="p-3.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-sky-100 dark:border-slate-800">
+                          <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-100 dark:border-slate-800">
+                            <span className="text-[12px] font-black text-[#0F172A] dark:text-white flex items-center gap-1.5">
+                              <span>{activeTrack.icon}</span>
+                              <span>{activeTrack.name} ({activeTrack.skills.length})</span>
+                            </span>
+                            <span className="text-[11px] text-[#64748B] dark:text-slate-400">
+                              {activeTrack.desc}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto pt-1">
+                            {activeTrack.skills.map((skillName) => (
+                              <button
+                                key={skillName}
+                                type="button"
+                                onClick={() => {
+                                  const found = availableSkills.find(s => s.name.toLowerCase() === skillName.toLowerCase() || s.name.includes(skillName))
+                                  if (found) setSelectedSkillId(found.id)
+                                  setSkillModalSearch(skillName)
+                                  setShowSkillModal(true)
+                                }}
+                                className="px-2.5 py-1 rounded-lg bg-[#F0F9FF] dark:bg-sky-950/40 text-[#0369A1] dark:text-sky-300 border border-sky-200/80 dark:border-sky-800 text-[11px] font-semibold hover:bg-sky-100 dark:hover:bg-sky-900/60 transition cursor-pointer flex items-center gap-1"
+                                title="اضغط لإضافة المهارة إلى ملفك"
+                              >
+                                <span>{skillName}</span>
+                                <span className="text-[10px] text-sky-500">+</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )
+                    })()}
+                  </div>
+                )}
               </div>
 
               {/* Technical Skills */}
@@ -639,7 +828,35 @@ export const SkillsPortfolioPage: React.FC = () => {
 
             <form onSubmit={handleAddSkill} className="space-y-4">
               <div>
-                <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200 mb-1.5">المهارة المعتمدة (دليل تخصصات الحاسوب والتقنية) *</label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200">
+                    المهارة المعتمدة (دليل كلية الحاسبات والهندسة) *
+                  </label>
+                  <span className="text-[11px] font-bold text-[#0284C7] dark:text-sky-400">
+                    {availableSkills.length} مهارة معتمدة
+                  </span>
+                </div>
+
+                {/* Quick Search inside Modal */}
+                <div className="relative mb-2">
+                  <input
+                    type="text"
+                    value={skillModalSearch}
+                    onChange={(e) => setSkillModalSearch(e.target.value)}
+                    placeholder="ابحث بالاسم: C++, Python, IoT, Assembly, Java, Cloud..."
+                    className="w-full h-9 px-3 text-[12px] rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
+                  />
+                  {skillModalSearch && (
+                    <button
+                      type="button"
+                      onClick={() => setSkillModalSearch('')}
+                      className="absolute left-2.5 top-2 text-[11px] text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
                 <select
                   required
                   value={selectedSkillId}
@@ -647,19 +864,23 @@ export const SkillsPortfolioPage: React.FC = () => {
                   className="w-full h-11 px-3.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-[13px] font-bold text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
                 >
                   <option value="">-- اختر من دليل المهارات المهيكلة المعتمدة --</option>
-                  <optgroup label="💻 المهارات البرمجية والتقنية (Computer Science & Tech)">
-                    {availableSkills.filter(s => s.category === 'TECHNICAL').map((sk) => (
-                      <option key={sk.id} value={sk.id}>
-                        {sk.name}
-                      </option>
-                    ))}
+                  <optgroup label="💻 المهارات البرمجية والتقنية (Computer Science & Engineering)">
+                    {availableSkills
+                      .filter(s => s.category === 'TECHNICAL' && (!skillModalSearch || s.name.toLowerCase().includes(skillModalSearch.toLowerCase().trim())))
+                      .map((sk) => (
+                        <option key={sk.id} value={sk.id}>
+                          {sk.name}
+                        </option>
+                      ))}
                   </optgroup>
-                  <optgroup label="🌟 المهارات الشخصية والقيادية (Soft Skills)">
-                    {availableSkills.filter(s => s.category === 'SOFT').map((sk) => (
-                      <option key={sk.id} value={sk.id}>
-                        {sk.name}
-                      </option>
-                    ))}
+                  <optgroup label="🌟 المهارات الشخصية والهندسية القيادية (Soft Skills)">
+                    {availableSkills
+                      .filter(s => s.category === 'SOFT' && (!skillModalSearch || s.name.toLowerCase().includes(skillModalSearch.toLowerCase().trim())))
+                      .map((sk) => (
+                        <option key={sk.id} value={sk.id}>
+                          {sk.name}
+                        </option>
+                      ))}
                   </optgroup>
                 </select>
               </div>
