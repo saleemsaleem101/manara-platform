@@ -107,6 +107,12 @@ class JobCandidateRankView(APIView):
             raise PermissionDenied("لا تملك صلاحية استعراض مرشحي هذه الوظيفة.")
 
         ranked_apps = MatchingService.rank_candidates(job)
+        range_param = request.query_params.get("range", "").upper()
+        if range_param in ("RECOMMENDED", "HIGHLY_RECOMMENDED"):
+            ranked_apps = ranked_apps.filter(matching_result__final_score__gte=0.60)
+        elif range_param in ("BELOW", "OTHER"):
+            ranked_apps = ranked_apps.filter(matching_result__final_score__lt=0.60)
+
         from jobs.serializers import ApplicationSerializer
-        serializer = ApplicationSerializer(ranked_apps, many=True)
+        serializer = ApplicationSerializer(ranked_apps, many=True, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)

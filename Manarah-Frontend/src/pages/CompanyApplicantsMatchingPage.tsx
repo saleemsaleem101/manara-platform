@@ -26,6 +26,7 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
   // 2. UI / Filter States
   const [isLoading, setIsLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState<string>('الكل')
+  const [rangeFilter, setRangeFilter] = useState<'ALL' | 'RECOMMENDED' | 'BELOW'>('ALL')
   const [sortBy, setSortBy] = useState<'MATCH_SCORE' | 'NEWEST'>('MATCH_SCORE')
   const [isUpdatingStatus, setIsUpdatingStatus] = useState<number | null>(null)
   const [feedbackMsg, setFeedbackMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
@@ -127,16 +128,41 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
     }
   }
 
+  const recommendedCandidates = applications.filter((app) => {
+    const raw = app.matching_score ?? app.match_score ?? 0
+    const pct = raw <= 1.0 ? Math.round(raw * 100) : Math.round(raw)
+    return pct >= 60
+  })
+
+  const belowRangeCandidates = applications.filter((app) => {
+    const raw = app.matching_score ?? app.match_score ?? 0
+    const pct = raw <= 1.0 ? Math.round(raw * 100) : Math.round(raw)
+    return pct < 60
+  })
+
   // Filter & Sort Applications
   const filteredApplications = applications
     .filter((app) => {
-      if (statusFilter === 'الكل') return true
-      if (statusFilter === 'UNDER_REVIEW') return app.status === 'UNDER_REVIEW' || app.status === 'SUBMITTED'
-      return app.status === statusFilter
+      // 1. Status Filter
+      if (statusFilter !== 'الكل') {
+        if (statusFilter === 'UNDER_REVIEW') {
+          if (app.status !== 'UNDER_REVIEW' && app.status !== 'SUBMITTED') return false
+        } else if (app.status !== statusFilter) {
+          return false
+        }
+      }
+      // 2. Standard Score Range Filter (60% standard)
+      const raw = app.matching_score ?? app.match_score ?? 0
+      const pct = raw <= 1.0 ? Math.round(raw * 100) : Math.round(raw)
+      if (rangeFilter === 'RECOMMENDED') return pct >= 60
+      if (rangeFilter === 'BELOW') return pct < 60
+      return true
     })
     .sort((a, b) => {
       if (sortBy === 'MATCH_SCORE') {
-        return (b.matching_score || b.match_score || 0) - (a.matching_score || a.match_score || 0)
+        const scoreA = a.matching_score ?? a.match_score ?? 0
+        const scoreB = b.matching_score ?? b.match_score ?? 0
+        return scoreB - scoreA
       }
       if (sortBy === 'NEWEST') {
         return new Date(b.applied_at).getTime() - new Date(a.applied_at).getTime()
@@ -264,6 +290,60 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Score Range Tabs (الرنغ القياسي المعتمد: 0% إلى 100% مع فرز تنازلي) */}
+        <div className="flex flex-wrap items-center gap-2 mb-6 border-b border-[#E8DEC8] dark:border-slate-800 pb-3">
+          <button
+            type="button"
+            onClick={() => setRangeFilter('ALL')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+              rangeFilter === 'ALL'
+                ? 'bg-[#0284C7] text-white shadow-xs font-black'
+                : 'bg-white dark:bg-slate-800 text-[#475569] dark:text-slate-300 border border-[#E8DEC8] dark:border-slate-700 hover:border-[#0284C7]'
+            }`}
+          >
+            <span>جميع المتقدمين (مرتبون تنازلياً 100% - 0%)</span>
+            <span className={`text-[10px] px-2 py-0.2 rounded-full font-bold ${
+              rangeFilter === 'ALL' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+            }`}>
+              {applications.length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setRangeFilter('RECOMMENDED')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+              rangeFilter === 'RECOMMENDED'
+                ? 'bg-emerald-600 text-white shadow-xs font-black'
+                : 'bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/60 hover:border-emerald-500'
+            }`}
+          >
+            <span>⭐ المرشحون الموصى بهم (رنغ 60% إلى 100%)</span>
+            <span className={`text-[10px] px-2 py-0.2 rounded-full font-black ${
+              rangeFilter === 'RECOMMENDED' ? 'bg-white/20 text-white' : 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
+            }`}>
+              {recommendedCandidates.length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setRangeFilter('BELOW')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+              rangeFilter === 'BELOW'
+                ? 'bg-slate-700 text-white shadow-xs font-black'
+                : 'bg-white dark:bg-slate-800 text-[#64748B] dark:text-slate-400 border border-[#E8DEC8] dark:border-slate-700 hover:border-slate-400'
+            }`}
+          >
+            <span>قائمة المتقدمين دون الحد الموصى به (أقل من 60%)</span>
+            <span className={`text-[10px] px-2 py-0.2 rounded-full font-bold ${
+              rangeFilter === 'BELOW' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+            }`}>
+              {belowRangeCandidates.length}
+            </span>
+          </button>
+        </div>
+
         {/* Candidates List */}
         <div className="space-y-4 mb-12">
           {isLoading ? (
@@ -284,12 +364,10 @@ export const CompanyApplicantsMatchingPage: React.FC = () => {
               const minScore = ((selectedJob?.minimum_match_score || 0.6) * 100)
               const isBelowMin = scorePct < minScore
 
-              // النطاق القياسي الموحد (Standard Score Range) وفق توجيهات لجنة المناقشة
-              const rangeInfo = scorePct >= 80
-                ? { label: 'تطابق فائق (Highly Recommended)', badge: '⭐ ممتاز (80% - 100%)', color: 'text-[#0284C7] dark:text-sky-300 bg-[#E0F2FE] dark:bg-sky-950/60 border-[#BAE6FD] dark:border-sky-800' }
-                : scorePct >= 60
-                ? { label: 'موصى به (Recommended)', badge: '✓ موصى به (60% - 79%)', color: 'text-[#0284C7] dark:text-sky-300 bg-[#E0F2FE] dark:bg-sky-950/60 border-[#BAE6FD] dark:border-sky-800' }
-                : { label: 'تطابق جزئي (Potential Match)', badge: 'دون 60%', color: 'text-[#64748B] dark:text-slate-400 bg-[#FAF7F2] dark:bg-slate-800 border-[#E8DEC8] dark:border-slate-700' }
+              // النطاق القياسي الموحد (Standard Score Range 0% - 100%)
+              const rangeInfo = scorePct >= 60
+                ? { label: 'مرشح موصى به (Highly Recommended)', badge: '⭐ موصى به (60% - 100%)', color: 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800 font-bold' }
+                : { label: 'دون النطاق الموصى به (Below Range)', badge: 'دون النطاق الموصى به (< 60%)', color: 'text-[#64748B] dark:text-slate-400 bg-[#FAF7F2] dark:bg-slate-800 border-[#E8DEC8] dark:border-slate-700' }
 
               const isZeroExp = !app.applicant_experience || app.applicant_experience === '0' || app.applicant_experience.includes('حديث') || app.applicant_experience.includes('بدون')
               const isAccepted = app.status === 'ACCEPTED'
