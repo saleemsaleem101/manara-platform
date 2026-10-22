@@ -175,10 +175,10 @@ export const GraduateMatchBreakdownModal: React.FC<GraduateMatchBreakdownModalPr
                   </div>
                   <div>
                     <h5 className="text-xs sm:text-sm font-bold text-[#0F172A] dark:text-white">
-                      1. نسبة تشابه المهارات (معامل Jaccard)
+                      1. نسبة تشابه المهارات الموزونة (معامل Jaccard Similarity)
                     </h5>
                     <p className="text-[11px] text-[#64748B] dark:text-slate-400 mt-0.5">
-                      احتساب تشابه المهارات: <bdi dir="ltr">Ss = |A ∩ B| / |A ∪ B|</bdi> لمطابقة المهارات المشتركة مع الاتحاد الكلي
+                      احتساب التشابه الرياضي: <bdi dir="ltr">Ss = |A ∩ B| / |A ∪ B|</bdi> استناداً لدليل المهارات المهيكلة (Predefined Taxonomy) ومستويات الإتقان لمنع التشابه العشوائي للكلمات.
                     </p>
                   </div>
                 </div>
@@ -242,10 +242,10 @@ export const GraduateMatchBreakdownModal: React.FC<GraduateMatchBreakdownModalPr
                   </div>
                   <div>
                     <h5 className="text-xs sm:text-sm font-bold text-[#0F172A] dark:text-white">
-                      3. سنوات الخبرة العملية والمشاريع التطبيقية
+                      3. سنوات الخبرة العملية والمشاريع (معيار الثقة وتعويض حديثي التخرج)
                     </h5>
                     <p className="text-[11px] text-[#64748B] dark:text-slate-400 mt-0.5">
-                      تقييم سنوات الخبرة العملية والمشاريع والتدريب الميداني
+                      تقييم سنوات الخبرة مع تعويض تلقائي لحديثي التخرج عبر فحص مشاريع التخرج وكود مستودعات GitHub تلقائياً كمعيار ثقة للكفاءة.
                     </p>
                   </div>
                 </div>

@@ -316,6 +316,19 @@ export const SkillsPortfolioPage: React.FC = () => {
                 </span>
               </div>
 
+              {/* Taxonomy Notice Card for Committee / Quality Assurance */}
+              <div className="mb-5 p-3.5 rounded-2xl bg-[#E0F2FE]/60 dark:bg-sky-950/40 border border-[#BAE6FD] dark:border-sky-800 flex items-start gap-3">
+                <span className="text-base">💡</span>
+                <div className="text-xs">
+                  <span className="font-black text-[#0284C7] dark:text-[#38BDF8] block mb-0.5">
+                    إدخال المهارات المهيكلة (Predefined Skills Taxonomy):
+                  </span>
+                  <p className="text-[#475569] dark:text-slate-300 text-[11px] leading-relaxed">
+                    يتم اختيار المهارات ومستويات إتقانها وفق تصنيف مقترح ومهيكل لتخصصات كليات الحاسوب (مثل: Python, React, DevOps, SQL). يمنع هذا التصنيف تباين المسميات اللغوية العشوائية ويوفر مدخلات قياسية دقيقة لخوارزمية المطابقة الموزونة (معامل تشابه Jaccard).
+                  </p>
+                </div>
+              </div>
+
               {/* Technical Skills */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-3">
@@ -410,6 +423,19 @@ export const SkillsPortfolioPage: React.FC = () => {
                 >
                   + إضافة مشروع جديد
                 </button>
+              </div>
+
+              {/* Killer Feature Note for Projects & GitHub */}
+              <div className="mb-5 p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/50 flex items-start gap-3">
+                <span className="text-base">🚀</span>
+                <div className="text-xs">
+                  <span className="font-black text-amber-900 dark:text-amber-300 block mb-0.5">
+                    معيار الثقة وتحليل روابط GitHub ومشاريع التخرج:
+                  </span>
+                  <p className="text-amber-800/90 dark:text-amber-200/80 text-[11px] leading-relaxed">
+                    الميزة النوعية لخوارزمية منارة: يتم تحليل مشاريع التخرج وروابط مستودعات GitHub تلقائياً كمعيار ثقة يعوض غياب سنوات الخبرة لخريجي كليات الحاسوب الجدد ويرفع درجة المطابقة التوافقية أمام الشركات.
+                  </p>
+                </div>
               </div>
 
               {projects.length === 0 ? (
