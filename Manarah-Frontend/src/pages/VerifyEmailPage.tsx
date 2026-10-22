@@ -278,7 +278,7 @@ export const VerifyEmailPage: React.FC = () => {
                       type="email"
                       value={targetEmail}
                       onChange={(e) => setTargetEmail(e.target.value)}
-                      placeholder="name@example.com"
+                      placeholder=""
                       className="flex-1 h-10 px-3.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 text-xs font-mono text-center focus:outline-none focus:border-[#38BDF8] bg-[#FAF7F2] dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 text-[#0F172A] dark:text-white"
                     />
                     <button
