@@ -960,37 +960,85 @@ export const SkillsPortfolioPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200 mb-1">التقنيات المستخدمة *</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200">
+                    التقنيات المستخدمة (من الدليل المهيكل المعتمد) *
+                  </label>
+                  <span className="text-[11px] text-[#0284C7] dark:text-sky-400 font-semibold">
+                    اختيار مهيكل بالنقرة السريعة
+                  </span>
+                </div>
                 <input
                   type="text"
                   required
                   value={projectTechs}
                   onChange={(e) => setProjectTechs(e.target.value)}
-                  placeholder=""
+                  placeholder="مثال: React.js, Python, PostgreSQL, Docker"
                   className="w-full h-10 px-3 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-[13px] font-semibold text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
                 />
+                {/* Quick Add from Predefined Taxonomy Chips */}
+                <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                  <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">إضافة سريعة من الدليل:</span>
+                  {['Python', 'React.js', 'Django & DRF', 'PostgreSQL', 'Docker', 'Flutter', 'TypeScript', 'Node.js & Express', 'C++', 'FastAPI', 'Spring Boot', 'Embedded Systems & Embedded C/C++', 'Cybersecurity & InfoSec'].map((tech) => {
+                    const currentTechs = projectTechs.split(',').map(t => t.trim()).filter(Boolean)
+                    const isAdded = currentTechs.includes(tech)
+                    return (
+                      <button
+                        key={tech}
+                        type="button"
+                        onClick={() => {
+                          if (isAdded) {
+                            setProjectTechs(currentTechs.filter(t => t !== tech).join(', '))
+                          } else {
+                            setProjectTechs(currentTechs.length > 0 ? `${projectTechs}, ${tech}` : tech)
+                          }
+                        }}
+                        className={`text-[10.5px] px-2 py-0.5 rounded-lg border font-bold transition cursor-pointer ${
+                          isAdded
+                            ? 'bg-[#0284C7] text-white border-[#0284C7]'
+                            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-[#E8DEC8] dark:border-slate-700 hover:border-[#0284C7]'
+                        }`}
+                      >
+                        {isAdded ? `✓ ${tech}` : `+ ${tech}`}
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200 mb-1">رابط GitHub</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200">
+                      رابط مستودع GitHub
+                    </label>
+                    <span className="text-[10px] font-bold text-[#0284C7] dark:text-sky-400">
+                      معيار ثقة 30%
+                    </span>
+                  </div>
                   <input
                     type="url"
                     value={projectGithub}
                     onChange={(e) => setProjectGithub(e.target.value)}
-                    placeholder=""
+                    placeholder="https://github.com/username/project"
                     className="w-full h-10 px-3 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-[12px] text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
                   />
+                  <p className="text-[10px] text-[#64748B] dark:text-slate-400 mt-1">
+                    يتم تحليله تلقائياً كمعيار كفاءة برمجية لحديثي التخرج.
+                  </p>
                 </div>
                 <div>
-                  <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200 mb-1">رابط المعاينة المباشرة</label>
+                  <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200 mb-1">رابط المعاينة المباشرة (Live Demo)</label>
                   <input
                     type="url"
                     value={projectLiveUrl}
                     onChange={(e) => setProjectLiveUrl(e.target.value)}
-                    placeholder=""
+                    placeholder="https://my-app.vercel.app"
                     className="w-full h-10 px-3 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-[12px] text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
                   />
+                  <p className="text-[10px] text-[#64748B] dark:text-slate-400 mt-1">
+                    رابط تشغيل المشروع الحي على الويب (اختياري).
+                  </p>
                 </div>
               </div>
 
@@ -1007,16 +1055,22 @@ export const SkillsPortfolioPage: React.FC = () => {
                 />
               </div>
 
-              <div className="flex items-center gap-2 pt-1">
+              {/* Graduation / Capstone Project Trust Badge Checkbox */}
+              <div className="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/60 flex items-start gap-3">
                 <input
                   type="checkbox"
                   id="gradProj"
                   checked={isGraduationProject}
                   onChange={(e) => setIsGraduationProject(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#0284C7] focus:ring-[#0284C7]"
+                  className="w-4 h-4 mt-0.5 rounded text-[#0284C7] focus:ring-[#0284C7] cursor-pointer"
                 />
-                <label htmlFor="gradProj" className="text-[12px] font-bold text-[#0F172A] dark:text-slate-200">
-                  هذا المشروع هو مشروع رئيسي موثق ★
+                <label htmlFor="gradProj" className="text-[12px] font-bold text-[#0F172A] dark:text-slate-200 cursor-pointer">
+                  <span className="text-amber-900 dark:text-amber-300 font-black block">
+                    🎓 هذا المشروع هو مشروع التخرج الجامعي (Capstone / Graduation Project)
+                  </span>
+                  <span className="text-[11px] font-medium text-amber-800/80 dark:text-amber-200/70 block mt-0.5 leading-relaxed">
+                    معيار ثقة رئيسي في خوارزمية منارة: يعوض غياب سنوات الخبرة تلقائياً بنسبة تصل إلى 40% لحديثي التخرج أمام الشركات.
+                  </span>
                 </label>
               </div>
 
