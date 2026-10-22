@@ -364,6 +364,34 @@ class UpdateApplicationStatusView(APIView):
             related_app_id=application.id,
         )
 
+        # إرسال بريد إلكتروني رسمي للخريج عند القبول وتحديد موعد المقابلة المباشرة
+        if new_status == "ACCEPTED":
+            try:
+                from django.core.mail import send_mail
+                from django.conf import settings
+                grad_email = application.profile.user.email
+                if grad_email:
+                    subject = f"منصة منارة: تم قبول طلبك لشغل شاغر «{application.job.title}»"
+                    body = (
+                        f"مرحباً {application.profile.user.name}،\n\n"
+                        f"يسرنا إبلاغك بموافقة منشأة «{application.job.company.company_name}» على طلبك لشغل شاغر:\n"
+                        f"«{application.job.title}»\n\n"
+                        f"تم تفعيل بيانات التواصل المعتمدة وتحديد موعد المقابلة المباشرة على منصة منارة.\n"
+                        f"يمكنك الآن التوجه إلى حسابك عبر الرابط التالي للتواصل المباشر عبر الواتساب أو البريد المهني:\n"
+                        f"https://manarah-platform.vercel.app/applications\n\n"
+                        f"مع تمنياتنا لك بالتوفيق والنجاح،\n"
+                        f"فريق منصة منارة لربط الخريجين بسوق العمل"
+                    )
+                    send_mail(
+                        subject,
+                        body,
+                        getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@manarah.ye"),
+                        [grad_email],
+                        fail_silently=True,
+                    )
+            except Exception:
+                pass
+
         return Response(
             {
                 "message": "تم تحديث حالة الطلب بنجاح.",

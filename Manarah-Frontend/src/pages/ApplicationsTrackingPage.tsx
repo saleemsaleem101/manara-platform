@@ -192,10 +192,66 @@ export const ApplicationsTrackingPage: React.FC = () => {
                         <span className="text-rose-600 dark:text-rose-400 font-bold">2. تم الاعتذار عن القبول</span>
                       )}
                     </div>
-                    {app.status === 'ACCEPTED' && (
-                      <div className="mt-2 pt-2 border-t border-[#BAE6FD] dark:border-sky-900 text-[#0284C7] dark:text-sky-300 font-bold text-[11px] flex items-center gap-1.5">
-                        <span>🎉</span>
-                        <span>تهانينا! وافقت المنشأة على طلبك وستتواصل معك لتحديد موعد المقابلة المباشرة.</span>
+                    {app.status === 'ACCEPTED' ? (
+                      <div className="mt-2.5 pt-2.5 border-t border-emerald-200/60 dark:border-emerald-900/60 space-y-2.5">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                          <div className="flex items-center gap-1.5 font-bold text-emerald-800 dark:text-emerald-300">
+                            <span>🎉</span>
+                            <span>تم قبول طلبك رسمياً وتفعيل قنوات التواصل المعتمدة للمقابلة المباشرة.</span>
+                          </div>
+                          <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold self-start sm:self-auto">
+                            قناة تواصل معتمدة ✓
+                          </span>
+                        </div>
+
+                        {/* Unlocked Company Contact Channels */}
+                        <div className="p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-emerald-200/80 dark:border-emerald-800/60 flex flex-wrap items-center justify-between gap-3">
+                          <div className="space-y-1 text-[11px]">
+                            {app.company_phone && (
+                              <div className="flex items-center gap-2">
+                                <span className="font-semibold text-slate-500 dark:text-slate-400">رقم الواتساب / الهاتف:</span>
+                                <span className="font-bold text-[#0F172A] dark:text-white font-mono" dir="ltr">{app.company_phone}</span>
+                              </div>
+                            )}
+                            {app.company_email && (
+                              <div className="flex items-center gap-2">
+                                <span className="font-semibold text-slate-500 dark:text-slate-400">البريد المهني المعتمد:</span>
+                                <span className="font-bold text-[#0F172A] dark:text-white font-mono" dir="ltr">{app.company_email}</span>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-2 w-full sm:w-auto">
+                            {app.company_phone && (
+                              <a
+                                href={`https://wa.me/${app.company_phone.replace(/[^0-9]/g, '')}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex-1 sm:flex-none px-3.5 py-1.5 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white text-[11px] font-bold text-center transition flex items-center justify-center gap-1.5 shadow-xs"
+                              >
+                                <span>محادثة WhatsApp المعتمدة ↗</span>
+                              </a>
+                            )}
+                            {app.company_email && (
+                              <a
+                                href={`mailto:${app.company_email}`}
+                                className="flex-1 sm:flex-none px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#0284C7] to-[#0EA5E9] hover:from-[#0369A1] hover:to-[#0284C7] text-white text-[11px] font-bold text-center transition flex items-center justify-center gap-1.5 shadow-xs"
+                              >
+                                <span>إرسال بريد مهني ↗</span>
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mt-2 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+                        <span className="flex items-center gap-1">
+                          <span>🔒</span>
+                          <span>بيانات التواصل المباشر مع المنشأة مشروطة بقبول الطلب وتنظيم المقابلة الرسمية.</span>
+                        </span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                          تواصل ممنهج ومحمي
+                        </span>
                       </div>
                     )}
                   </div>

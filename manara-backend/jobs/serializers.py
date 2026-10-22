@@ -304,13 +304,15 @@ class ApplicationSerializer(serializers.ModelSerializer):
     has_github               = serializers.SerializerMethodField()
     github_url               = serializers.SerializerMethodField()
     applicant_phone          = serializers.SerializerMethodField()
+    company_email            = serializers.SerializerMethodField()
+    company_phone            = serializers.SerializerMethodField()
     contact_unlocked         = serializers.SerializerMethodField()
     status_history           = ApplicationStatusHistorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Application
         fields = (
-            'id', 'job', 'job_title', 'company_name',
+            'id', 'job', 'job_title', 'company_name', 'company_email', 'company_phone',
             'profile', 'applicant_name', 'applicant_email', 'applicant_phone',
             'applicant_specialization', 'applicant_university',
             'applicant_qualification', 'applicant_experience',
@@ -337,14 +339,45 @@ class ApplicationSerializer(serializers.ModelSerializer):
         user = getattr(request, 'user', None)
         is_admin = getattr(user, 'role', '') == 'ADMIN'
         is_owner_grad = hasattr(user, 'graduate_profile') and obj.profile_id == user.graduate_profile.id
-        if not (obj.status == 'ACCEPTED' or is_admin or is_owner_grad):
-            data['applicant_email'] = ''
-            data['applicant_phone'] = ''
-            data['contact_unlocked'] = False
-        else:
+
+        # التواصل المباشر (الواتساب والبريد المهني) يفتح فقط عند قبول الطلب للمقابلة المباشرة
+        if obj.status == 'ACCEPTED' or is_admin:
             data['contact_unlocked'] = True
+            data['applicant_email'] = obj.profile.user.email
             data['applicant_phone'] = obj.profile.phone or obj.profile.user.phone or ""
+            try:
+                data['company_email'] = obj.job.company.user.email
+                data['company_phone'] = obj.job.company.user.phone or getattr(obj.job.company, 'phone', '') or ""
+            except Exception:
+                data['company_email'] = ""
+                data['company_phone'] = ""
+        else:
+            data['contact_unlocked'] = False
+            data['company_email'] = ""
+            data['company_phone'] = ""
+            if is_owner_grad:
+                data['applicant_email'] = obj.profile.user.email
+                data['applicant_phone'] = obj.profile.phone or obj.profile.user.phone or ""
+            else:
+                data['applicant_email'] = ""
+                data['applicant_phone'] = ""
         return data
+
+    def get_company_email(self, obj):
+        if obj.status == 'ACCEPTED':
+            try:
+                return obj.job.company.user.email
+            except Exception:
+                return ""
+        return ""
+
+    def get_company_phone(self, obj):
+        if obj.status == 'ACCEPTED':
+            try:
+                return obj.job.company.user.phone or getattr(obj.job.company, 'phone', '') or ""
+            except Exception:
+                return ""
+        return ""
 
     def get_has_video_cv(self, obj):
         try:

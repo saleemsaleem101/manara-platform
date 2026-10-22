@@ -202,6 +202,8 @@ export interface JobApplication {
   job: number
   job_title: string
   company_name: string
+  company_email?: string
+  company_phone?: string
   profile: number
   applicant_name: string
   applicant_email: string
