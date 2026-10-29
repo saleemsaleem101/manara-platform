@@ -1,40 +1,51 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { ProfileProvider, useProfile } from './context/ProfileContext'
 
-// Pages
-import { LandingPage } from './pages/LandingPage'
-import { RegisterPage } from './pages/RegisterPage'
-import { CompanyRegisterPage } from './pages/CompanyRegisterPage'
-import { LoginPage } from './pages/LoginPage'
-import { VerifyEmailPage } from './pages/VerifyEmailPage'
-import { AuthPasswordResetRequestPage } from './pages/AuthPasswordResetRequestPage'
-import { AuthPasswordResetConfirmPage } from './pages/AuthPasswordResetConfirmPage'
-import { NotFoundPage } from './pages/NotFoundPage'
+// شاشة تحميل أنيقة متوافقة مع تصميم منارة أثناء تحميل الحزم الجزئية (Code-Splitting Fallback)
+const PageLoadingFallback: React.FC = () => (
+  <div className="min-h-screen bg-[#FDFBF7] dark:bg-[#0B1120] flex items-center justify-center p-6 transition-colors" dir="rtl">
+    <div className="flex flex-col items-center gap-3">
+      <span className="w-8 h-8 border-3 border-[#0284C7] border-t-transparent rounded-full animate-spin" />
+      <span className="text-xs font-bold text-[#64748B] dark:text-slate-400">جاري تحميل الصفحة...</span>
+    </div>
+  </div>
+)
+
+// استيراد الصفحات بتقنية التحميل الكسول (Dynamic Lazy Loading & Code-Splitting)
+// Core & Auth
+const LandingPage = lazy(() => import('./pages/LandingPage').then(m => ({ default: m.LandingPage })))
+const RegisterPage = lazy(() => import('./pages/RegisterPage').then(m => ({ default: m.RegisterPage })))
+const CompanyRegisterPage = lazy(() => import('./pages/CompanyRegisterPage').then(m => ({ default: m.CompanyRegisterPage })))
+const LoginPage = lazy(() => import('./pages/LoginPage').then(m => ({ default: m.LoginPage })))
+const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage').then(m => ({ default: m.VerifyEmailPage })))
+const AuthPasswordResetRequestPage = lazy(() => import('./pages/AuthPasswordResetRequestPage').then(m => ({ default: m.AuthPasswordResetRequestPage })))
+const AuthPasswordResetConfirmPage = lazy(() => import('./pages/AuthPasswordResetConfirmPage').then(m => ({ default: m.AuthPasswordResetConfirmPage })))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })))
 
 // Graduate Suite
-import { ProfileViewPage } from './pages/ProfileViewPage'
-import { ProfileEditPage } from './pages/ProfileEditPage'
-import { SkillsPortfolioPage } from './pages/SkillsPortfolioPage'
-import { JobsBrowsePage } from './pages/JobsBrowsePage'
-import { JobDetailsApplyPage } from './pages/JobDetailsApplyPage'
-import { ApplicationsTrackingPage } from './pages/ApplicationsTrackingPage'
+const ProfileViewPage = lazy(() => import('./pages/ProfileViewPage').then(m => ({ default: m.ProfileViewPage })))
+const ProfileEditPage = lazy(() => import('./pages/ProfileEditPage').then(m => ({ default: m.ProfileEditPage })))
+const SkillsPortfolioPage = lazy(() => import('./pages/SkillsPortfolioPage').then(m => ({ default: m.SkillsPortfolioPage })))
+const JobsBrowsePage = lazy(() => import('./pages/JobsBrowsePage').then(m => ({ default: m.JobsBrowsePage })))
+const JobDetailsApplyPage = lazy(() => import('./pages/JobDetailsApplyPage').then(m => ({ default: m.JobDetailsApplyPage })))
+const ApplicationsTrackingPage = lazy(() => import('./pages/ApplicationsTrackingPage').then(m => ({ default: m.ApplicationsTrackingPage })))
 
 // Company Suite
-import { CompanyVerificationStatusPage } from './pages/CompanyVerificationStatusPage'
-import { CompanyProfilePage } from './pages/CompanyProfilePage'
-import { CompanyJobsPage } from './pages/CompanyJobsPage'
-import { JobPostPage } from './pages/JobPostPage'
-import { CompanyApplicantsMatchingPage } from './pages/CompanyApplicantsMatchingPage'
-import { CompanyCandidateProfilePage } from './pages/CompanyCandidateProfilePage'
+const CompanyVerificationStatusPage = lazy(() => import('./pages/CompanyVerificationStatusPage').then(m => ({ default: m.CompanyVerificationStatusPage })))
+const CompanyProfilePage = lazy(() => import('./pages/CompanyProfilePage').then(m => ({ default: m.CompanyProfilePage })))
+const CompanyJobsPage = lazy(() => import('./pages/CompanyJobsPage').then(m => ({ default: m.CompanyJobsPage })))
+const JobPostPage = lazy(() => import('./pages/JobPostPage').then(m => ({ default: m.JobPostPage })))
+const CompanyApplicantsMatchingPage = lazy(() => import('./pages/CompanyApplicantsMatchingPage').then(m => ({ default: m.CompanyApplicantsMatchingPage })))
+const CompanyCandidateProfilePage = lazy(() => import('./pages/CompanyCandidateProfilePage').then(m => ({ default: m.CompanyCandidateProfilePage })))
 
 // Admin Suite
-import { AdminDashboardReportsPage } from './pages/AdminDashboardReportsPage'
-import { AdminUsersManagementPage } from './pages/AdminUsersManagementPage'
-import { AdminJobsManagementPage } from './pages/AdminJobsManagementPage'
+const AdminDashboardReportsPage = lazy(() => import('./pages/AdminDashboardReportsPage').then(m => ({ default: m.AdminDashboardReportsPage })))
+const AdminUsersManagementPage = lazy(() => import('./pages/AdminUsersManagementPage').then(m => ({ default: m.AdminUsersManagementPage })))
+const AdminJobsManagementPage = lazy(() => import('./pages/AdminJobsManagementPage').then(m => ({ default: m.AdminJobsManagementPage })))
 
 // Shared
-import { NotificationsCenterPage } from './pages/NotificationsCenterPage'
+const NotificationsCenterPage = lazy(() => import('./pages/NotificationsCenterPage').then(m => ({ default: m.NotificationsCenterPage })))
 
 interface RoleRouteProps {
   children: React.ReactNode
@@ -168,7 +179,8 @@ export function App() {
     <ProfileProvider>
       <Router>
         <ErrorBoundary>
-          <Routes>
+          <Suspense fallback={<PageLoadingFallback />}>
+            <Routes>
           {/* 00: الصفحة التعريفية الرئيسية */}
           <Route path="/" element={<LandingPage />} />
 
@@ -341,6 +353,7 @@ export function App() {
           {/* مسار عام غير موجود */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+          </Suspense>
         </ErrorBoundary>
       </Router>
     </ProfileProvider>
