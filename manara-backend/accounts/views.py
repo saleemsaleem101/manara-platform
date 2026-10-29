@@ -14,6 +14,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.throttling import AnonRateThrottle
 
 from .models import User
 from .serializers import UserRegistrationSerializer, UserSerializer
@@ -275,11 +276,19 @@ class VerifyEmailView(APIView):
         )
 
 
+class OTPRateThrottle(AnonRateThrottle):
+    """تقييد طلبات رمز التحقق OTP إلى 5 طلبات في الساعة لحماية خادم البريد ومنع الإغراق."""
+    rate = '5/hour'
+    scope = 'otp'
+
+
 class ResendOTPView(APIView):
     """
     إعادة توليد وإرسال رمز التحقق الرقمي OTP إلى البريد (FR-26 / NFR-01).
+    محدد بمعدل أقصى 5 طلبات في الساعة (Anti-Spam Throttling).
     """
     permission_classes = [AllowAny]
+    throttle_classes = [OTPRateThrottle]
 
     def post(self, request):
         email = str(request.data.get("email", "")).strip()
