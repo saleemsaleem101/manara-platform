@@ -82,7 +82,14 @@ default_db_password = 'Manara@2026Secure' if is_vercel else ''
 default_conn_max_age = 0 if is_vercel else 60
 
 DATABASE_URL = config('DATABASE_URL', default='')
-if DATABASE_URL:
+if config('USE_SQLITE', default=False, cast=bool):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+elif DATABASE_URL:
     _db_url = urlparse(DATABASE_URL)
     DATABASES = {
         'default': {

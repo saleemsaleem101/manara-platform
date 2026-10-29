@@ -378,7 +378,7 @@ class UpdateApplicationStatusView(APIView):
                         f"«{application.job.title}»\n\n"
                         f"تم تفعيل بيانات التواصل المعتمدة وتحديد موعد المقابلة المباشرة على منصة منارة.\n"
                         f"يمكنك الآن التوجه إلى حسابك عبر الرابط التالي للتواصل المباشر عبر الواتساب أو البريد المهني:\n"
-                        f"https://manarah-platform.vercel.app/applications\n\n"
+                        f"{getattr(settings, 'FRONTEND_URL', 'https://manarah-platform.vercel.app').rstrip('/')}/applications\n\n"
                         f"مع تمنياتنا لك بالتوفيق والنجاح،\n"
                         f"فريق منصة منارة لربط الخريجين بسوق العمل"
                     )
