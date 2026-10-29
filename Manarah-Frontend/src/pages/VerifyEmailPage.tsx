@@ -97,7 +97,7 @@ export const VerifyEmailPage: React.FC = () => {
         isCurrent = false
       }
     }
-  }, [searchParams, targetEmail, verifyEmail, navigate])
+  }, [searchParams, targetEmail, verifyEmail, navigate, verificationSuccess])
 
   // Handle Manual OTP Code Submission
   const handleVerifySubmit = async (e: React.FormEvent) => {
