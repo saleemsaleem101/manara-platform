@@ -30,10 +30,15 @@ export const SkillsPortfolioPage: React.FC = () => {
   const [showVideoModal, setShowVideoModal] = useState(false)
   const [editingProjectId, setEditingProjectId] = useState<number | null>(null)
 
-  // Skill Form State
-  const [selectedSkillId, setSelectedSkillId] = useState<number | string>('')
-  const [selectedSkillName, setSelectedSkillName] = useState<string>('')
-  const [selectedProficiency, setSelectedProficiency] = useState<string>('ADVANCED')
+  // Skill Form State (Multi-selection & batch save)
+  interface BatchSkillItem {
+    id?: number | string
+    name: string
+    proficiency_level: string
+  }
+  const [selectedSkillsBatch, setSelectedSkillsBatch] = useState<BatchSkillItem[]>([])
+  const [batchDefaultProficiency, setBatchDefaultProficiency] = useState<string>('ADVANCED')
+  const [isSubmittingSkills, setIsSubmittingSkills] = useState(false)
   const [selectedTaxonomyTab, setSelectedTaxonomyTab] = useState<string | null>(null)
   const [showFullTaxonomyExplorer, setShowFullTaxonomyExplorer] = useState(false)
   const [modalSelectedTrack, setModalSelectedTrack] = useState<string | null>(null)
@@ -189,16 +194,65 @@ export const SkillsPortfolioPage: React.FC = () => {
     fetchData()
   }, [])
 
+  const toggleSkillInBatch = (skName: string) => {
+    setSelectedSkillsBatch(prev => {
+      const exists = prev.find(s => s.name.toLowerCase() === skName.toLowerCase())
+      if (exists) {
+        return prev.filter(s => s.name.toLowerCase() !== skName.toLowerCase())
+      } else {
+        const found = availableSkills.find(s => s.name.toLowerCase() === skName.toLowerCase() || s.name.includes(skName))
+        return [...prev, {
+          id: found ? found.id : skName,
+          name: skName,
+          proficiency_level: batchDefaultProficiency,
+        }]
+      }
+    })
+  }
+
+  const setSkillProficiencyInBatch = (skName: string, level: string) => {
+    setSelectedSkillsBatch(prev => prev.map(s => s.name.toLowerCase() === skName.toLowerCase() ? { ...s, proficiency_level: level } : s))
+  }
+
+  const removeSkillFromBatch = (skName: string) => {
+    setSelectedSkillsBatch(prev => prev.filter(s => s.name.toLowerCase() !== skName.toLowerCase()))
+  }
+
+  const toggleAllTrackSkills = (trackSkills: string[]) => {
+    const allSelected = trackSkills.every(sk => selectedSkillsBatch.some(s => s.name.toLowerCase() === sk.toLowerCase()))
+    if (allSelected) {
+      setSelectedSkillsBatch(prev => prev.filter(s => !trackSkills.some(tsk => tsk.toLowerCase() === s.name.toLowerCase())))
+    } else {
+      setSelectedSkillsBatch(prev => {
+        const result = [...prev]
+        for (const sk of trackSkills) {
+          if (!result.some(s => s.name.toLowerCase() === sk.toLowerCase())) {
+            const found = availableSkills.find(s => s.name.toLowerCase() === sk.toLowerCase() || s.name.includes(sk))
+            result.push({
+              id: found ? found.id : sk,
+              name: sk,
+              proficiency_level: batchDefaultProficiency,
+            })
+          }
+        }
+        return result
+      })
+    }
+  }
+
   const openAddSkill = (presetSkillName?: string) => {
     if (presetSkillName) {
-      setSelectedSkillName(presetSkillName)
       const found = availableSkills.find(s => s.name.toLowerCase() === presetSkillName.toLowerCase() || s.name.includes(presetSkillName))
-      setSelectedSkillId(found ? found.id : presetSkillName)
+      setSelectedSkillsBatch([{
+        id: found ? found.id : presetSkillName,
+        name: presetSkillName,
+        proficiency_level: batchDefaultProficiency,
+      }])
       const track = TAXONOMY_TRACKS.find(t => t.skills.includes(presetSkillName))
       if (track) setModalSelectedTrack(track.id)
+      else setModalSelectedTrack(null)
     } else {
-      setSelectedSkillId('')
-      setSelectedSkillName('')
+      setSelectedSkillsBatch([])
       setModalSelectedTrack(null)
     }
     setShowSkillModal(true)
@@ -218,31 +272,38 @@ export const SkillsPortfolioPage: React.FC = () => {
     setShowProjectModal(true)
   }
 
-  // Handle Add Skill
+  // Handle Add Skill (Batch Save)
   const handleAddSkill = async (e: React.FormEvent) => {
     e.preventDefault()
-    let skillValue: number | string = selectedSkillId
-    if (!skillValue && selectedSkillName) {
-      const found = availableSkills.find(s => s.name.toLowerCase() === selectedSkillName.toLowerCase() || s.name.includes(selectedSkillName))
-      skillValue = found ? found.id : selectedSkillName
+    if (selectedSkillsBatch.length === 0) {
+      showNotification('يرجى تحديد مهارة واحدة على الأقل للحفظ', 'error')
+      return
     }
-    if (!skillValue) return
+    setIsSubmittingSkills(true)
     try {
-      const isNum = typeof skillValue === 'number' || /^\d+$/.test(String(skillValue))
-      const skillPayload = isNum
-        ? { skill: Number(skillValue), proficiency_level: selectedProficiency }
-        : { skill_name: String(skillValue), proficiency_level: selectedProficiency }
+      const payloadList = selectedSkillsBatch.map(item => {
+        const isNum = typeof item.id === 'number' || (typeof item.id === 'string' && /^\d+$/.test(item.id))
+        return isNum
+          ? { skill: Number(item.id), proficiency_level: item.proficiency_level }
+          : { skill_name: item.name, proficiency_level: item.proficiency_level }
+      })
 
-      await api.addGraduateSkill(skillPayload as any)
-      showNotification('تمت إضافة المهارة بنجاح إلى ملفك المهني ✓')
+      try {
+        await api.addGraduateSkillsBatch(payloadList as any)
+      } catch {
+        await Promise.all(payloadList.map(payload => api.addGraduateSkill(payload as any)))
+      }
+
+      showNotification(`تم حفظ ${selectedSkillsBatch.length} مهارة بنجاح في ملفك المهني ✓`)
       setShowSkillModal(false)
-      setSelectedSkillId('')
-      setSelectedSkillName('')
+      setSelectedSkillsBatch([])
       setModalSelectedTrack(null)
       fetchData()
     } catch (err: unknown) {
       const msg = (err as { message?: string })?.message
-      showNotification(msg || 'فشل إضافة المهارة', 'error')
+      showNotification(msg || 'فشل حفظ المهارات المحددة', 'error')
+    } finally {
+      setIsSubmittingSkills(false)
     }
   }
 
@@ -888,65 +949,118 @@ export const SkillsPortfolioPage: React.FC = () => {
         </div>
       </div>
 
-      {/* MODAL 1: Add Skill */}
+      {/* MODAL 1: Add Skills (Multi-Selection & Batch Save) */}
       {showSkillModal && (
-        <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="glass-silk-card bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl max-w-[480px] w-full p-6 sm:p-7 shadow-2xl border border-[#E8DEC8] dark:border-slate-800 transition-all">
-            <h3 className="text-[17px] font-black text-[#0F172A] dark:text-white mb-2">إضافة مهارة إلى ملفك المهني</h3>
-            <p className="text-[12px] text-[#64748B] dark:text-slate-400 mb-4">
-              اختر المهارة من الدليل المعتمد وحدد مستوى إتقانك لها.
-            </p>
-
-            <form onSubmit={handleAddSkill} className="space-y-4">
+        <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4">
+          <div className="glass-silk-card bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl max-w-[620px] w-full max-h-[90vh] flex flex-col p-5 sm:p-7 shadow-2xl border border-[#E8DEC8] dark:border-slate-800 transition-all">
+            {/* Header */}
+            <div className="flex items-start justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3.5">
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200">
-                    المهارة المعتمدة (دليل كلية الحاسبات والهندسة) *
-                  </label>
-                  <span className="text-[11px] font-bold text-[#0284C7] dark:text-sky-400">
-                    دليل مهيكل بالكامل
-                  </span>
-                </div>
+                <h3 className="text-[17px] font-black text-[#0F172A] dark:text-white flex items-center gap-2">
+                  <span>إضافة مهارات إلى ملفك المهني</span>
+                  {selectedSkillsBatch.length > 0 && (
+                    <span className="px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/60 text-[#0284C7] dark:text-sky-300 text-[11px] font-black">
+                      {selectedSkillsBatch.length} محددة
+                    </span>
+                  )}
+                </h3>
+                <p className="text-[11.5px] text-[#64748B] dark:text-slate-400 mt-0.5">
+                  حدد كافة مهاراتك من مختلف التخصصات واللغات ثم احفظها جميعاً دفعة واحدة بنقرة واحدة.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSkillModal(false)}
+                className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center cursor-pointer transition text-xs"
+              >
+                ✕
+              </button>
+            </div>
 
-                {/* Selected Skill Banner */}
-                {selectedSkillName ? (
-                  <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 flex items-center justify-between gap-2 mb-3 shadow-2xs">
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-black">✓</span>
-                      <div>
-                        <span className="text-[11px] font-medium text-emerald-800 dark:text-emerald-300 block">المهارة المحددة من الدليل:</span>
-                        <span className="text-[13.5px] font-black text-emerald-950 dark:text-emerald-100">{selectedSkillName}</span>
-                      </div>
+            <form onSubmit={handleAddSkill} className="flex-1 flex flex-col overflow-hidden">
+              <div className="flex-1 overflow-y-auto pr-1 space-y-3.5">
+                {/* 1. Selected Skills Tray (سلة المهارات المحددة للحفظ) */}
+                {selectedSkillsBatch.length > 0 ? (
+                  <div className="p-3.5 rounded-2xl bg-gradient-to-r from-sky-50 via-blue-50/50 to-indigo-50/40 dark:from-sky-950/40 dark:via-slate-900 dark:to-slate-900/50 border border-sky-200/90 dark:border-sky-800 shadow-2xs">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[12px] font-black text-[#0284C7] dark:text-sky-300 flex items-center gap-1.5">
+                        <span>✨</span>
+                        <span>المهارات المحددة للحفظ ({selectedSkillsBatch.length}):</span>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedSkillsBatch([])}
+                        className="text-[11px] font-bold text-rose-500 hover:text-rose-700 hover:underline cursor-pointer"
+                      >
+                        مسح الكل ↺
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedSkillName('')
-                        setSelectedSkillId('')
-                      }}
-                      className="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700 text-[11px] font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 transition cursor-pointer"
-                    >
-                      تغيير المهارة ↻
-                    </button>
-                  </div>
-                ) : null}
 
-                {/* Specialization Selection or Skill Selection */}
-                {!selectedSkillName && (
-                  <div className="p-3 rounded-2xl bg-[#FAF7F2] dark:bg-slate-800/80 border border-[#E8DEC8] dark:border-slate-700">
-                    {modalSelectedTrack === null ? (
-                      /* الخطوة 1: اختيار التخصص */
-                      <div>
-                        <span className="text-[11.5px] font-black text-[#0F172A] dark:text-white block mb-2">
-                          1. اضغط على التخصص الأكاديمي أولاً:
+                    <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto p-1">
+                      {selectedSkillsBatch.map((item) => (
+                        <div
+                          key={item.name}
+                          className="pl-1.5 pr-2.5 py-1 rounded-xl bg-white dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-[11px] font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 shadow-2xs"
+                        >
+                          <span>{item.name}</span>
+                          <select
+                            value={item.proficiency_level}
+                            onChange={(e) => setSkillProficiencyInBatch(item.name, e.target.value)}
+                            className="text-[10px] font-bold bg-sky-50 dark:bg-slate-700 text-[#0284C7] dark:text-sky-300 rounded-lg px-1.5 py-0.5 border border-sky-200 dark:border-slate-600 focus:outline-none cursor-pointer"
+                            title="تحديد مستوى الإتقان"
+                          >
+                            <option value="BEGINNER">مبتدئ</option>
+                            <option value="INTERMEDIATE">متوسط</option>
+                            <option value="ADVANCED">متقدم</option>
+                            <option value="EXPERT">خبير</option>
+                          </select>
+                          <button
+                            type="button"
+                            onClick={() => removeSkillFromBatch(item.name)}
+                            className="w-4 h-4 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-rose-100 dark:hover:bg-rose-900/50 hover:text-rose-600 text-slate-400 text-[10px] flex items-center justify-center cursor-pointer transition"
+                            title="إزالة"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/60 flex items-center gap-2.5">
+                    <span className="text-amber-500 text-base">💡</span>
+                    <span className="text-[11.5px] font-medium text-amber-900 dark:text-amber-200">
+                      اضغط على التخصص أدناه وانقر على المهارات التي تتقنها لتحديدها. يمكنك التنقل بحرية بين التخصصات وتحديد مهارات متعددة ثم حفظها دفعة واحدة!
+                    </span>
+                  </div>
+                )}
+
+                {/* 2. Specialization Selection & Multi-Skill Toggle Chips */}
+                <div className="p-3.5 rounded-2xl bg-[#FAF7F2] dark:bg-slate-800/80 border border-[#E8DEC8] dark:border-slate-700">
+                  {modalSelectedTrack === null ? (
+                    /* الخطوة 1: اختيار التخصص */
+                    <div>
+                      <div className="flex items-center justify-between mb-2.5">
+                        <span className="text-[12px] font-black text-[#0F172A] dark:text-white">
+                          👇 اختر التخصص الأكاديمي لعرض مهاراته وتحديد ما لديك:
                         </span>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-52 overflow-y-auto p-1">
-                          {TAXONOMY_TRACKS.map(t => (
+                        <span className="text-[10.5px] font-bold text-[#0284C7] dark:text-sky-400">
+                          7 تخصصات
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto p-1">
+                        {TAXONOMY_TRACKS.map(t => {
+                          const countInTrack = selectedSkillsBatch.filter(s => t.skills.includes(s.name)).length
+                          return (
                             <button
                               key={t.id}
                               type="button"
                               onClick={() => setModalSelectedTrack(t.id)}
-                              className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[#0284C7] hover:bg-sky-50 dark:hover:bg-slate-700 text-start transition cursor-pointer flex items-center justify-between"
+                              className={`p-2.5 rounded-xl border text-start transition cursor-pointer flex items-center justify-between ${
+                                countInTrack > 0
+                                  ? 'border-[#0284C7] bg-sky-50/70 dark:bg-sky-950/40 dark:border-sky-800'
+                                  : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[#0284C7] hover:bg-sky-50 dark:hover:bg-slate-700'
+                              }`}
                             >
                               <div className="flex items-center gap-2">
                                 <span className="text-lg">{t.icon}</span>
@@ -955,100 +1069,114 @@ export const SkillsPortfolioPage: React.FC = () => {
                                   <span className="text-[10px] text-slate-500 dark:text-slate-400">{t.badge}</span>
                                 </div>
                               </div>
-                              <span className="text-[11px] text-[#0284C7] font-bold">➔</span>
+                              <div className="flex items-center gap-1.5">
+                                {countInTrack > 0 && (
+                                  <span className="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-[#0284C7] text-white">
+                                    ✓ {countInTrack}
+                                  </span>
+                                )}
+                                <span className="text-[11px] text-[#0284C7] font-bold">➔</span>
+                              </div>
                             </button>
-                          ))}
-                        </div>
+                          )
+                        })}
                       </div>
-                    ) : (
-                      /* الخطوة 2: اختيار المهارة مباشرة بالنقرة من قائمة التخصص */
-                      (() => {
-                        const trackObj = TAXONOMY_TRACKS.find(t => t.id === modalSelectedTrack)
-                        return (
-                          <div>
-                            <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-200 dark:border-slate-700">
-                              <button
-                                type="button"
-                                onClick={() => setModalSelectedTrack(null)}
-                                className="text-[11px] font-bold text-[#0284C7] dark:text-sky-300 hover:underline flex items-center gap-1 cursor-pointer"
-                              >
-                                <span>←</span>
-                                <span>العودة لاختيار تخصص آخر</span>
-                              </button>
-                              <span className="text-[11px] font-black text-slate-700 dark:text-slate-200 flex items-center gap-1">
+                    </div>
+                  ) : (
+                    /* الخطوة 2: اختيار المهارات بالنقر المتعدد */
+                    (() => {
+                      const trackObj = TAXONOMY_TRACKS.find(t => t.id === modalSelectedTrack)
+                      const allTrackSelected = trackObj?.skills.every(sk => selectedSkillsBatch.some(s => s.name.toLowerCase() === sk.toLowerCase()))
+                      return (
+                        <div>
+                          <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-slate-200 dark:border-slate-700">
+                            <button
+                              type="button"
+                              onClick={() => setModalSelectedTrack(null)}
+                              className="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-[11px] font-black text-[#0284C7] dark:text-sky-300 hover:bg-sky-50 flex items-center gap-1 cursor-pointer transition shadow-2xs"
+                            >
+                              <span>←</span>
+                              <span>العودة لاختيار تخصص آخر</span>
+                            </button>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[11.5px] font-black text-slate-800 dark:text-slate-200 flex items-center gap-1">
                                 <span>{trackObj?.icon}</span>
                                 <span>{trackObj?.name}</span>
                               </span>
-                            </div>
-                            <span className="text-[11.5px] font-black text-[#0F172A] dark:text-white block mb-1.5">
-                              2. اضغط على المهارة أو اللغة المطلوبة:
-                            </span>
-                            <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-1.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
-                              {trackObj?.skills.map((skName) => {
-                                const isSelected = selectedSkillName === skName
-                                return (
-                                  <button
-                                    key={skName}
-                                    type="button"
-                                    onClick={() => {
-                                      setSelectedSkillName(skName)
-                                      const found = availableSkills.find(s => s.name.toLowerCase() === skName.toLowerCase() || s.name.includes(skName))
-                                      setSelectedSkillId(found ? found.id : skName)
-                                    }}
-                                    className={`px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition cursor-pointer border flex items-center gap-1.5 ${
-                                      isSelected
-                                        ? 'bg-[#0284C7] text-white border-[#0284C7] shadow-xs font-black'
-                                        : 'bg-[#FAF7F2] dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 border-[#E8DEC8] dark:border-slate-700 hover:border-[#0284C7] hover:bg-sky-50 dark:hover:bg-slate-700'
-                                    }`}
-                                  >
-                                    <span>{skName}</span>
-                                    {isSelected && <span>✓</span>}
-                                  </button>
-                                )
-                              })}
-                            </div>
-                            {/* Alternative Dropdown for this track */}
-                            <div className="mt-2.5">
-                              <select
-                                value={selectedSkillName}
-                                onChange={(e) => {
-                                  const skName = e.target.value
-                                  if (!skName) return
-                                  setSelectedSkillName(skName)
-                                  const found = availableSkills.find(s => s.name.toLowerCase() === skName.toLowerCase() || s.name.includes(skName))
-                                  setSelectedSkillId(found ? found.id : skName)
-                                }}
-                                className="w-full h-10 px-3 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-white dark:bg-slate-800 text-[12px] font-bold text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
+                              <button
+                                type="button"
+                                onClick={() => trackObj && toggleAllTrackSkills(trackObj.skills)}
+                                className="text-[10.5px] font-bold text-[#0284C7] hover:underline cursor-pointer"
                               >
-                                <option value="">-- أو اختر من قائمة مهارات هذا التخصص --</option>
-                                {trackObj?.skills.map(skName => (
-                                  <option key={skName} value={skName}>{skName}</option>
-                                ))}
-                              </select>
+                                {allTrackSelected ? 'إلغاء تحديد الكل' : 'تحديد كل هذا التخصص'}
+                              </button>
                             </div>
                           </div>
-                        )
-                      })()
-                    )}
-                  </div>
-                )}
+
+                          <span className="text-[11px] font-bold text-[#64748B] dark:text-slate-400 block mb-2">
+                            انقر على أي مهارة لتحديدها أو إلغاء تحديدها:
+                          </span>
+
+                          <div className="flex flex-wrap gap-1.5 max-h-52 overflow-y-auto p-1.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                            {trackObj?.skills.map((skName) => {
+                              const isSelected = selectedSkillsBatch.some(s => s.name.toLowerCase() === skName.toLowerCase())
+                              const alreadyInProfile = graduateSkills.some(gs => (gs.skill_name || '').toLowerCase() === skName.toLowerCase())
+                              return (
+                                <button
+                                  key={skName}
+                                  type="button"
+                                  onClick={() => toggleSkillInBatch(skName)}
+                                  className={`px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition cursor-pointer border flex items-center gap-1.5 ${
+                                    isSelected
+                                      ? 'bg-[#0284C7] text-white border-[#0284C7] shadow-2xs font-black ring-2 ring-sky-300 dark:ring-sky-600'
+                                      : alreadyInProfile
+                                      ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 hover:border-[#0284C7]'
+                                      : 'bg-[#FAF7F2] dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 border-[#E8DEC8] dark:border-slate-700 hover:border-[#0284C7] hover:bg-sky-50 dark:hover:bg-slate-700'
+                                  }`}
+                                  title={alreadyInProfile ? 'هذه المهارة موجودة في ملفك الشخصي مسبقاً (يمكنك تحديدها لتحديث مستواها)' : 'انقر للتحديد'}
+                                >
+                                  <span>{skName}</span>
+                                  {isSelected ? (
+                                    <span className="text-white font-black text-xs">✓</span>
+                                  ) : alreadyInProfile ? (
+                                    <span className="text-[9.5px] px-1 rounded bg-emerald-200 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-100 font-normal">في ملفك</span>
+                                  ) : (
+                                    <span className="text-[10px] text-sky-500 font-bold">+</span>
+                                  )}
+                                </button>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      )
+                    })()
+                  )}
+                </div>
+
+                {/* 3. Default Proficiency Setting */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                  <label className="text-[11.5px] font-bold text-[#0F172A] dark:text-slate-200">
+                    مستوى الإتقان الافتراضي للمهارات المحددة:
+                  </label>
+                  <select
+                    value={batchDefaultProficiency}
+                    onChange={(e) => {
+                      const newLevel = e.target.value
+                      setBatchDefaultProficiency(newLevel)
+                      setSelectedSkillsBatch(prev => prev.map(s => ({ ...s, proficiency_level: newLevel })))
+                    }}
+                    className="h-9 px-3 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-white dark:bg-slate-800 text-[12px] font-bold text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8] cursor-pointer"
+                  >
+                    <option value="BEGINNER">مبتدئ (Beginner)</option>
+                    <option value="INTERMEDIATE">متوسط (Intermediate)</option>
+                    <option value="ADVANCED">متقدم (Advanced)</option>
+                    <option value="EXPERT">خبير ومحترف (Expert)</option>
+                  </select>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200 mb-1.5">مستوى الإتقان *</label>
-                <select
-                  value={selectedProficiency}
-                  onChange={(e) => setSelectedProficiency(e.target.value)}
-                  className="w-full h-11 px-3.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-[13px] font-bold text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
-                >
-                  <option value="BEGINNER">مبتدئ (Beginner)</option>
-                  <option value="INTERMEDIATE">متوسط (Intermediate)</option>
-                  <option value="ADVANCED">متقدم (Advanced)</option>
-                  <option value="EXPERT">خبير ومحترف (Expert)</option>
-                </select>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-3">
+              {/* Footer Action Buttons */}
+              <div className="flex items-center justify-between gap-3 pt-3 mt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowSkillModal(false)}
@@ -1058,9 +1186,25 @@ export const SkillsPortfolioPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl text-[12px] font-black bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:from-[#0369A1] hover:to-[#0284C7] text-white shadow-sm transition cursor-pointer"
+                  disabled={selectedSkillsBatch.length === 0 || isSubmittingSkills}
+                  className={`px-6 py-2.5 rounded-xl text-[12.5px] font-black transition flex items-center gap-2 cursor-pointer ${
+                    selectedSkillsBatch.length > 0 && !isSubmittingSkills
+                      ? 'bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:from-[#0369A1] hover:to-[#0284C7] text-white shadow-md'
+                      : 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
+                  }`}
                 >
-                  حفظ المهارة
+                  {isSubmittingSkills ? (
+                    <>
+                      <span className="animate-spin text-sm">↻</span>
+                      <span>جاري حفظ المهارات...</span>
+                    </>
+                  ) : selectedSkillsBatch.length > 0 ? (
+                    <>
+                      <span>✓ حفظ كافة المهارات المحددة ({selectedSkillsBatch.length})</span>
+                    </>
+                  ) : (
+                    <span>حدد مهارة واحدة على الأقل للحفظ</span>
+                  )}
                 </button>
               </div>
             </form>

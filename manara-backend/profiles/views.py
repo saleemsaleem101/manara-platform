@@ -270,13 +270,39 @@ class SkillListView(generics.ListCreateAPIView):
 # إدارة مهارات الخريج (FR-06)
 # ============================================================
 class GraduateSkillListCreateView(generics.ListCreateAPIView):
-    """عرض مهارات الخريج أو إضافة مهارة جديدة لملفه."""
+    """عرض مهارات الخريج أو إضافة مهارة جديدة أو مهارات متعددة دفعة واحدة لملفه."""
 
     serializer_class = GraduateSkillSerializer
     permission_classes = [IsGraduate]
 
     def get_queryset(self):
         return GraduateSkill.objects.filter(profile__user=self.request.user).select_related("skill").order_by('id')
+
+    def create(self, request, *args, **kwargs):
+        is_many = isinstance(request.data, list)
+        profile, _ = GraduateProfile.objects.get_or_create(user=request.user)
+        if is_many:
+            if not request.data:
+                return Response([], status=status.HTTP_200_OK)
+            serializer = self.get_serializer(data=request.data, many=True)
+            serializer.is_valid(raise_exception=True)
+
+            created_instances = []
+            for item in serializer.validated_data:
+                skill_obj = item.get('skill')
+                prof_level = item.get('proficiency_level', 'ADVANCED')
+                gs, _ = GraduateSkill.objects.update_or_create(
+                    profile=profile,
+                    skill=skill_obj,
+                    defaults={'proficiency_level': prof_level}
+                )
+                created_instances.append(gs)
+
+            from matching.services import MatchingService
+            MatchingService.recalculate_for_profile(profile)
+            return Response(GraduateSkillSerializer(created_instances, many=True).data, status=status.HTTP_201_CREATED)
+        else:
+            return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         profile, _ = GraduateProfile.objects.get_or_create(user=self.request.user)

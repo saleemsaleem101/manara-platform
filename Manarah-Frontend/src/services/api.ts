@@ -234,8 +234,15 @@ export const api = {
     return Array.isArray(data) ? data : data.results || []
   },
 
-  async addGraduateSkill(payload: { skill: number; proficiency_level: string }): Promise<GraduateSkill> {
+  async addGraduateSkill(payload: { skill?: number; skill_name?: string; proficiency_level: string }): Promise<GraduateSkill> {
     return request<GraduateSkill>('/profiles/graduate/skills/', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
+  },
+
+  async addGraduateSkillsBatch(payload: Array<{ skill?: number; skill_name?: string; proficiency_level: string }>): Promise<GraduateSkill[]> {
+    return request<GraduateSkill[]>('/profiles/graduate/skills/', {
       method: 'POST',
       body: JSON.stringify(payload),
     })
