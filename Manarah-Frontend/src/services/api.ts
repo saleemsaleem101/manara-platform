@@ -248,6 +248,13 @@ export const api = {
     })
   },
 
+  async updateGraduateSkill(id: number, payload: { proficiency_level: string }): Promise<GraduateSkill> {
+    return request<GraduateSkill>(`/profiles/graduate/skills/${id}/`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    })
+  },
+
   async deleteGraduateSkill(id: number): Promise<void> {
     await request(`/profiles/graduate/skills/${id}/`, {
       method: 'DELETE',

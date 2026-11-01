@@ -29,6 +29,8 @@ export const SkillsPortfolioPage: React.FC = () => {
   const [showProjectModal, setShowProjectModal] = useState(false)
   const [showVideoModal, setShowVideoModal] = useState(false)
   const [editingProjectId, setEditingProjectId] = useState<number | null>(null)
+  const [editingSkill, setEditingSkill] = useState<GraduateSkill | null>(null)
+  const [editingSkillLevel, setEditingSkillLevel] = useState<string>('ADVANCED')
 
   // Skill Form State (Multi-selection & batch save)
   interface BatchSkillItem {
@@ -304,6 +306,28 @@ export const SkillsPortfolioPage: React.FC = () => {
       showNotification(msg || 'فشل حفظ المهارات المحددة', 'error')
     } finally {
       setIsSubmittingSkills(false)
+    }
+  }
+
+  // Handle Update Skill Proficiency Level (Inline & Modal)
+  const handleUpdateSkillLevel = async (id: number, newLevel: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT' | string, skillName?: string) => {
+    try {
+      const levelLabels: Record<string, string> = {
+        BEGINNER: 'مبتدئ',
+        INTERMEDIATE: 'متوسط',
+        ADVANCED: 'متقدم',
+        EXPERT: 'خبير',
+      }
+      const label = levelLabels[newLevel] || newLevel
+      // Optimistic UI update
+      setGraduateSkills(prev => prev.map(s => s.id === id ? { ...s, proficiency_level: newLevel as 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT', proficiency_level_display: label } : s))
+      await api.updateGraduateSkill(id, { proficiency_level: newLevel })
+      showNotification(`تم تحديث مستوى مهارة ${skillName ? `(${skillName})` : ''} إلى (${label}) بنجاح ✓`)
+      fetchData()
+    } catch (err: unknown) {
+      const msg = (err as { message?: string })?.message
+      showNotification(msg || 'فشل تحديث مستوى المهارة', 'error')
+      fetchData()
     }
   }
 
@@ -629,18 +653,38 @@ export const SkillsPortfolioPage: React.FC = () => {
                             </div>
 
                             <div className="flex flex-wrap gap-1.5 max-h-56 overflow-y-auto pt-1">
-                              {activeTrack.skills.map((skillName) => (
-                                <button
-                                  key={skillName}
-                                  type="button"
-                                  onClick={() => openAddSkill(skillName)}
-                                  className="px-2.5 py-1.5 rounded-lg bg-[#F0F9FF] dark:bg-sky-950/40 text-[#0369A1] dark:text-sky-300 border border-sky-200/80 dark:border-sky-800 text-[11.5px] font-bold hover:bg-sky-100 dark:hover:bg-sky-900/60 transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
-                                  title="اضغط لإضافة المهارة إلى ملفك"
-                                >
-                                  <span>{skillName}</span>
-                                  <span className="text-[10px] text-sky-500 font-black">+</span>
-                                </button>
-                              ))}
+                              {activeTrack.skills.map((skillName) => {
+                                const existing = graduateSkills.find(gs => (gs.skill_name || '').toLowerCase() === skillName.toLowerCase())
+                                return (
+                                  <button
+                                    key={skillName}
+                                    type="button"
+                                    onClick={() => {
+                                      if (existing) {
+                                        setEditingSkill(existing)
+                                        setEditingSkillLevel(existing.proficiency_level)
+                                      } else {
+                                        openAddSkill(skillName)
+                                      }
+                                    }}
+                                    className={`px-2.5 py-1.5 rounded-xl border text-[11.5px] font-bold transition cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+                                      existing
+                                        ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 hover:border-[#0284C7]'
+                                        : 'bg-[#F0F9FF] dark:bg-sky-950/40 text-[#0369A1] dark:text-sky-300 border-sky-200/80 dark:border-sky-800 hover:bg-sky-100 dark:hover:bg-sky-900/60'
+                                    }`}
+                                    title={existing ? 'هذه المهارة في ملفك - انقر لتعديل مستواها' : 'اضغط لإضافة المهارة إلى ملفك'}
+                                  >
+                                    <span>{skillName}</span>
+                                    {existing ? (
+                                      <span className="text-[9.5px] px-1.5 py-0.2 rounded-md bg-emerald-200/80 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-100 font-black">
+                                        {existing.proficiency_level === 'EXPERT' ? '🏆 خبير' : existing.proficiency_level === 'ADVANCED' ? '🚀 متقدم' : existing.proficiency_level === 'INTERMEDIATE' ? '⚡ متوسط' : '🌱 مبتدئ'} ✏️
+                                      </span>
+                                    ) : (
+                                      <span className="text-[10px] text-sky-500 font-black">+</span>
+                                    )}
+                                  </button>
+                                )
+                              })}
                             </div>
                           </div>
                         )
@@ -673,16 +717,49 @@ export const SkillsPortfolioPage: React.FC = () => {
                     {techSkills.map((sk) => (
                       <div
                         key={sk.id}
-                        className="px-3.5 py-2 rounded-xl bg-[#E0F2FE] dark:bg-sky-950/60 border border-[#BAE6FD] dark:border-sky-800 text-[#0284C7] dark:text-sky-300 text-[12px] font-bold flex items-center gap-2 group transition hover:border-[#7DD3FC]"
+                        className="px-3 py-1.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-sky-200/90 dark:border-slate-700 text-[#0F172A] dark:text-slate-100 text-[12px] font-bold flex items-center gap-2 group transition hover:border-[#0284C7] shadow-2xs"
                       >
-                        <span className="font-['Plus_Jakarta_Sans']">{sk.skill_name}</span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 text-[#0284C7] dark:text-sky-300 font-bold">
-                          {sk.proficiency_level_display || sk.proficiency_level}
-                        </span>
+                        {/* Skill Name with Edit Click */}
                         <button
+                          type="button"
+                          onClick={() => {
+                            setEditingSkill(sk)
+                            setEditingSkillLevel(sk.proficiency_level)
+                          }}
+                          className="font-['Plus_Jakarta_Sans'] font-black text-[#0F172A] dark:text-white hover:text-[#0284C7] dark:hover:text-sky-300 transition cursor-pointer flex items-center gap-1.5 text-start"
+                          title="انقر لتعديل مستوى المهارة"
+                        >
+                          <span>{sk.skill_name}</span>
+                          <span className="text-[10px] text-slate-400 group-hover:text-[#0284C7] transition">✏️</span>
+                        </button>
+
+                        {/* Interactive Inline Level Selector */}
+                        <select
+                          value={sk.proficiency_level}
+                          onChange={(e) => handleUpdateSkillLevel(sk.id, e.target.value as 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT', sk.skill_name)}
+                          className={`text-[10.5px] font-black rounded-lg px-2 py-0.5 border cursor-pointer transition focus:outline-none focus:ring-1 focus:ring-sky-400 ${
+                            sk.proficiency_level === 'EXPERT'
+                              ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700'
+                              : sk.proficiency_level === 'ADVANCED'
+                              ? 'bg-sky-50 dark:bg-sky-950/50 text-[#0284C7] dark:text-sky-300 border-sky-300 dark:border-sky-700'
+                              : sk.proficiency_level === 'INTERMEDIATE'
+                              ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700'
+                              : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
+                          }`}
+                          title="تغيير مستوى الإتقان فوراً"
+                        >
+                          <option value="BEGINNER">🌱 مبتدئ</option>
+                          <option value="INTERMEDIATE">⚡ متوسط</option>
+                          <option value="ADVANCED">🚀 متقدم</option>
+                          <option value="EXPERT">🏆 خبير</option>
+                        </select>
+
+                        {/* Delete Button */}
+                        <button
+                          type="button"
                           onClick={() => handleDeleteSkill(sk.id)}
-                          className="text-rose-400 hover:text-rose-600 transition text-[13px] font-bold pe-1 cursor-pointer"
-                          title="حذف المهارة"
+                          className="text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-full w-5 h-5 flex items-center justify-center transition text-[11px] font-bold cursor-pointer"
+                          title="حذف المهارة من ملفك"
                         >
                           ✕
                         </button>
@@ -709,16 +786,49 @@ export const SkillsPortfolioPage: React.FC = () => {
                     {softSkills.map((sk) => (
                       <div
                         key={sk.id}
-                        className="px-3.5 py-2 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/70 border border-[#E8DEC8] dark:border-slate-700 text-[#0F172A] dark:text-slate-200 text-[12px] font-bold flex items-center gap-2 group transition"
+                        className="px-3 py-1.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-[#E8DEC8] dark:border-slate-700 text-[#0F172A] dark:text-slate-200 text-[12px] font-bold flex items-center gap-2 group transition hover:border-[#0284C7] shadow-2xs"
                       >
-                        <span>{sk.skill_name}</span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 text-[#475569] dark:text-slate-300 font-medium">
-                          {sk.proficiency_level_display || sk.proficiency_level}
-                        </span>
+                        {/* Skill Name with Edit Click */}
                         <button
+                          type="button"
+                          onClick={() => {
+                            setEditingSkill(sk)
+                            setEditingSkillLevel(sk.proficiency_level)
+                          }}
+                          className="font-black text-[#0F172A] dark:text-white hover:text-[#0284C7] dark:hover:text-sky-300 transition cursor-pointer flex items-center gap-1.5 text-start"
+                          title="انقر لتعديل مستوى المهارة"
+                        >
+                          <span>{sk.skill_name}</span>
+                          <span className="text-[10px] text-slate-400 group-hover:text-[#0284C7] transition">✏️</span>
+                        </button>
+
+                        {/* Interactive Inline Level Selector */}
+                        <select
+                          value={sk.proficiency_level}
+                          onChange={(e) => handleUpdateSkillLevel(sk.id, e.target.value as 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT', sk.skill_name)}
+                          className={`text-[10.5px] font-black rounded-lg px-2 py-0.5 border cursor-pointer transition focus:outline-none focus:ring-1 focus:ring-sky-400 ${
+                            sk.proficiency_level === 'EXPERT'
+                              ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700'
+                              : sk.proficiency_level === 'ADVANCED'
+                              ? 'bg-sky-50 dark:bg-sky-950/50 text-[#0284C7] dark:text-sky-300 border-sky-300 dark:border-sky-700'
+                              : sk.proficiency_level === 'INTERMEDIATE'
+                              ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700'
+                              : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
+                          }`}
+                          title="تغيير مستوى الإتقان فوراً"
+                        >
+                          <option value="BEGINNER">🌱 مبتدئ</option>
+                          <option value="INTERMEDIATE">⚡ متوسط</option>
+                          <option value="ADVANCED">🚀 متقدم</option>
+                          <option value="EXPERT">🏆 خبير</option>
+                        </select>
+
+                        {/* Delete Button */}
+                        <button
+                          type="button"
                           onClick={() => handleDeleteSkill(sk.id)}
-                          className="text-rose-400 hover:text-rose-600 transition text-[13px] font-bold pe-1 cursor-pointer"
-                          title="حذف المهارة"
+                          className="text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-full w-5 h-5 flex items-center justify-center transition text-[11px] font-bold cursor-pointer"
+                          title="حذف المهارة من ملفك"
                         >
                           ✕
                         </button>
@@ -1208,6 +1318,96 @@ export const SkillsPortfolioPage: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: Edit Skill Proficiency (Visual Selector) */}
+      {editingSkill && (
+        <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="glass-silk-card bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl max-w-[460px] w-full p-6 shadow-2xl border border-[#E8DEC8] dark:border-slate-800 transition-all">
+            <div className="flex items-start justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-4">
+              <div>
+                <h3 className="text-[17px] font-black text-[#0F172A] dark:text-white flex items-center gap-2">
+                  <span>تعديل مستوى الإتقان للمهارة</span>
+                </h3>
+                <p className="text-[12.5px] text-[#0284C7] dark:text-sky-300 font-bold mt-1">
+                  المهارة: {editingSkill.skill_name}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingSkill(null)}
+                className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center cursor-pointer transition text-xs"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="text-[12px] text-[#64748B] dark:text-slate-400 mb-3.5">
+              اختر المستوى الذي يعبر عن كفاءتك الحالية في هذه المهارة. يتم تحديث نقاط التوافق والمطابقة الموزونة للوظائف تلقائياً:
+            </p>
+
+            <div className="space-y-2 mb-5">
+              {[
+                { level: 'BEGINNER', label: 'مبتدئ (Beginner)', desc: 'فهم المبادئ الأساسية وتطبيق التعليمات البسيطة', icon: '🌱' },
+                { level: 'INTERMEDIATE', label: 'متوسط (Intermediate)', desc: 'القدرة على تنفيذ مهام عملية وحل المشكلات المعتادة', icon: '⚡' },
+                { level: 'ADVANCED', label: 'متقدم (Advanced)', desc: 'بناء مشاريع متكاملة وتطبيق أفضل الممارسات البرمجية', icon: '🚀' },
+                { level: 'EXPERT', label: 'خبير ومحترف (Expert)', desc: 'إتقان عميق، تحسين الأداء وتوجيه الآخرين وحل المشكلات المعقدة', icon: '🏆' },
+              ].map(opt => {
+                const isSelected = editingSkillLevel === opt.level
+                return (
+                  <button
+                    key={opt.level}
+                    type="button"
+                    onClick={() => setEditingSkillLevel(opt.level)}
+                    className={`w-full p-3 rounded-2xl border text-start transition cursor-pointer flex items-center justify-between ${
+                      isSelected
+                        ? 'border-[#0284C7] bg-sky-50 dark:bg-sky-950/50 shadow-2xs ring-2 ring-sky-300 dark:ring-sky-700'
+                        : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:border-sky-300 dark:hover:border-slate-600'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xl">{opt.icon}</span>
+                      <div>
+                        <span className={`text-[12.5px] font-black block ${isSelected ? 'text-[#0284C7] dark:text-sky-300' : 'text-[#0F172A] dark:text-white'}`}>
+                          {opt.label}
+                        </span>
+                        <span className="text-[10.5px] text-[#64748B] dark:text-slate-400">
+                          {opt.desc}
+                        </span>
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <span className="w-5 h-5 rounded-full bg-[#0284C7] text-white flex items-center justify-center text-xs font-black">
+                        ✓
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setEditingSkill(null)}
+                className="px-4 py-2.5 rounded-xl text-[12px] font-bold text-[#475569] dark:text-slate-400 hover:bg-[#FAF7F2] dark:hover:bg-slate-800 transition cursor-pointer"
+              >
+                إلغاء
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!editingSkill) return
+                  await handleUpdateSkillLevel(editingSkill.id, editingSkillLevel, editingSkill.skill_name)
+                  setEditingSkill(null)
+                }}
+                className="px-5 py-2.5 rounded-xl text-[12px] font-black bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:from-[#0369A1] hover:to-[#0284C7] text-white shadow-sm transition cursor-pointer"
+              >
+                حفظ التعديل ✓
+              </button>
+            </div>
           </div>
         </div>
       )}
