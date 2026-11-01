@@ -163,8 +163,21 @@ export const SkillsPortfolioPage: React.FC = () => {
   // Video Form State
   const [videoUrlInput, setVideoUrlInput] = useState('')
   const [videoVisibilityInput, setVideoVisibilityInput] = useState<'PUBLIC' | 'COMPANIES_ONLY' | 'PRIVATE'>('COMPANIES_ONLY')
+  const [videoDurationSecondsInput, setVideoDurationSecondsInput] = useState<number>(90)
+  const [selectedVideoFile, setSelectedVideoFile] = useState<File | null>(null)
+  const [isUploadingVideo, setIsUploadingVideo] = useState(false)
   const [videoFileError, setVideoFileError] = useState<string | null>(null)
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null)
+
+  const getVideoSourceUrl = (url?: string | null) => {
+    if (!url) return ''
+    const token =
+      (typeof localStorage !== 'undefined' ? localStorage.getItem('manarah_token') : null) ||
+      (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('manarah_token') : null)
+    if (!token || url.includes('token=')) return url
+    const cleanToken = token.replace(/^(Token|Bearer)\s+/, '').trim()
+    const sep = url.includes('?') ? '&' : '?'
+    return `${url}${sep}token=${cleanToken}`
+  }
 
   const showNotification = (text: string, type: 'success' | 'error' = 'success') => {
     setFeedbackMsg({ text, type })
@@ -415,25 +428,30 @@ export const SkillsPortfolioPage: React.FC = () => {
     showNotification('تم فحص الملف: الحجم والصيغة مطابقة للشروط ✓')
   }
 
-  // Handle Video File Validation (50MB max, FR-27)
+  // Handle Video File Validation & Selection (50MB max, FR-27, P82)
   const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     setVideoFileError(null)
-    if (!file) return
+    if (!file) {
+      setSelectedVideoFile(null)
+      return
+    }
     const maxSizeBytes = 50 * 1024 * 1024 // 50MB
     if (file.size > maxSizeBytes) {
       setVideoFileError('حجم ملف الفيديو يتجاوز الحد المسموح به: 50 ميجابايت كحد أقصى.')
+      setSelectedVideoFile(null)
       e.target.value = ''
       return
     }
     const allowedTypes = ['video/mp4', 'video/webm', 'video/quicktime']
     if (!allowedTypes.includes(file.type)) {
       setVideoFileError('صيغة الفيديو غير مدعومة. الصيغ المعتمدة: MP4, WebM فقط.')
+      setSelectedVideoFile(null)
       e.target.value = ''
       return
     }
-    setUploadProgress(100)
-    showNotification('تم فحص وتأكيد جاهزية ملف الفيديو (ضمن حد 50 ميجابايت) ✓')
+    setSelectedVideoFile(file)
+    showNotification(`تم فحص وتأكيد جاهزية الملف: ${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} MB) ✓`)
   }
 
   // Handle Delete Project
@@ -449,21 +467,45 @@ export const SkillsPortfolioPage: React.FC = () => {
     }
   }
 
-  // Handle Update Video
+  // Handle Update / Upload Video
   const handleUpdateVideo = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsUploadingVideo(true)
+    setVideoFileError(null)
     try {
-      await api.updateGraduateVideo({
-        video_cv_url: videoUrlInput || videoInfo.video_cv_url || '',
-        video_visibility: videoVisibilityInput,
-        video_duration_seconds: 90,
-      })
-      showNotification('تم تحديث إعدادات الفيديو التعريفي بنجاح ✓')
+      if (selectedVideoFile) {
+        // 1. رفع ملف الفيديو المباشر إلى الخادم وتخزينه كـ FileField
+        const res = await api.uploadGraduateVideo(
+          selectedVideoFile,
+          videoDurationSecondsInput || 90,
+          videoVisibilityInput
+        )
+        setVideoInfo({
+          video_cv_url: res.video_cv_url || res.video_url,
+          video_duration_seconds: res.duration_seconds || 90,
+          video_visibility: videoVisibilityInput,
+          video_verified: true,
+        })
+        showNotification('تم رفع وتخزين الفيديو التعريفي كملف موثق بنجاح ✓')
+      } else {
+        // 2. تحديث إعدادات الخصوصية والمدة في حال لم يتم اختيار ملف جديد
+        const res = await api.updateGraduateVideo({
+          video_cv_url: videoUrlInput || videoInfo.video_cv_url || undefined,
+          video_visibility: videoVisibilityInput,
+          video_duration_seconds: videoDurationSecondsInput || 90,
+        })
+        setVideoInfo(res)
+        showNotification('تم تحديث إعدادات وخصوصية الفيديو التعريفي بنجاح ✓')
+      }
       setShowVideoModal(false)
-      fetchData()
+      setSelectedVideoFile(null)
+      await fetchData()
     } catch (err: unknown) {
       const msg = (err as { message?: string })?.message
-      showNotification(msg || 'فشل تحديث الفيديو', 'error')
+      setVideoFileError(msg || 'فشل رفع الفيديو أو تحديث الإعدادات')
+      showNotification(msg || 'فشل حفظ إعدادات الفيديو', 'error')
+    } finally {
+      setIsUploadingVideo(false)
     }
   }
 
@@ -973,7 +1015,7 @@ export const SkillsPortfolioPage: React.FC = () => {
                   <video
                     controls
                     className="w-full h-full object-cover"
-                    src={videoInfo.video_cv_url}
+                    src={getVideoSourceUrl(videoInfo.video_cv_url)}
                   >
                     متصفحك لا يدعم تشغيل الفيديو.
                   </video>
@@ -1011,14 +1053,15 @@ export const SkillsPortfolioPage: React.FC = () => {
               <button
                 onClick={() => {
                   setVideoUrlInput(videoInfo.video_cv_url || '')
-                  setVideoVisibilityInput(videoInfo.video_visibility)
+                  setVideoVisibilityInput(videoInfo.video_visibility || 'COMPANIES_ONLY')
+                  setVideoDurationSecondsInput(videoInfo.video_duration_seconds || 90)
+                  setSelectedVideoFile(null)
                   setVideoFileError(null)
-                  setUploadProgress(null)
                   setShowVideoModal(true)
                 }}
-                className="w-full h-11 bg-[#FAF7F2] dark:bg-slate-800 hover:bg-[#E5D7C3]/50 dark:hover:bg-slate-700 text-[#0F172A] dark:text-white border border-[#E8DEC8] dark:border-slate-700 font-bold text-[12px] rounded-xl transition cursor-pointer"
+                className="w-full h-11 bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:opacity-95 text-white font-bold text-[12px] rounded-xl transition shadow-sm cursor-pointer flex items-center justify-center gap-2"
               >
-                تحديث رابط أو إعدادات الفيديو
+                <span>{videoInfo.video_cv_url ? '🎥 تغيير الفيديو أو تعديل الخصوصية' : '➕ رفع فيديو تعريفي جديد (Video CV)'}</span>
               </button>
             </div>
 
@@ -1670,79 +1713,148 @@ export const SkillsPortfolioPage: React.FC = () => {
         </div>
       )}
 
-      {/* MODAL 3: Update Video */}
+      {/* MODAL 3: Update / Upload Video */}
       {showVideoModal && (
         <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="glass-silk-card bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl max-w-[480px] w-full p-6 sm:p-7 shadow-2xl border border-[#E8DEC8] dark:border-slate-800 transition-all">
-            <h3 className="text-[17px] font-black text-[#0F172A] dark:text-white mb-3">تحديث إعدادات الفيديو التعريفي</h3>
+          <div className="glass-silk-card bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl max-w-[520px] w-full p-6 sm:p-7 shadow-2xl border border-[#E8DEC8] dark:border-slate-800 transition-all max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E8DEC8]/60 dark:border-slate-800 mb-4">
+              <div className="flex items-center gap-2.5">
+                <span className="text-2xl">🎥</span>
+                <div>
+                  <h3 className="text-[17px] font-black text-[#0F172A] dark:text-white">إدارة ورفع الفيديو التعريفي (Video CV)</h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">تخزين آمن ومحمي عبر خادم المنصة مباشرة وفق المعيار P82</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowVideoModal(false)
+                  setVideoFileError(null)
+                  setSelectedVideoFile(null)
+                }}
+                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center text-sm font-bold transition"
+              >
+                ✕
+              </button>
+            </div>
 
             {videoFileError && (
-              <div className="mb-3 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-300 text-[12px] font-bold flex items-center gap-2">
+              <div className="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-300 text-[12px] font-bold flex items-center gap-2">
                 <span>⚠️</span>
                 <span>{videoFileError}</span>
               </div>
             )}
 
             <form onSubmit={handleUpdateVideo} className="space-y-4">
-              <div>
-                <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200 mb-1">رابط الفيديو (URL)</label>
-                <input
-                  type="url"
-                  value={videoUrlInput}
-                  onChange={(e) => setVideoUrlInput(e.target.value)}
-                  placeholder=""
-                  className="w-full h-11 px-3.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-[13px] text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
-                />
-              </div>
-
-              {/* Direct File Upload with 50MB check */}
-              <div>
-                <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200 mb-1">
-                  أو رفع ملف فيديو مباشر (الحد الأقصى: 50MB، المدة 60-90 ثانية)
+              {/* File Upload Box */}
+              <div className="p-4 rounded-2xl border-2 border-dashed border-[#BAE6FD] dark:border-sky-900/80 bg-[#F0F9FF]/70 dark:bg-sky-950/20 text-center">
+                <label className="block text-[13px] font-black text-[#0369A1] dark:text-sky-300 mb-1.5 cursor-pointer">
+                  اختر ملف الفيديو التعريفي من جهازك
                 </label>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-3">
+                  الصيغ المعتمدة: MP4 أو WebM • الحجم الأقصى: 50MB • المدة الموصى بها: 60 - 90 ثانية
+                </p>
+
                 <input
                   type="file"
-                  accept="video/mp4,video/webm"
+                  accept="video/mp4,video/webm,video/quicktime"
                   onChange={handleVideoFileChange}
-                  className="w-full text-[12px] text-slate-600 dark:text-slate-400 file:ms-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-black file:bg-gradient-to-r file:from-[#0284C7] file:via-[#0EA5E9] file:to-[#38BDF8] file:text-white hover:file:opacity-90"
+                  disabled={isUploadingVideo}
+                  className="w-full text-[12px] text-slate-600 dark:text-slate-400 file:ms-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[11px] file:font-black file:bg-gradient-to-r file:from-[#0284C7] file:via-[#0EA5E9] file:to-[#38BDF8] file:text-white hover:file:opacity-90 cursor-pointer"
                 />
-                {uploadProgress !== null && (
-                  <div className="mt-2 text-[11px] text-[#0284C7] dark:text-sky-400 font-bold flex items-center gap-1.5">
-                    <span>✓</span>
-                    <span>تم فحص الملف وجاهزيته للرفع بنجاح (100%)</span>
+
+                {selectedVideoFile && (
+                  <div className="mt-3 p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-sky-200 dark:border-sky-800 text-start flex items-center justify-between text-[11px]">
+                    <div className="flex items-center gap-2">
+                      <span className="text-emerald-500 font-bold">✓</span>
+                      <div>
+                        <span className="font-bold text-[#0F172A] dark:text-white block truncate max-w-[240px]">{selectedVideoFile.name}</span>
+                        <span className="text-slate-500">{(selectedVideoFile.size / (1024 * 1024)).toFixed(2)} MB • جاهز للرفع</span>
+                      </div>
+                    </div>
+                    <span className="text-xs bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-md font-bold">
+                      محدد للرفع
+                    </span>
+                  </div>
+                )}
+
+                {videoInfo.video_cv_url && !selectedVideoFile && (
+                  <div className="mt-2.5 text-[11px] text-slate-500 dark:text-slate-400 bg-white/70 dark:bg-slate-800/70 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
+                    ℹ️ يوجد فيديو محفوظ بالفعل في ملفك. إذا أردت استبداله اختر ملفاً جديداً، أو يمكنك فقط تعديل مستوى الخصوصية أدناه.
                   </div>
                 )}
               </div>
 
+              {/* Video Duration Input */}
               <div>
-                <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200 mb-1">مستوى الخصوصية *</label>
+                <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200 mb-1">
+                  المدة التقريبية للفيديو (بالثواني)
+                </label>
+                <input
+                  type="number"
+                  min="10"
+                  max="180"
+                  value={videoDurationSecondsInput}
+                  onChange={(e) => setVideoDurationSecondsInput(Number(e.target.value) || 90)}
+                  disabled={isUploadingVideo}
+                  className="w-full h-11 px-3.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-[13px] font-bold text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
+                />
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 block">
+                  الحد الأقصى المعتمد في المنصة: 180 ثانية (3 دقائق).
+                </span>
+              </div>
+
+              {/* Privacy Level Select */}
+              <div>
+                <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200 mb-1">
+                  مستوى خصوصية ورؤية الفيديو *
+                </label>
                 <select
                   value={videoVisibilityInput}
                   onChange={(e) => setVideoVisibilityInput(e.target.value as 'PUBLIC' | 'COMPANIES_ONLY' | 'PRIVATE')}
+                  disabled={isUploadingVideo}
                   className="w-full h-11 px-3.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-[13px] font-bold text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
                 >
-                  <option value="COMPANIES_ONLY">للشركات المعتمدة فقط (موصى به)</option>
-                  <option value="PUBLIC">عام لجميع الزوار</option>
-                  <option value="PRIVATE">خاص ومحمي</option>
+                  <option value="COMPANIES_ONLY">🔒 للشركات المعتمدة فقط (موصى به لحماية الخصوصية)</option>
+                  <option value="PUBLIC">🌐 عام لجميع الزوار والشركات</option>
+                  <option value="PRIVATE">🛡️ خاص ومحمي (أنت فقط)</option>
                 </select>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
+                  disabled={isUploadingVideo}
                   onClick={() => {
                     setShowVideoModal(false)
                     setVideoFileError(null)
+                    setSelectedVideoFile(null)
                   }}
-                  className="px-4 py-2.5 rounded-xl text-[12px] font-bold text-[#475569] dark:text-slate-400 hover:bg-[#FAF7F2] dark:hover:bg-slate-800 transition cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl text-[12px] font-bold text-[#475569] dark:text-slate-400 hover:bg-[#FAF7F2] dark:hover:bg-slate-800 transition cursor-pointer disabled:opacity-50"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl text-[12px] font-black bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:from-[#0369A1] hover:to-[#0284C7] text-white shadow-sm transition cursor-pointer"
+                  disabled={isUploadingVideo}
+                  className="px-6 py-2.5 rounded-xl text-[12px] font-black bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:from-[#0369A1] hover:to-[#0284C7] text-white shadow-md transition cursor-pointer flex items-center gap-2 disabled:opacity-50"
                 >
-                  حفظ الإعدادات
+                  {isUploadingVideo ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>جاري رفع وتخزين الفيديو...</span>
+                    </>
+                  ) : selectedVideoFile ? (
+                    <>
+                      <span>🚀</span>
+                      <span>رفع وحفظ الفيديو الآن</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>💾</span>
+                      <span>حفظ الإعدادات والخصوصية</span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>

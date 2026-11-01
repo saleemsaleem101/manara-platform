@@ -530,15 +530,24 @@ class VideoUploadView(APIView):
             reverse("graduate-video-stream", kwargs={"graduate_id": profile.id})
         )
         video_cv.file_url = stream_url
-        video_cv.save(update_fields=["file_url"])
+
+        visibility = request.data.get("video_visibility") or request.data.get("visibility")
+        if visibility in dict(GraduateProfile.VISIBILITY_CHOICES):
+            profile.video_visibility = visibility
+            video_cv.privacy_level = visibility
+            video_cv.save(update_fields=["file_url", "privacy_level"])
+        else:
+            video_cv.save(update_fields=["file_url"])
 
         profile.video_url = stream_url
         profile.video_cv_url = stream_url
+        update_fields = ["video_cv_url"]
         if duration_seconds > 0:
             profile.video_duration_seconds = duration_seconds
-            profile.save(update_fields=["video_cv_url", "video_duration_seconds"])
-        else:
-            profile.save(update_fields=["video_cv_url"])
+            update_fields.append("video_duration_seconds")
+        if visibility in dict(GraduateProfile.VISIBILITY_CHOICES):
+            update_fields.append("video_visibility")
+        profile.save(update_fields=update_fields)
 
         return Response(
             {
@@ -546,6 +555,7 @@ class VideoUploadView(APIView):
                 "video_url": stream_url,
                 "video_cv_url": stream_url,
                 "duration_seconds": profile.video_duration_seconds,
+                "video_visibility": profile.video_visibility,
                 "file_size": getattr(video_file, 'size', len(file_bytes)),
             },
             status=status.HTTP_201_CREATED,
@@ -951,9 +961,20 @@ class UploadCRDocumentView(APIView):
 class GraduateVideoSettingsView(APIView):
     """
     تحديث إعدادات وبيانات الفيديو التعريفي ومستوى الرؤية (Screen 07, FR-08, FR-09).
-    يدعم PATCH لتحديث الحقول ويرفض الروابط الخارجية لحماية المنصة.
+    يدعم GET و PATCH لتحديث الحقول ويرفض الروابط الخارجية لحماية المنصة.
     """
     permission_classes = [IsGraduate]
+
+    def get(self, request):
+        profile, _ = GraduateProfile.objects.get_or_create(user=request.user)
+        video_cv = getattr(profile, "video_cv_record", None)
+        video_url = profile.video_cv_url or (video_cv.file_url if video_cv else "") or ""
+        return Response({
+            "video_cv_url": video_url,
+            "video_duration_seconds": profile.video_duration_seconds or 90,
+            "video_visibility": profile.video_visibility or "COMPANIES_ONLY",
+            "video_verified": profile.video_verified,
+        }, status=status.HTTP_200_OK)
 
     def patch(self, request):
         profile, _ = GraduateProfile.objects.get_or_create(user=request.user)

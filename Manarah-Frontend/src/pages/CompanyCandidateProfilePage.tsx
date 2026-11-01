@@ -18,6 +18,17 @@ export const CompanyCandidateProfilePage: React.FC = () => {
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
   const [feedbackMsg, setFeedbackMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
 
+  const getVideoSourceUrl = (url?: string | null) => {
+    if (!url) return ''
+    const token =
+      (typeof localStorage !== 'undefined' ? localStorage.getItem('manarah_token') : null) ||
+      (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('manarah_token') : null)
+    if (!token || url.includes('token=')) return url
+    const cleanToken = token.replace(/^(Token|Bearer)\s+/, '').trim()
+    const sep = url.includes('?') ? '&' : '?'
+    return `${url}${sep}token=${cleanToken}`
+  }
+
   useEffect(() => {
     async function loadCandidateData() {
       try {
@@ -360,7 +371,7 @@ export const CompanyCandidateProfilePage: React.FC = () => {
                   <video
                     controls
                     className="w-full max-h-80 rounded-2xl bg-black shadow-inner"
-                    src={candidate.video_cv_url}
+                    src={getVideoSourceUrl(candidate.video_cv_url)}
                   >
                     متصفحك لا يدعم تشغيل الفيديو.
                   </video>

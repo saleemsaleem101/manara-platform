@@ -299,6 +299,17 @@ export const api = {
     })
   },
 
+  async uploadGraduateVideo(file: File, durationSeconds: number = 90, visibility: string = 'COMPANIES_ONLY'): Promise<{ message: string; video_url: string; video_cv_url: string; duration_seconds: number; video_visibility?: string }> {
+    const formData = new FormData()
+    formData.append('video', file)
+    formData.append('duration_seconds', String(durationSeconds))
+    formData.append('video_visibility', visibility)
+    return request<{ message: string; video_url: string; video_cv_url: string; duration_seconds: number; video_visibility?: string }>('/profiles/graduate/video/upload/', {
+      method: 'POST',
+      body: formData,
+    })
+  },
+
   // 11. تسجيل حساب منشأة وشركة جديدة (Screen 08 / FR-23)
   async registerCompany(payload: CompanyRegisterPayload): Promise<AuthResponse> {
     return request<AuthResponse>('/auth/register/', {
