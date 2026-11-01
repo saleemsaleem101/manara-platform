@@ -176,7 +176,27 @@ class LoginView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # 1. Try standard authenticate
         user = authenticate(username=email, password=password)
+
+        # 2. Case-insensitive email fallback
+        if not user and email != email.lower():
+            user = authenticate(username=email.lower(), password=password)
+
+        # 3. Trimmed password fallback (handles copy-paste spaces)
+        if not user and password.strip() != password:
+            user = authenticate(username=email, password=password.strip())
+            if not user and email != email.lower():
+                user = authenticate(username=email.lower(), password=password.strip())
+
+        # 4. Direct case-insensitive User lookup fallback
+        if not user:
+            from accounts.models import User
+            matched_user = User.objects.filter(email__iexact=email).first()
+            if matched_user:
+                if matched_user.check_password(password) or matched_user.check_password(password.strip()):
+                    user = matched_user
+
         if user:
             if not user.email_verified:
                 return Response(

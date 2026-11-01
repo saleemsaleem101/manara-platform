@@ -21,8 +21,11 @@ export const LoginPage: React.FC = () => {
     setIsUnverified(false)
     setIsLoading(true)
 
+    const cleanEmail = email.trim()
+    const cleanPassword = password.trim()
+
     try {
-      await login(email, password)
+      await login(cleanEmail, cleanPassword)
       const storedRole = localStorage.getItem('manarah_user_role') || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('manarah_user_role') : null)
       if (storedRole === 'ADMIN') {
         navigate('/admin')
