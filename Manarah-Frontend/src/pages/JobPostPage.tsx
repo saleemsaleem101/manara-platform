@@ -34,10 +34,108 @@ export const JobPostPage: React.FC = () => {
   const [description, setDescription] = useState('')
   const [deadline, setDeadline] = useState('')
 
-  // Skills from catalog
+  // Skills from catalog (Structured by Academic Taxonomy)
   const [catalogSkills, setCatalogSkills] = useState<Skill[]>([])
   const [selectedSkillIds, setSelectedSkillIds] = useState<number[]>([])
   const [skillSearch, setSkillSearch] = useState('')
+  const [selectedTrackTab, setSelectedTrackTab] = useState<string>('ALL')
+
+  const TAXONOMY_TRACKS = [
+    {
+      id: 'SOFTWARE' as const,
+      name: 'هندسة البرمجيات والويب',
+      badge: '23 تقنية',
+      icon: '🌐',
+      skills: [
+        'React.js', 'Next.js', 'Vue.js', 'Angular', 'Node.js & Express', 'Django & DRF',
+        'FastAPI', 'Flask', 'ASP.NET Core', 'Spring Boot', 'Laravel (PHP)', 'Tailwind CSS',
+        'Bootstrap', 'GraphQL', 'RESTful APIs', 'WebSockets', 'Microservices Architecture',
+        'Design Patterns & SOLID Principles', 'Clean Code & Software Architecture',
+        'Software Testing & QA (Unit/Integration)', 'Automated Testing (Selenium / Cypress)',
+        'Agile & Scrum Methodologies', 'Git & GitHub Version Control'
+      ]
+    },
+    {
+      id: 'LANGUAGES' as const,
+      name: 'لغات البرمجة والأنظمة',
+      badge: '22 لغة',
+      icon: '💻',
+      skills: [
+        'Python', 'Java', 'C', 'C++', 'C# (.NET)', 'JavaScript', 'TypeScript', 'Go (Golang)', 'Rust',
+        'PHP', 'Kotlin', 'Swift', 'Dart', 'Ruby', 'R Language', 'MATLAB', 'Scala',
+        'Shell Scripting (Bash / PowerShell)', 'Assembly (x86 / ARM)', 'VHDL & Verilog (Hardware Description)',
+        'SQL (Structured Query Language)', 'HTML5 & CSS3'
+      ]
+    },
+    {
+      id: 'AI_DATA' as const,
+      name: 'الذكاء الاصطناعي وعلم البيانات',
+      badge: '12 مجال',
+      icon: '🤖',
+      skills: [
+        'Machine Learning (ML)', 'Deep Learning (DL)', 'Artificial Intelligence (AI)',
+        'Natural Language Processing (NLP)', 'Computer Vision (OpenCV)', 'TensorFlow & PyTorch',
+        'Scikit-Learn', 'Data Analysis (Pandas & NumPy)', 'Big Data Analytics (Spark & Hadoop)',
+        'Business Intelligence & Power BI', 'Data Mining & Warehousing', 'Large Language Models (LLMs) & Prompting'
+      ]
+    },
+    {
+      id: 'CYBER_NET' as const,
+      name: 'الأمن السيبراني والشبكات',
+      badge: '14 تخصص',
+      icon: '🛡️',
+      skills: [
+        'Cybersecurity & InfoSec', 'Penetration Testing & Ethical Hacking', 'Network Security & Firewalls',
+        'Web Application Security (OWASP Top 10)', 'Cryptography & Encryption Protocols',
+        'SOC & Incident Response', 'Vulnerability Assessment & Nessus', 'Digital Forensics',
+        'Kali Linux & Penetration Tools', 'Computer Networking (TCP/IP & OSI)',
+        'Cisco Networking (CCNA / CCNP Routing & Switching)', 'Network Administration & Wireshark',
+        'VPN & Remote Access Technologies', 'VoIP & Telecommunication Systems'
+      ]
+    },
+    {
+      id: 'DATABASES_CLOUD' as const,
+      name: 'قواعد البيانات والحوسبة السحابية و DevOps',
+      badge: '22 أداة',
+      icon: '☁️',
+      skills: [
+        'PostgreSQL', 'MySQL', 'Oracle Database', 'Microsoft SQL Server', 'MongoDB (NoSQL)',
+        'Redis (In-Memory Caching)', 'Firebase / Supabase', 'Database Design & Normalization',
+        'Amazon Web Services (AWS)', 'Microsoft Azure', 'Google Cloud Platform (GCP)',
+        'Docker & Containerization', 'Kubernetes (K8s)', 'CI/CD Pipelines (GitHub Actions / GitLab)',
+        'Linux Server Administration', 'Nginx & Web Servers', 'Terraform (IaC)',
+        'DevOps Practices', 'Cloud Architecture', 'Serverless Computing',
+        'API Gateway & Microservices Mgmt', 'Monitoring & Logging (Prometheus / Grafana)'
+      ]
+    },
+    {
+      id: 'EMBEDDED_IOT' as const,
+      name: 'هندسة الحاسوب والأنظمة المدمجة و IoT',
+      badge: '11 مجال',
+      icon: '🔌',
+      skills: [
+        'Embedded Systems & Embedded C/C++', 'Internet of Things (IoT & Protocols MQTT/CoAP)',
+        'Microcontrollers (Arduino, STM32, PIC, ESP32)', 'Single-Board Computers (Raspberry Pi)',
+        'RTOS (Real-Time Operating Systems)', 'Digital Logic Design & Circuits',
+        'Computer Organization & Architecture', 'FPGA & Digital Systems Design',
+        'Robotics & Control Systems (ROS)', 'Industrial Automation (PLC & SCADA)',
+        'Sensors, Actuators & Signal Processing'
+      ]
+    },
+    {
+      id: 'SOFT' as const,
+      name: 'المهارات الشخصية والهندسية القيادية',
+      badge: '10 مهارات',
+      icon: '🌟',
+      skills: [
+        'Problem Solving & Critical Thinking', 'Team Collaboration & Communication',
+        'Leadership & Mentorship', 'Time Management & Organization',
+        'Adaptability & Fast Learning', 'Technical Writing & Documentation',
+        'Presentation & Public Speaking', 'Analytical Thinking',
+        'Negotiation & Conflict Resolution', 'Work Ethics & Professionalism'
+      ]
+    }
+  ]
 
   // Matching Weights: ∑w = 1.0 (Official Document Paragraph 593: 45% / 25% / 20% / 10%)
   const [skillsWeight, setSkillsWeight] = useState(0.45)
@@ -119,6 +217,19 @@ export const JobPostPage: React.FC = () => {
     }
   }
 
+  const toggleTrackSkills = (trackSkills: string[]) => {
+    const trackSkillIds = catalogSkills
+      .filter((cs) => trackSkills.some((ts) => ts.toLowerCase() === cs.name.toLowerCase()))
+      .map((cs) => cs.id)
+    const allSelected = trackSkillIds.every((id) => selectedSkillIds.includes(id))
+    if (allSelected) {
+      setSelectedSkillIds(selectedSkillIds.filter((id) => !trackSkillIds.includes(id)))
+    } else {
+      const missing = trackSkillIds.filter((id) => !selectedSkillIds.includes(id))
+      setSelectedSkillIds([...selectedSkillIds, ...missing])
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -132,6 +243,14 @@ export const JobPostPage: React.FC = () => {
 
     if (!title.trim() || !requiredMajor.trim() || !description.trim()) {
       setFeedbackMsg({ text: 'يرجى استكمال جميع الحقول الإلزامية المميزة بنجمة (*)', type: 'error' })
+      return
+    }
+
+    if (selectedSkillIds.length === 0) {
+      setFeedbackMsg({
+        text: 'يرجى تحديد مهارة واحدة على الأقل من دليل المهارات المعتمد لتمكين خوارزمية المطابقة الموزونة.',
+        type: 'error',
+      })
       return
     }
 
@@ -236,9 +355,15 @@ export const JobPostPage: React.FC = () => {
     )
   }
 
-  const filteredSkills = catalogSkills.filter((s) =>
-    s.name.toLowerCase().includes(skillSearch.toLowerCase())
-  )
+  const filteredSkills = catalogSkills.filter((sk) => {
+    const matchesSearch = !skillSearch.trim() || sk.name.toLowerCase().includes(skillSearch.toLowerCase().trim())
+    if (!matchesSearch) return false
+
+    if (selectedTrackTab === 'ALL') return true
+    const currentTrack = TAXONOMY_TRACKS.find((t) => t.id === selectedTrackTab)
+    if (!currentTrack) return true
+    return currentTrack.skills.some((name) => name.toLowerCase() === sk.name.toLowerCase())
+  })
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] dark:bg-[#0B1120] text-[#0F172A] dark:text-white font-sans transition-colors duration-300 selection:bg-[#BAE6FD] selection:text-[#0284C7]" dir="rtl">
@@ -432,52 +557,198 @@ export const JobPostPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Skills Picker from Catalog */}
+                {/* Skills Picker from Catalog (Structured by Academic Taxonomy) */}
                 <div className="pt-2">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label htmlFor={skillSearchInputId} className="block text-xs font-bold text-[#6C4F3D] dark:text-slate-300">
-                      المهارات المطلوبة (من دليل المنصة المعتمد) <span className="text-rose-500">*</span>
-                    </label>
-                    <span className="text-[11px] text-[#0284C7] dark:text-[#38BDF8] font-bold">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <label htmlFor={skillSearchInputId} className="block text-xs font-bold text-[#6C4F3D] dark:text-slate-300">
+                        المهارات والتقنيات المطلوبة (دليل كلية الحاسبات والهندسة) <span className="text-rose-500">*</span>
+                      </label>
+                      <p className="text-[11px] text-[#6C4F3D] dark:text-slate-400 mt-0.5">
+                        حدد المهارات المطلوبة بدقة من التخصصات أدناه لتفعيل المطابقة الموزونة التلقائية (معامل تشابه جاكارد الرياضي).
+                      </p>
+                    </div>
+                    <span className="text-[11px] px-2.5 py-1 rounded-full bg-sky-100 dark:bg-sky-950/60 text-[#0284C7] dark:text-sky-300 font-black border border-sky-200 dark:border-sky-800 shadow-2xs">
                       المحدد: <bdi dir="ltr">{selectedSkillIds.length}</bdi> مهارات
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#6C4F3D] dark:text-slate-400 mb-3">
-                    يتم اختيار المهارات من الدليل الموحد لضمان دقة حساب تشابه جاكارد الرياضي.
-                  </p>
 
-                  <input
-                    id={skillSearchInputId}
-                    type="text"
-                    value={skillSearch}
-                    onChange={(e) => setSkillSearch(e.target.value)}
-                    placeholder="ابحث في دليل المهارات..."
-                    className="w-full px-4 py-2 rounded-xl border border-[#E8DEC8] dark:border-slate-700 text-xs font-medium mb-3 bg-[#FAF7F2] dark:bg-slate-800 text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8] focus:bg-white dark:focus:bg-slate-900 transition shadow-xs"
-                  />
-
-                  {/* Skills Catalog Chips */}
-                  <div className="max-h-40 overflow-y-auto p-3 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2]/60 dark:bg-slate-800/60 flex flex-wrap gap-1.5">
-                    {filteredSkills.map((sk) => {
-                      const isSelected = selectedSkillIds.includes(sk.id)
-                      return (
+                  {/* 1. Selected Skills Tray (سلة المهارات المحددة للوظيفة) */}
+                  {selectedSkillIds.length > 0 ? (
+                    <div className="p-3.5 rounded-2xl bg-gradient-to-r from-sky-50 via-blue-50/50 to-indigo-50/40 dark:from-sky-950/40 dark:via-slate-900 dark:to-slate-900/50 border border-sky-200/90 dark:border-sky-800 shadow-2xs mb-3.5">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[12px] font-black text-[#0284C7] dark:text-sky-300 flex items-center gap-1.5">
+                          <span>✨</span>
+                          <span>المهارات المطلوبة للوظيفة ({selectedSkillIds.length}):</span>
+                        </span>
                         <button
-                          key={sk.id}
                           type="button"
-                          onClick={() => toggleSkill(sk.id)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                            isSelected
-                              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-black'
-                              : 'bg-white dark:bg-slate-800 text-[#6C4F3D] dark:text-slate-300 border border-[#E8DEC8] dark:border-slate-700 hover:border-[#38BDF8]'
-                          }`}
+                          onClick={() => setSelectedSkillIds([])}
+                          className="text-[11px] font-bold text-rose-500 hover:text-rose-700 hover:underline cursor-pointer"
                         >
-                          <span>{sk.name}</span>
-                          <span>{isSelected ? '✓' : '+'}</span>
+                          مسح الكل ↺
                         </button>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-1">
+                        {selectedSkillIds.map((sid) => {
+                          const skObj = catalogSkills.find((s) => s.id === sid)
+                          if (!skObj) return null
+                          return (
+                            <span
+                              key={sid}
+                              className="px-3 py-1 rounded-xl bg-white dark:bg-slate-800 border border-sky-300 dark:border-slate-700 text-[11.5px] font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 shadow-2xs group"
+                            >
+                              <span>{skObj.name}</span>
+                              <button
+                                type="button"
+                                onClick={() => toggleSkill(sid)}
+                                className="w-4 h-4 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-rose-100 dark:hover:bg-rose-900/50 hover:text-rose-600 text-slate-400 text-[10px] flex items-center justify-center cursor-pointer transition"
+                                title="إزالة"
+                              >
+                                ✕
+                              </button>
+                            </span>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/60 mb-3.5 flex items-center gap-2.5">
+                      <span className="text-amber-500 text-base">💡</span>
+                      <span className="text-[11.5px] font-medium text-amber-900 dark:text-amber-200">
+                        اختر التخصص أدناه أو استخدم البحث لتحديد المهارات المطلوبة. كلما حددت المهارات بدقة، كلما رشحت الخوارزمية الخريجين الأنسب تلقائياً.
+                      </span>
+                    </div>
+                  )}
+
+                  {/* 2. Search & Track Filter Tabs */}
+                  <div className="space-y-2 mb-3">
+                    {/* Search Input */}
+                    <div className="relative">
+                      <input
+                        id={skillSearchInputId}
+                        type="text"
+                        value={skillSearch}
+                        onChange={(e) => setSkillSearch(e.target.value)}
+                        placeholder="🔍 ابحث بالاسم: React, Python, Docker, Flutter, C++, Security..."
+                        className="w-full h-10 px-4 pe-9 rounded-xl border border-[#E8DEC8] dark:border-slate-700 text-xs font-semibold bg-[#FAF7F2] dark:bg-slate-800 text-[#0F172A] dark:text-white focus:outline-none focus:border-[#0284C7] focus:bg-white dark:focus:bg-slate-900 transition shadow-2xs"
+                      />
+                      {skillSearch && (
+                        <button
+                          type="button"
+                          onClick={() => setSkillSearch('')}
+                          className="absolute left-3 top-2.5 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Taxonomy Track Filter Tabs */}
+                    <div className="flex flex-wrap gap-1.5 p-1 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/80 border border-[#E8DEC8] dark:border-slate-700">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedTrackTab('ALL')}
+                        className={`px-3 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer flex items-center gap-1.5 ${
+                          selectedTrackTab === 'ALL'
+                            ? 'bg-[#0284C7] text-white shadow-2xs'
+                            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-[#0284C7]'
+                        }`}
+                      >
+                        <span>🌐</span>
+                        <span>كافة التخصصات ({catalogSkills.length})</span>
+                      </button>
+
+                      {TAXONOMY_TRACKS.map((t) => {
+                        const isCurrent = selectedTrackTab === t.id
+                        const countInTrack = catalogSkills.filter((cs) => t.skills.some((n) => n.toLowerCase() === cs.name.toLowerCase()) && selectedSkillIds.includes(cs.id)).length
+                        return (
+                          <button
+                            key={t.id}
+                            type="button"
+                            onClick={() => setSelectedTrackTab(t.id)}
+                            className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                              isCurrent
+                                ? 'bg-[#0284C7] text-white shadow-2xs font-black'
+                                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-[#0284C7] border border-slate-100 dark:border-slate-700'
+                            }`}
+                          >
+                            <span>{t.icon}</span>
+                            <span>{t.name}</span>
+                            {countInTrack > 0 && (
+                              <span className={`text-[9.5px] px-1.5 py-0.2 rounded-full font-black ${
+                                isCurrent ? 'bg-white/20 text-white' : 'bg-sky-100 dark:bg-sky-900/60 text-[#0284C7] dark:text-sky-300'
+                              }`}>
+                                ✓ {countInTrack}
+                              </span>
+                            )}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 3. Skills Catalog Chips Grid */}
+                  <div className="p-3 rounded-2xl border border-sky-100 dark:border-slate-700 bg-white dark:bg-slate-900/60 shadow-2xs">
+                    {selectedTrackTab !== 'ALL' && (() => {
+                      const activeTrackObj = TAXONOMY_TRACKS.find((t) => t.id === selectedTrackTab)
+                      if (!activeTrackObj) return null
+                      return (
+                        <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
+                          <span className="text-[11.5px] font-black text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                            <span>{activeTrackObj.icon}</span>
+                            <span>{activeTrackObj.name} ({filteredSkills.length} مهارة)</span>
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => toggleTrackSkills(activeTrackObj.skills)}
+                            className="text-[10.5px] font-bold text-[#0284C7] dark:text-sky-400 hover:underline cursor-pointer"
+                          >
+                            تحديد / إلغاء تحديد الكل في هذا التخصص
+                          </button>
+                        </div>
                       )
-                    })}
-                    {filteredSkills.length === 0 && (
-                      <span className="text-xs text-[#6C4F3D] dark:text-slate-400 p-2">لا توجد مهارات مطابقة للبحث</span>
-                    )}
+                    })()}
+
+                    <div className="max-h-56 overflow-y-auto flex flex-wrap gap-1.5 pt-1">
+                      {filteredSkills.map((sk) => {
+                        const isSelected = selectedSkillIds.includes(sk.id)
+                        return (
+                          <button
+                            key={sk.id}
+                            type="button"
+                            onClick={() => toggleSkill(sk.id)}
+                            className={`px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition flex items-center gap-1.5 cursor-pointer border ${
+                              isSelected
+                                ? 'bg-[#0284C7] text-white border-[#0284C7] font-black shadow-xs ring-2 ring-sky-300 dark:ring-sky-600'
+                                : 'bg-[#FAF7F2] dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 border-[#E8DEC8] dark:border-slate-700 hover:border-[#0284C7] hover:bg-sky-50 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            <span>{sk.name}</span>
+                            <span className={isSelected ? 'text-white font-black' : 'text-sky-600 font-black'}>
+                              {isSelected ? '✓' : '+'}
+                            </span>
+                          </button>
+                        )
+                      })}
+                      {filteredSkills.length === 0 && (
+                        <div className="w-full text-center py-4 text-xs text-slate-500 dark:text-slate-400">
+                          لا توجد مهارات مطابقة في هذا التصنيف
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Algorithm explanation tip */}
+                  <div className="mt-2.5 p-2.5 rounded-xl bg-sky-50/60 dark:bg-sky-950/30 border border-sky-200/60 dark:border-sky-900/40 flex items-center justify-between text-[11px] text-[#0369A1] dark:text-sky-300">
+                    <span className="flex items-center gap-1.5">
+                      <span>📐</span>
+                      <span>معيار المهارات يمثل <strong>45%</strong> من إجمالي درجة التوافق التلقائي للمرشحين (معامل تشابه جاكارد الرياضي).</span>
+                    </span>
+                    <span className="font-mono font-bold text-[10px] bg-white dark:bg-slate-800 px-2 py-0.5 rounded border border-sky-200 dark:border-sky-800">
+                      Ss = |Job ∩ Cand| / |Job ∪ Cand|
+                    </span>
                   </div>
                 </div>
 

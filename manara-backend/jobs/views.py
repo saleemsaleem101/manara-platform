@@ -102,7 +102,9 @@ class JobListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # الشركة موجودة ومعتمدة (تحقق منها IsVerifiedCompany مسبقًا)
         company = self.request.user.company_profile
-        serializer.save(company=company)
+        job = serializer.save(company=company)
+        from matching.services import MatchingService
+        MatchingService.recalculate_for_job(job)
 
 
 # ============================================================
