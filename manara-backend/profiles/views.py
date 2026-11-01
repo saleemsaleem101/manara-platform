@@ -255,8 +255,9 @@ class MajorListCreateView(generics.ListCreateAPIView):
 # ============================================================
 class SkillListView(generics.ListCreateAPIView):
     """قائمة المهارات المتاحة — للقراءة للجميع، والإضافة لمدير النظام فقط (NFR-02)."""
-    queryset = Skill.objects.all().order_by('id')
+    queryset = Skill.objects.all().order_by('name')
     serializer_class = SkillSerializer
+    pagination_class = None
 
     def get_permissions(self):
         if self.request.method == 'POST':

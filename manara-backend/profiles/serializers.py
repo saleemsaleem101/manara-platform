@@ -50,6 +50,16 @@ class GraduateSkillSerializer(serializers.ModelSerializer):
             data = dict(data)
         if 'skill_id' in data and 'skill' not in data:
             data['skill'] = data['skill_id']
+        elif 'skill' not in data and 'skill_name' in data:
+            from .models import Skill
+            sk = Skill.objects.filter(name__iexact=str(data['skill_name']).strip()).first()
+            if sk:
+                data['skill'] = sk.id
+        elif isinstance(data.get('skill'), str) and not data['skill'].isdigit():
+            from .models import Skill
+            sk = Skill.objects.filter(name__iexact=str(data['skill']).strip()).first()
+            if sk:
+                data['skill'] = sk.id
         level = data.get('proficiency_level')
         int_to_str = {
             1: 'BEGINNER', 2: 'INTERMEDIATE', 3: 'ADVANCED', 4: 'EXPERT',
@@ -242,4 +252,4 @@ class CompanyProfileSerializer(serializers.ModelSerializer):
             instance.user.save(update_fields=['phone'])
         return super().update(instance, validated_data)
 
-
+

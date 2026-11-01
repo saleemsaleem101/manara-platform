@@ -184,14 +184,34 @@ export const ProfileViewPage: React.FC = () => {
                 <div className="p-2.5 px-3.5 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/70 border border-[#E8DEC8] dark:border-slate-700 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <span className="text-[13px] font-bold text-[#38BDF8]">📞</span>
-                    <span className="text-[12px] font-semibold text-[#0F172A] dark:text-slate-200 font-mono" dir="ltr">{profile.phone || '+967 770 000 000'}</span>
+                    {profile.phone ? (
+                      <span className="text-[12px] font-semibold text-[#0F172A] dark:text-slate-200 font-mono" dir="ltr">{profile.phone}</span>
+                    ) : (
+                      <span className="text-[12px] font-medium text-slate-400 dark:text-slate-500">لم يسجل رقم هاتف</span>
+                    )}
                   </div>
+                  {!profile.phone && (
+                    <Link to="/profile/edit" className="text-[11px] font-bold text-[#0284C7] dark:text-sky-400 hover:underline">
+                      + إضافة
+                    </Link>
+                  )}
                 </div>
 
                 {/* Row 3: City */}
-                <div className="p-2.5 px-3.5 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/70 border border-[#E8DEC8] dark:border-slate-700 flex items-center gap-2.5">
-                  <span className="text-[13px] font-bold text-[#0284C7]">📍</span>
-                  <span className="text-[12px] font-semibold text-[#0F172A] dark:text-slate-200">{profile.city || 'اليمن - صنعاء'}</span>
+                <div className="p-2.5 px-3.5 rounded-xl bg-[#FAF7F2] dark:bg-slate-800/70 border border-[#E8DEC8] dark:border-slate-700 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-[13px] font-bold text-[#0284C7]">📍</span>
+                    {profile.city ? (
+                      <span className="text-[12px] font-semibold text-[#0F172A] dark:text-slate-200">{profile.city}</span>
+                    ) : (
+                      <span className="text-[12px] font-medium text-slate-400 dark:text-slate-500">لم يسجل مكان السكن</span>
+                    )}
+                  </div>
+                  {!profile.city && (
+                    <Link to="/profile/edit" className="text-[11px] font-bold text-[#0284C7] dark:text-sky-400 hover:underline">
+                      + إضافة
+                    </Link>
+                  )}
                 </div>
               </div>
 

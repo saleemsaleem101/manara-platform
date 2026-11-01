@@ -31,11 +31,14 @@ export const SkillsPortfolioPage: React.FC = () => {
   const [editingProjectId, setEditingProjectId] = useState<number | null>(null)
 
   // Skill Form State
-  const [selectedSkillId, setSelectedSkillId] = useState<number | ''>('')
+  const [selectedSkillId, setSelectedSkillId] = useState<number | string>('')
+  const [selectedSkillName, setSelectedSkillName] = useState<string>('')
   const [selectedProficiency, setSelectedProficiency] = useState<string>('ADVANCED')
-  const [skillModalSearch, setSkillModalSearch] = useState('')
-  const [selectedTaxonomyTab, setSelectedTaxonomyTab] = useState<'LANGUAGES' | 'SOFTWARE' | 'AI_DATA' | 'CYBER_NET' | 'EMBEDDED_IOT' | 'DATABASES_CLOUD' | 'SOFT'>('LANGUAGES')
+  const [selectedTaxonomyTab, setSelectedTaxonomyTab] = useState<string | null>(null)
   const [showFullTaxonomyExplorer, setShowFullTaxonomyExplorer] = useState(false)
+  const [modalSelectedTrack, setModalSelectedTrack] = useState<string | null>(null)
+  const [projectModalTrack, setProjectModalTrack] = useState<string | null>(null)
+  const [projectTechsList, setProjectTechsList] = useState<string[]>([])
 
   const TAXONOMY_TRACKS = [
     {
@@ -186,18 +189,56 @@ export const SkillsPortfolioPage: React.FC = () => {
     fetchData()
   }, [])
 
+  const openAddSkill = (presetSkillName?: string) => {
+    if (presetSkillName) {
+      setSelectedSkillName(presetSkillName)
+      const found = availableSkills.find(s => s.name.toLowerCase() === presetSkillName.toLowerCase() || s.name.includes(presetSkillName))
+      setSelectedSkillId(found ? found.id : presetSkillName)
+      const track = TAXONOMY_TRACKS.find(t => t.skills.includes(presetSkillName))
+      if (track) setModalSelectedTrack(track.id)
+    } else {
+      setSelectedSkillId('')
+      setSelectedSkillName('')
+      setModalSelectedTrack(null)
+    }
+    setShowSkillModal(true)
+  }
+
+  const openAddProject = () => {
+    setEditingProjectId(null)
+    setProjectTitle('')
+    setProjectDesc('')
+    setProjectTechs('')
+    setProjectTechsList([])
+    setProjectModalTrack(null)
+    setProjectGithub('')
+    setProjectLiveUrl('')
+    setIsGraduationProject(false)
+    setProjectFileError(null)
+    setShowProjectModal(true)
+  }
+
   // Handle Add Skill
   const handleAddSkill = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!selectedSkillId) return
+    let skillValue: number | string = selectedSkillId
+    if (!skillValue && selectedSkillName) {
+      const found = availableSkills.find(s => s.name.toLowerCase() === selectedSkillName.toLowerCase() || s.name.includes(selectedSkillName))
+      skillValue = found ? found.id : selectedSkillName
+    }
+    if (!skillValue) return
     try {
-      await api.addGraduateSkill({
-        skill: Number(selectedSkillId),
-        proficiency_level: selectedProficiency,
-      })
+      const isNum = typeof skillValue === 'number' || /^\d+$/.test(String(skillValue))
+      const skillPayload = isNum
+        ? { skill: Number(skillValue), proficiency_level: selectedProficiency }
+        : { skill_name: String(skillValue), proficiency_level: selectedProficiency }
+
+      await api.addGraduateSkill(skillPayload as any)
       showNotification('تمت إضافة المهارة بنجاح إلى ملفك المهني ✓')
       setShowSkillModal(false)
       setSelectedSkillId('')
+      setSelectedSkillName('')
+      setModalSelectedTrack(null)
       fetchData()
     } catch (err: unknown) {
       const msg = (err as { message?: string })?.message
@@ -258,7 +299,10 @@ export const SkillsPortfolioPage: React.FC = () => {
     setEditingProjectId(proj.id || null)
     setProjectTitle(proj.title)
     setProjectDesc(proj.description)
-    setProjectTechs(proj.technologies)
+    setProjectTechs(proj.technologies || '')
+    const list = (proj.technologies || '').split(',').map(t => t.trim()).filter(Boolean)
+    setProjectTechsList(list)
+    setProjectModalTrack(null)
     setProjectGithub(proj.github_url || '')
     setProjectLiveUrl(proj.project_url || '')
     setIsGraduationProject(Boolean(proj.is_graduation_project))
@@ -391,13 +435,13 @@ export const SkillsPortfolioPage: React.FC = () => {
           {/* Quick Action Buttons */}
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setShowProjectModal(true)}
+              onClick={openAddProject}
               className="h-[44px] px-5 bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:from-[#0369A1] hover:to-[#0284C7] text-white text-[13px] font-black rounded-xl shadow-sm transition flex items-center gap-2 cursor-pointer"
             >
               <span>+ إضافة مشروع جديد</span>
             </button>
             <button
-              onClick={() => setShowSkillModal(true)}
+              onClick={() => openAddSkill()}
               className="h-[44px] px-5 bg-[#FAF7F2] dark:bg-slate-800 hover:bg-[#E5D7C3]/50 dark:hover:bg-slate-700 text-[#0284C7] dark:text-sky-300 border border-[#E8DEC8] dark:border-slate-700 text-[13px] font-bold rounded-xl transition flex items-center gap-2 cursor-pointer"
             >
               <span>+ مهارة تقنية جديدة</span>
@@ -450,70 +494,97 @@ export const SkillsPortfolioPage: React.FC = () => {
                   تعتمد المنصة دليلاً مهيكلاً شاملاً لكافة أقسام كلية الحاسبات والهندسة يمنع تباين المسميات اللغوية العشوائية ويوفر مدخلات قياسية ذات معرفات فريدة لخوارزمية المطابقة الموزونة (معامل تشابه جاكارد الرياضي). يشمل الدليل: 22 لغة برمجة وأنظمة أساسية، 23 تقنية لهندسة البرمجيات والويب، 12 مجالاً للذكاء الاصطناعي وعلم البيانات، 14 تخصصاً للأمن السيبراني والشبكات، 11 مجالاً لهندسة الحاسوب والأنظمة المدمجة و IoT، 22 أداة لقواعد البيانات والسحابة و DevOps، و 10 مهارات قيادية وهندسية.
                 </p>
 
-                {/* Categorized Track Chips */}
+                {/* Categorized Track Chips with Specialization-First Navigation */}
                 {showFullTaxonomyExplorer && (
                   <div className="mt-4 pt-3.5 border-t border-sky-200/50 dark:border-slate-800">
-                    {/* Track Tabs */}
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      {TAXONOMY_TRACKS.map((track) => (
-                        <button
-                          key={track.id}
-                          type="button"
-                          onClick={() => setSelectedTaxonomyTab(track.id)}
-                          className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition cursor-pointer flex items-center gap-1.5 ${
-                            selectedTaxonomyTab === track.id
-                              ? 'bg-[#0284C7] text-white shadow-xs'
-                              : 'bg-white dark:bg-slate-800 text-[#475569] dark:text-slate-300 border border-[#E8DEC8] dark:border-slate-700 hover:border-[#0284C7]'
-                          }`}
-                        >
-                          <span>{track.icon}</span>
-                          <span>{track.name}</span>
-                          <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                            selectedTaxonomyTab === track.id ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300'
-                          }`}>
-                            {track.badge}
+                    {selectedTaxonomyTab === null ? (
+                      /* الخطوة 1: عرض بطاقات التخصصات للاختيار منها */
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-[12px] font-black text-[#0F172A] dark:text-white">
+                            👇 اختر التخصص الأكاديمي أولاً لاستعراض لغاته ومهاراته المعتمدة:
                           </span>
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* Active Track Skills List */}
-                    {(() => {
-                      const activeTrack = TAXONOMY_TRACKS.find(t => t.id === selectedTaxonomyTab)
-                      if (!activeTrack) return null
-                      return (
-                        <div className="p-3.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-sky-100 dark:border-slate-800">
-                          <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-                            <span className="text-[12px] font-black text-[#0F172A] dark:text-white flex items-center gap-1.5">
-                              <span>{activeTrack.icon}</span>
-                              <span>{activeTrack.name} ({activeTrack.skills.length})</span>
-                            </span>
-                            <span className="text-[11px] text-[#64748B] dark:text-slate-400">
-                              {activeTrack.desc}
-                            </span>
-                          </div>
-                          <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto pt-1">
-                            {activeTrack.skills.map((skillName) => (
-                              <button
-                                key={skillName}
-                                type="button"
-                                onClick={() => {
-                                  const found = availableSkills.find(s => s.name.toLowerCase() === skillName.toLowerCase() || s.name.includes(skillName))
-                                  if (found) setSelectedSkillId(found.id)
-                                  setSkillModalSearch(skillName)
-                                  setShowSkillModal(true)
-                                }}
-                                className="px-2.5 py-1 rounded-lg bg-[#F0F9FF] dark:bg-sky-950/40 text-[#0369A1] dark:text-sky-300 border border-sky-200/80 dark:border-sky-800 text-[11px] font-semibold hover:bg-sky-100 dark:hover:bg-sky-900/60 transition cursor-pointer flex items-center gap-1"
-                                title="اضغط لإضافة المهارة إلى ملفك"
-                              >
-                                <span>{skillName}</span>
-                                <span className="text-[10px] text-sky-500">+</span>
-                              </button>
-                            ))}
-                          </div>
+                          <span className="text-[11px] font-bold text-[#0284C7] dark:text-sky-400">
+                            7 تخصصات أكاديمية
+                          </span>
                         </div>
-                      )
-                    })()}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                          {TAXONOMY_TRACKS.map((track) => (
+                            <button
+                              key={track.id}
+                              type="button"
+                              onClick={() => setSelectedTaxonomyTab(track.id)}
+                              className="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-sky-100 dark:border-slate-700/80 hover:border-[#0284C7] hover:shadow-sm text-start transition cursor-pointer flex flex-col justify-between group"
+                            >
+                              <div className="flex items-start justify-between gap-2 mb-2">
+                                <span className="text-xl p-1.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-600 border border-sky-100 dark:border-sky-900/40">
+                                  {track.icon}
+                                </span>
+                                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/60 text-[#0284C7] dark:text-sky-300">
+                                  {track.badge}
+                                </span>
+                              </div>
+                              <div>
+                                <h5 className="text-[12.5px] font-black text-[#0F172A] dark:text-white group-hover:text-[#0284C7] transition-colors mb-1">
+                                  {track.name}
+                                </h5>
+                                <p className="text-[10.5px] text-[#64748B] dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                  {track.desc}
+                                </p>
+                              </div>
+                              <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-[#0284C7] dark:text-sky-400">
+                                <span>استعراض المهارات واللغات</span>
+                                <span className="group-hover:translate-x-[-3px] transition-transform">➔</span>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      /* الخطوة 2: عرض مهارات ولغات التخصص المختار مع زر العودة */
+                      (() => {
+                        const activeTrack = TAXONOMY_TRACKS.find(t => t.id === selectedTaxonomyTab)
+                        if (!activeTrack) return null
+                        return (
+                          <div className="p-4 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-sky-200 dark:border-slate-700">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedTaxonomyTab(null)}
+                                  className="px-3 py-1.5 rounded-xl bg-[#FAF7F2] dark:bg-slate-800 border border-sky-300 dark:border-slate-700 text-[11px] font-black text-[#0284C7] dark:text-sky-300 hover:bg-sky-50 dark:hover:bg-slate-700 transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                                >
+                                  <span>←</span>
+                                  <span>العودة إلى قائمة التخصصات (اختيار تخصص آخر)</span>
+                                </button>
+                                <span className="text-[12.5px] font-black text-[#0F172A] dark:text-white flex items-center gap-1.5">
+                                  <span>{activeTrack.icon}</span>
+                                  <span>{activeTrack.name} ({activeTrack.skills.length} مهارة معتمدة)</span>
+                                </span>
+                              </div>
+                              <p className="text-[11px] text-[#64748B] dark:text-slate-400">
+                                {activeTrack.desc}
+                              </p>
+                            </div>
+
+                            <div className="flex flex-wrap gap-1.5 max-h-56 overflow-y-auto pt-1">
+                              {activeTrack.skills.map((skillName) => (
+                                <button
+                                  key={skillName}
+                                  type="button"
+                                  onClick={() => openAddSkill(skillName)}
+                                  className="px-2.5 py-1.5 rounded-lg bg-[#F0F9FF] dark:bg-sky-950/40 text-[#0369A1] dark:text-sky-300 border border-sky-200/80 dark:border-sky-800 text-[11.5px] font-bold hover:bg-sky-100 dark:hover:bg-sky-900/60 transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                                  title="اضغط لإضافة المهارة إلى ملفك"
+                                >
+                                  <span>{skillName}</span>
+                                  <span className="text-[10px] text-sky-500 font-black">+</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )
+                      })()
+                    )}
                   </div>
                 )}
               </div>
@@ -525,7 +596,7 @@ export const SkillsPortfolioPage: React.FC = () => {
                     المهارات التقنية والبرمجية (Technical Skills):
                   </h3>
                   <button
-                    onClick={() => setShowSkillModal(true)}
+                    onClick={() => openAddSkill()}
                     className="text-[12px] font-bold text-[#0284C7] dark:text-sky-400 hover:underline cursor-pointer"
                   >
                     + إضافة مهارة
@@ -607,7 +678,7 @@ export const SkillsPortfolioPage: React.FC = () => {
                   </h2>
                 </div>
                 <button
-                  onClick={() => setShowProjectModal(true)}
+                  onClick={openAddProject}
                   className="text-[12px] font-bold text-[#0284C7] dark:text-sky-400 hover:underline cursor-pointer"
                 >
                   + إضافة مشروع جديد
@@ -634,7 +705,7 @@ export const SkillsPortfolioPage: React.FC = () => {
                     أضف مشاريعك البرمجية ومشاريع التخرج لرفع درجة التوافق في المطابقة الموزونة للوظائف.
                   </p>
                   <button
-                    onClick={() => setShowProjectModal(true)}
+                    onClick={openAddProject}
                     className="px-5 py-2.5 bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] text-white text-[12px] font-black rounded-xl shadow-xs"
                   >
                     + إضافة أول مشروع
@@ -828,61 +899,139 @@ export const SkillsPortfolioPage: React.FC = () => {
 
             <form onSubmit={handleAddSkill} className="space-y-4">
               <div>
-                <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center justify-between mb-2">
                   <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200">
                     المهارة المعتمدة (دليل كلية الحاسبات والهندسة) *
                   </label>
                   <span className="text-[11px] font-bold text-[#0284C7] dark:text-sky-400">
-                    {availableSkills.length} مهارة معتمدة
+                    دليل مهيكل بالكامل
                   </span>
                 </div>
 
-                {/* Quick Search inside Modal */}
-                <div className="relative mb-2">
-                  <input
-                    type="text"
-                    value={skillModalSearch}
-                    onChange={(e) => setSkillModalSearch(e.target.value)}
-                    placeholder="ابحث بالاسم: C++, Python, IoT, Assembly, Java, Cloud..."
-                    className="w-full h-9 px-3 text-[12px] rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
-                  />
-                  {skillModalSearch && (
+                {/* Selected Skill Banner */}
+                {selectedSkillName ? (
+                  <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 flex items-center justify-between gap-2 mb-3 shadow-2xs">
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-black">✓</span>
+                      <div>
+                        <span className="text-[11px] font-medium text-emerald-800 dark:text-emerald-300 block">المهارة المحددة من الدليل:</span>
+                        <span className="text-[13.5px] font-black text-emerald-950 dark:text-emerald-100">{selectedSkillName}</span>
+                      </div>
+                    </div>
                     <button
                       type="button"
-                      onClick={() => setSkillModalSearch('')}
-                      className="absolute left-2.5 top-2 text-[11px] text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
+                      onClick={() => {
+                        setSelectedSkillName('')
+                        setSelectedSkillId('')
+                      }}
+                      className="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700 text-[11px] font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 transition cursor-pointer"
                     >
-                      ✕
+                      تغيير المهارة ↻
                     </button>
-                  )}
-                </div>
+                  </div>
+                ) : null}
 
-                <select
-                  required
-                  value={selectedSkillId}
-                  onChange={(e) => setSelectedSkillId(Number(e.target.value))}
-                  className="w-full h-11 px-3.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-[13px] font-bold text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
-                >
-                  <option value="">-- اختر من دليل المهارات المهيكلة المعتمدة --</option>
-                  <optgroup label="💻 المهارات البرمجية والتقنية (Computer Science & Engineering)">
-                    {availableSkills
-                      .filter(s => s.category === 'TECHNICAL' && (!skillModalSearch || s.name.toLowerCase().includes(skillModalSearch.toLowerCase().trim())))
-                      .map((sk) => (
-                        <option key={sk.id} value={sk.id}>
-                          {sk.name}
-                        </option>
-                      ))}
-                  </optgroup>
-                  <optgroup label="🌟 المهارات الشخصية والهندسية القيادية (Soft Skills)">
-                    {availableSkills
-                      .filter(s => s.category === 'SOFT' && (!skillModalSearch || s.name.toLowerCase().includes(skillModalSearch.toLowerCase().trim())))
-                      .map((sk) => (
-                        <option key={sk.id} value={sk.id}>
-                          {sk.name}
-                        </option>
-                      ))}
-                  </optgroup>
-                </select>
+                {/* Specialization Selection or Skill Selection */}
+                {!selectedSkillName && (
+                  <div className="p-3 rounded-2xl bg-[#FAF7F2] dark:bg-slate-800/80 border border-[#E8DEC8] dark:border-slate-700">
+                    {modalSelectedTrack === null ? (
+                      /* الخطوة 1: اختيار التخصص */
+                      <div>
+                        <span className="text-[11.5px] font-black text-[#0F172A] dark:text-white block mb-2">
+                          1. اضغط على التخصص الأكاديمي أولاً:
+                        </span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-52 overflow-y-auto p-1">
+                          {TAXONOMY_TRACKS.map(t => (
+                            <button
+                              key={t.id}
+                              type="button"
+                              onClick={() => setModalSelectedTrack(t.id)}
+                              className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[#0284C7] hover:bg-sky-50 dark:hover:bg-slate-700 text-start transition cursor-pointer flex items-center justify-between"
+                            >
+                              <div className="flex items-center gap-2">
+                                <span className="text-lg">{t.icon}</span>
+                                <div>
+                                  <span className="text-[12px] font-black text-[#0F172A] dark:text-white block">{t.name}</span>
+                                  <span className="text-[10px] text-slate-500 dark:text-slate-400">{t.badge}</span>
+                                </div>
+                              </div>
+                              <span className="text-[11px] text-[#0284C7] font-bold">➔</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      /* الخطوة 2: اختيار المهارة مباشرة بالنقرة من قائمة التخصص */
+                      (() => {
+                        const trackObj = TAXONOMY_TRACKS.find(t => t.id === modalSelectedTrack)
+                        return (
+                          <div>
+                            <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-200 dark:border-slate-700">
+                              <button
+                                type="button"
+                                onClick={() => setModalSelectedTrack(null)}
+                                className="text-[11px] font-bold text-[#0284C7] dark:text-sky-300 hover:underline flex items-center gap-1 cursor-pointer"
+                              >
+                                <span>←</span>
+                                <span>العودة لاختيار تخصص آخر</span>
+                              </button>
+                              <span className="text-[11px] font-black text-slate-700 dark:text-slate-200 flex items-center gap-1">
+                                <span>{trackObj?.icon}</span>
+                                <span>{trackObj?.name}</span>
+                              </span>
+                            </div>
+                            <span className="text-[11.5px] font-black text-[#0F172A] dark:text-white block mb-1.5">
+                              2. اضغط على المهارة أو اللغة المطلوبة:
+                            </span>
+                            <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-1.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                              {trackObj?.skills.map((skName) => {
+                                const isSelected = selectedSkillName === skName
+                                return (
+                                  <button
+                                    key={skName}
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedSkillName(skName)
+                                      const found = availableSkills.find(s => s.name.toLowerCase() === skName.toLowerCase() || s.name.includes(skName))
+                                      setSelectedSkillId(found ? found.id : skName)
+                                    }}
+                                    className={`px-3 py-1.5 rounded-xl text-[11.5px] font-bold transition cursor-pointer border flex items-center gap-1.5 ${
+                                      isSelected
+                                        ? 'bg-[#0284C7] text-white border-[#0284C7] shadow-xs font-black'
+                                        : 'bg-[#FAF7F2] dark:bg-slate-800 text-[#0F172A] dark:text-slate-200 border-[#E8DEC8] dark:border-slate-700 hover:border-[#0284C7] hover:bg-sky-50 dark:hover:bg-slate-700'
+                                    }`}
+                                  >
+                                    <span>{skName}</span>
+                                    {isSelected && <span>✓</span>}
+                                  </button>
+                                )
+                              })}
+                            </div>
+                            {/* Alternative Dropdown for this track */}
+                            <div className="mt-2.5">
+                              <select
+                                value={selectedSkillName}
+                                onChange={(e) => {
+                                  const skName = e.target.value
+                                  if (!skName) return
+                                  setSelectedSkillName(skName)
+                                  const found = availableSkills.find(s => s.name.toLowerCase() === skName.toLowerCase() || s.name.includes(skName))
+                                  setSelectedSkillId(found ? found.id : skName)
+                                }}
+                                className="w-full h-10 px-3 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-white dark:bg-slate-800 text-[12px] font-bold text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
+                              >
+                                <option value="">-- أو اختر من قائمة مهارات هذا التخصص --</option>
+                                {trackObj?.skills.map(skName => (
+                                  <option key={skName} value={skName}>{skName}</option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                        )
+                      })()
+                    )}
+                  </div>
+                )}
               </div>
 
               <div>
@@ -960,49 +1109,128 @@ export const SkillsPortfolioPage: React.FC = () => {
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-[12px] font-bold text-[#0F172A] dark:text-slate-200">
-                    التقنيات المستخدمة (من الدليل المهيكل المعتمد) *
+                    التقنيات المستخدمة في المشروع (من الدليل المهيكل المعتمد) *
                   </label>
-                  <span className="text-[11px] text-[#0284C7] dark:text-sky-400 font-semibold">
-                    اختيار مهيكل بالنقرة السريعة
+                  <span className="text-[11px] text-[#0284C7] dark:text-sky-400 font-bold">
+                    {projectTechsList.length} تقنيات محددة
                   </span>
                 </div>
+
+                {/* Selected technologies tags */}
+                {projectTechsList.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5 p-2 rounded-xl bg-sky-50/70 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-900/60 mb-2">
+                    {projectTechsList.map((tech) => (
+                      <span
+                        key={tech}
+                        className="px-2.5 py-1 rounded-lg bg-[#0284C7] text-white text-[11px] font-bold flex items-center gap-1.5 shadow-2xs"
+                      >
+                        <span>{tech}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = projectTechsList.filter(t => t !== tech)
+                            setProjectTechsList(updated)
+                            setProjectTechs(updated.join(', '))
+                          }}
+                          className="text-white/80 hover:text-white hover:bg-white/20 rounded-full w-4 h-4 flex items-center justify-center cursor-pointer text-[10px]"
+                          title="إزالة"
+                        >
+                          ✕
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/50 mb-2">
+                    <p className="text-[11px] text-amber-900 dark:text-amber-300 font-medium">
+                      ⚠️ اضغط على التخصص أدناه لاختيار التقنيات المستخدمة في المشروع مباشرة دون كتابة يدوية.
+                    </p>
+                  </div>
+                )}
+
+                {/* Hidden input to ensure HTML5 required validation passes */}
                 <input
                   type="text"
                   required
                   value={projectTechs}
-                  onChange={(e) => setProjectTechs(e.target.value)}
-                  placeholder="مثال: React.js, Python, PostgreSQL, Docker"
-                  className="w-full h-10 px-3 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-[#FAF7F2] dark:bg-slate-800 text-[13px] font-semibold text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
+                  onChange={(e) => {
+                    setProjectTechs(e.target.value)
+                    setProjectTechsList(e.target.value.split(',').map(t => t.trim()).filter(Boolean))
+                  }}
+                  className="sr-only"
+                  tabIndex={-1}
                 />
-                {/* Quick Add from Predefined Taxonomy Chips */}
-                <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                  <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">إضافة سريعة من الدليل:</span>
-                  {['Python', 'React.js', 'Django & DRF', 'PostgreSQL', 'Docker', 'Flutter', 'TypeScript', 'Node.js & Express', 'C++', 'FastAPI', 'Spring Boot', 'Embedded Systems & Embedded C/C++', 'Cybersecurity & InfoSec'].map((tech) => {
-                    const currentTechs = projectTechs.split(',').map(t => t.trim()).filter(Boolean)
-                    const isAdded = currentTechs.includes(tech)
-                    return (
-                      <button
-                        key={tech}
-                        type="button"
-                        onClick={() => {
-                          if (isAdded) {
-                            setProjectTechs(currentTechs.filter(t => t !== tech).join(', '))
-                          } else {
-                            setProjectTechs(currentTechs.length > 0 ? `${projectTechs}, ${tech}` : tech)
-                          }
-                        }}
-                        className={`text-[10.5px] px-2 py-0.5 rounded-lg border font-bold transition cursor-pointer ${
-                          isAdded
-                            ? 'bg-[#0284C7] text-white border-[#0284C7]'
-                            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-[#E8DEC8] dark:border-slate-700 hover:border-[#0284C7]'
-                        }`}
-                      >
-                        {isAdded ? `✓ ${tech}` : `+ ${tech}`}
-                      </button>
-                    )
-                  })}
+
+                {/* Specialization selector & skill toggles for project */}
+                <div className="p-3 rounded-2xl bg-[#FAF7F2] dark:bg-slate-800/80 border border-[#E8DEC8] dark:border-slate-700">
+                  {projectModalTrack === null ? (
+                    <div>
+                      <span className="text-[11.5px] font-black text-slate-700 dark:text-slate-300 block mb-2">
+                        👇 اضغط على تخصص لاختيار تقنياته للمشروع:
+                      </span>
+                      <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto">
+                        {TAXONOMY_TRACKS.map(t => (
+                          <button
+                            key={t.id}
+                            type="button"
+                            onClick={() => setProjectModalTrack(t.id)}
+                            className="px-2.5 py-1.5 rounded-xl border border-[#E8DEC8] dark:border-slate-700 bg-white dark:bg-slate-800 text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:border-[#0284C7] hover:bg-sky-50 dark:hover:bg-slate-700 transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                          >
+                            <span>{t.icon}</span>
+                            <span>{t.name}</span>
+                            <span className="text-[10px] text-sky-600 font-bold">➔</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-200 dark:border-slate-700">
+                        <button
+                          type="button"
+                          onClick={() => setProjectModalTrack(null)}
+                          className="text-[11px] font-bold text-[#0284C7] dark:text-sky-300 hover:underline flex items-center gap-1 cursor-pointer"
+                        >
+                          <span>←</span>
+                          <span>العودة لاختيار تخصص آخر</span>
+                        </button>
+                        <span className="text-[11px] font-black text-slate-700 dark:text-slate-300">
+                          {TAXONOMY_TRACKS.find(t => t.id === projectModalTrack)?.name}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto p-1 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                        {TAXONOMY_TRACKS.find(t => t.id === projectModalTrack)?.skills.map(skName => {
+                          const isAdded = projectTechsList.includes(skName)
+                          return (
+                            <button
+                              key={skName}
+                              type="button"
+                              onClick={() => {
+                                let updated: string[]
+                                if (isAdded) {
+                                  updated = projectTechsList.filter(t => t !== skName)
+                                } else {
+                                  updated = [...projectTechsList, skName]
+                                }
+                                setProjectTechsList(updated)
+                                setProjectTechs(updated.join(', '))
+                              }}
+                              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition cursor-pointer border flex items-center gap-1 ${
+                                isAdded
+                                  ? 'bg-[#0284C7] text-white border-[#0284C7] shadow-2xs font-black'
+                                  : 'bg-[#FAF7F2] dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-[#E8DEC8] dark:border-slate-700 hover:border-[#0284C7]'
+                              }`}
+                            >
+                              <span>{skName}</span>
+                              <span className="text-[10px] font-black">{isAdded ? '✓' : '+'}</span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 

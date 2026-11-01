@@ -6,7 +6,7 @@ const defaultProfile: GraduateProfile = {
   name: '',
   email: '',
   phone: '',
-  city: 'اليمن - صنعاء',
+  city: '',
   university: 'جامعة العلوم والتكنولوجيا',
   major: 'هندسة البرمجيات',
   graduationYear: 2026,
