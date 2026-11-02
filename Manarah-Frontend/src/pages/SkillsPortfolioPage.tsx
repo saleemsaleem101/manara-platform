@@ -3,6 +3,7 @@ import { Navbar } from '../components/Navbar'
 import { api } from '../services/api'
 import type { Skill, GraduateSkill, ProjectItem, VideoCVInfo } from '../types'
 import { getEmbedVideoInfo, getVideoSourceUrl } from '../utils/video'
+import { uploadVideoToSupabase } from '../utils/supabaseStorage'
 
 export const SkillsPortfolioPage: React.FC = () => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -166,7 +167,8 @@ export const SkillsPortfolioPage: React.FC = () => {
   const [videoVisibilityInput, setVideoVisibilityInput] = useState<'PUBLIC' | 'COMPANIES_ONLY' | 'PRIVATE'>('COMPANIES_ONLY')
   const [videoDurationSecondsInput, setVideoDurationSecondsInput] = useState<number>(90)
   const [selectedVideoFile, setSelectedVideoFile] = useState<File | null>(null)
-  const [videoUploadTab, setVideoUploadTab] = useState<'URL' | 'FILE'>('URL')
+  const [videoUploadTab, setVideoUploadTab] = useState<'FILE' | 'URL'>('FILE')
+  const [uploadProgress, setUploadProgress] = useState<number>(0)
   const [isUploadingVideo, setIsUploadingVideo] = useState(false)
   const [videoFileError, setVideoFileError] = useState<string | null>(null)
 
@@ -419,20 +421,21 @@ export const SkillsPortfolioPage: React.FC = () => {
     showNotification('تم فحص الملف: الحجم والصيغة مطابقة للشروط ✓')
   }
 
-  // Handle Video File Validation & Selection (4.5MB limit for direct Vercel Serverless upload)
+  // Handle Video File Validation & Selection (50MB limit via Supabase Storage)
   const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     setVideoFileError(null)
+    setUploadProgress(0)
     if (!file) {
       setSelectedVideoFile(null)
       return
     }
-    const maxDirectSizeBytes = 4.5 * 1024 * 1024 // 4.5 MB Vercel Serverless payload limit
+    const maxSizeBytes = 50 * 1024 * 1024 // 50MB (Supabase Storage max)
     const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2)
 
-    if (file.size > maxDirectSizeBytes) {
+    if (file.size > maxSizeBytes) {
       setVideoFileError(
-        `حجم ملف الفيديو (${fileSizeMB} ميجابايت) يتجاوز الحد الأقصى للرفع المباشر عبر السحابة (4.5 ميجابايت). يمكنك إما ضغط الملف ليصبح أقل من 4.5 ميجابايت، أو الأفضل: التبديل إلى خيار "رابط سحابي" بالأعلى لرفعه عبر Google Drive أو YouTube بدون أي قيود وبدقة كاملة.`
+        `حجم ملف الفيديو (${fileSizeMB} ميجابايت) يتجاوز الحد الأقصى المسموح به (50 ميجابايت). يمكنك ضغط الملف أو استخدام خيار "رابط سحابي" لرفعه عبر Google Drive بدون أي قيود على الحجم.`
       )
       setSelectedVideoFile(null)
       e.target.value = ''
@@ -467,23 +470,28 @@ export const SkillsPortfolioPage: React.FC = () => {
     e.preventDefault()
     setIsUploadingVideo(true)
     setVideoFileError(null)
+    setUploadProgress(0)
     try {
       if (videoUploadTab === 'FILE' && selectedVideoFile) {
-        if (selectedVideoFile.size > 4.5 * 1024 * 1024) {
-          throw new Error('حجم الملف يتجاوز الحد السحابي (4.5 MB). نوصي باستخدام رابط Google Drive أو YouTube.')
+        if (selectedVideoFile.size > 50 * 1024 * 1024) {
+          throw new Error('حجم الملف يتجاوز الحد الأقصى المسموح (50 MB). نوصي باستخدام رابط Google Drive أو YouTube.')
         }
-        const res = await api.uploadGraduateVideo(
+
+        // 1. الرفع السحابي المباشر من المتصفح إلى Supabase Storage (بوابة مستقلة تتجاوز Vercel 4.5MB تماماً)
+        const publicVideoUrl = await uploadVideoToSupabase(
           selectedVideoFile,
-          videoDurationSecondsInput || 90,
-          videoVisibilityInput
+          undefined,
+          (percent) => setUploadProgress(percent)
         )
-        setVideoInfo({
-          video_cv_url: res.video_cv_url || res.video_url,
-          video_duration_seconds: res.duration_seconds || 90,
+
+        // 2. توثيق وحفظ الرابط السحابي الناتج في قاعدة البيانات
+        const res = await api.updateGraduateVideo({
+          video_cv_url: publicVideoUrl,
           video_visibility: videoVisibilityInput,
-          video_verified: true,
+          video_duration_seconds: videoDurationSecondsInput || 90,
         })
-        showNotification('تم رفع وتخزين الفيديو التعريفي كملف موثق بنجاح ✓')
+        setVideoInfo(res)
+        showNotification('تم رفع وتخزين الفيديو التعريفي السحابي بنجاح ✓')
       } else if (videoUploadTab === 'URL' && videoUrlInput.trim()) {
         const cleanUrl = videoUrlInput.trim()
         const res = await api.updateGraduateVideo({
@@ -505,11 +513,12 @@ export const SkillsPortfolioPage: React.FC = () => {
       }
       setShowVideoModal(false)
       setSelectedVideoFile(null)
+      setUploadProgress(0)
       await fetchData()
     } catch (err: unknown) {
       let msg = (err as { message?: string })?.message || ''
       if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('Load failed')) {
-        msg = 'تعذر الاتصال بالخادم السحابي بسبب تجاوز حجم الملف للحد المسموح للرفع المباشر (4.5 MB) أو ضعف الاتصال. نوصي بلصق رابط الفيديو من Google Drive أو YouTube لرفعه فوراً دون أي قيود على الحجم.'
+        msg = 'تعذر الاتصال بالخادم السحابي بسبب ضعف الاتصال. نوصي بلصق رابط الفيديو من Google Drive أو YouTube لرفعه فوراً دون أي قيود على الحجم.'
       }
       setVideoFileError(msg || 'فشل حفظ إعدادات الفيديو')
       showNotification(msg || 'فشل حفظ إعدادات الفيديو', 'error')
@@ -1083,7 +1092,8 @@ export const SkillsPortfolioPage: React.FC = () => {
                   setVideoDurationSecondsInput(videoInfo.video_duration_seconds || 90)
                   setSelectedVideoFile(null)
                   setVideoFileError(null)
-                  setVideoUploadTab('URL')
+                  setUploadProgress(0)
+                  setVideoUploadTab('FILE')
                   setShowVideoModal(true)
                 }}
                 className="w-full h-11 bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:opacity-95 text-white font-bold text-[12px] rounded-xl transition shadow-sm cursor-pointer flex items-center justify-center gap-2"
@@ -1776,17 +1786,6 @@ export const SkillsPortfolioPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-2 p-1.5 bg-[#FAF7F2] dark:bg-slate-800 rounded-2xl mb-4 border border-[#E8DEC8] dark:border-slate-700">
               <button
                 type="button"
-                onClick={() => setVideoUploadTab('URL')}
-                className={`py-2 px-3 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                  videoUploadTab === 'URL'
-                    ? 'bg-white dark:bg-slate-900 text-[#0284C7] dark:text-sky-300 shadow-sm border border-sky-100 dark:border-slate-700'
-                    : 'text-[#6C4F3D] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white'
-                }`}
-              >
-                <span>🔗 رابط سحابي (موصى به)</span>
-              </button>
-              <button
-                type="button"
                 onClick={() => setVideoUploadTab('FILE')}
                 className={`py-2 px-3 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                   videoUploadTab === 'FILE'
@@ -1794,7 +1793,18 @@ export const SkillsPortfolioPage: React.FC = () => {
                     : 'text-[#6C4F3D] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white'
                 }`}
               >
-                <span>📁 رفع ملف مباشر (&lt; 4.5 MB)</span>
+                <span>⚡ رفع ملف سحابي مباشر (حتى 50 MB)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setVideoUploadTab('URL')}
+                className={`py-2 px-3 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  videoUploadTab === 'URL'
+                    ? 'bg-white dark:bg-slate-900 text-[#0284C7] dark:text-sky-300 shadow-sm border border-sky-100 dark:border-slate-700'
+                    : 'text-[#6C4F3D] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white'
+                }`}
+              >
+                <span>🔗 رابط Google Drive / YouTube</span>
               </button>
             </div>
 
@@ -1829,7 +1839,7 @@ export const SkillsPortfolioPage: React.FC = () => {
                     اختر ملف الفيديو التعريفي من جهازك
                   </label>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-3">
-                    الصيغ المعتمدة: MP4 أو WebM • الحد الأقصى للرفع المباشر: 4.5MB
+                    الصيغ المعتمدة: MP4 أو WebM • الحجم المسموح به: حتى 50MB • رفع سحابي مباشر فائق السرعة
                   </p>
 
                   <input
@@ -1841,22 +1851,40 @@ export const SkillsPortfolioPage: React.FC = () => {
                   />
 
                   {selectedVideoFile && (
-                    <div className="mt-3 p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-sky-200 dark:border-sky-800 text-start flex items-center justify-between text-[11px]">
-                      <div className="flex items-center gap-2">
-                        <span className="text-emerald-500 font-bold">✓</span>
-                        <div>
-                          <span className="font-bold text-[#0F172A] dark:text-white block truncate max-w-[240px]">{selectedVideoFile.name}</span>
-                          <span className="text-slate-500">{(selectedVideoFile.size / (1024 * 1024)).toFixed(2)} MB • جاهز للرفع</span>
+                    <div className="mt-3 p-3 rounded-xl bg-white dark:bg-slate-800 border border-sky-200 dark:border-sky-800 text-start flex flex-col gap-2 text-[11px]">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-emerald-500 font-bold">✓</span>
+                          <div>
+                            <span className="font-bold text-[#0F172A] dark:text-white block truncate max-w-[240px]">{selectedVideoFile.name}</span>
+                            <span className="text-slate-500">{(selectedVideoFile.size / (1024 * 1024)).toFixed(2)} MB • جاهز للرفع السحابي</span>
+                          </div>
                         </div>
+                        <span className="text-xs bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-md font-bold">
+                          محدد للرفع
+                        </span>
                       </div>
-                      <span className="text-xs bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-md font-bold">
-                        محدد للرفع
-                      </span>
+
+                      {/* Progress Bar when uploading */}
+                      {isUploadingVideo && (
+                        <div className="w-full mt-1.5">
+                          <div className="flex justify-between text-[11px] font-bold text-[#0284C7] dark:text-sky-300 mb-1">
+                            <span>جاري الرفع المباشر إلى السحابة...</span>
+                            <span dir="ltr">{uploadProgress}%</span>
+                          </div>
+                          <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-[#0284C7] to-[#38BDF8] transition-all duration-200 rounded-full"
+                              style={{ width: `${uploadProgress}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
 
-                  <div className="mt-3 text-[11px] text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 p-2.5 rounded-xl border border-amber-200 dark:border-amber-900/60 text-start">
-                    ℹ️ <span className="font-bold">ملاحظة هامة:</span> نظراً لقيود خوادم Vercel السحابية (4.5 MB كحد أقصى للرفع المباشر)، إذا كان ملفك عالي الدقة وتجاوز 4.5 MB، يرجى التبديل لتبويب &quot;رابط سحابي&quot; بالأعلى واستخدام Google Drive لرفعه بدقة كاملة.
+                  <div className="mt-3 text-[11px] text-sky-800 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/40 p-2.5 rounded-xl border border-sky-200 dark:border-sky-900/60 text-start">
+                    ℹ️ يتم رفع الفيديو مباشرة عبر حاوية التخزين السحابي السريعة حتى 50MB. للفيديوهات الأكبر، يمكنك استخدام تبويب &quot;رابط Google Drive&quot; بدون أي حدود للحجم.
                   </div>
                 </div>
               )}
@@ -1918,7 +1946,7 @@ export const SkillsPortfolioPage: React.FC = () => {
                   {isUploadingVideo ? (
                     <>
                       <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>جاري معالجة وحفظ الفيديو...</span>
+                      <span>{uploadProgress > 0 ? `جاري الرفع السحابي (${uploadProgress}%)...` : 'جاري معالجة وحفظ الفيديو...'}</span>
                     </>
                   ) : videoUploadTab === 'FILE' && selectedVideoFile ? (
                     <>

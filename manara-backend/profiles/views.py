@@ -995,12 +995,13 @@ class GraduateVideoSettingsView(APIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            # السماح بمسارات البث الداخلية أو منصات الفيديو السحابية المعتمدة (Google Drive, YouTube, Vimeo, Loom, Direct Video)
+            # السماح بمسارات البث الداخلية أو منصات الفيديو السحابية المعتمدة (Google Drive, YouTube, Vimeo, Loom, Supabase, Direct Video)
             allowed_external_domains = (
                 'drive.google.com', 'docs.google.com',
                 'youtube.com', 'www.youtube.com', 'youtu.be', 'm.youtube.com',
                 'vimeo.com', 'player.vimeo.com',
                 'loom.com', 'www.loom.com',
+                'supabase.co',
             )
             is_internal_stream = (not parsed.netloc or url_host == request_host) and bool(re.search(r'stream/\d+', parsed.path))
             is_allowed_external = any(url_host == d or url_host.endswith('.' + d) for d in allowed_external_domains)
