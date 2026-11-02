@@ -13,7 +13,10 @@ from admin_panel.views import UserListView, CompanyListAdminView, DashboardStats
 def test_api():
     print("Testing Admin API endpoints directly...")
     factory = APIRequestFactory()
-    admin_user = User.objects.get(email='admin@manarah.ye')
+    admin_user = User.objects.filter(role='ADMIN').first()
+    if not admin_user:
+        print("No admin user found to test.")
+        return
 
     # Test 1: Users List Endpoint
     req1 = factory.get('/api/admin/users/')

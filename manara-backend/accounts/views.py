@@ -159,12 +159,22 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class LoginRateThrottle(AnonRateThrottle):
+    """
+    حماية نقطة تسجيل الدخول من محاولات التخمين والقوة الغاشمة (Brute-Force Protection - NFR-01).
+    الحد الأقصى: 10 محاولات في الدقيقة لكل عنوان IP لمنع هجمات Credential Stuffing.
+    """
+    rate = '10/minute'
+    scope = 'login'
+
+
 class LoginView(APIView):
     """
     تسجيل الدخول وإصدار التوكن (Sprint 1 - US-01 / MNRA-14 / MNRA-51).
-    يشترط تأكيد البريد الإلكتروني (FR-26).
+    يشترط تأكيد البريد الإلكتروني (FR-26) وخاضع لتقييد المحاولات (Brute-Force Protection).
     """
     permission_classes = [AllowAny]
+    throttle_classes = [LoginRateThrottle]
 
     def post(self, request):
         email = request.data.get("email", "").strip()

@@ -1,5 +1,6 @@
 import os
 import sys
+import secrets
 import django
 
 # Setup Django Environment
@@ -16,6 +17,9 @@ def run():
     print("🚀 بدء اختبار التطبيق المحلي وإنشاء حسابات الخريجين والشركات")
     print("=" * 60)
 
+    admin_pwd = os.environ.get('SEED_ADMIN_PASSWORD')
+    default_test_pwd = os.environ.get('SEED_DEFAULT_PASSWORD') or secrets.token_urlsafe(16)
+
     with transaction.atomic():
         # 1. Admin Verification / Creation
         admin_user, created_admin = User.objects.get_or_create(
@@ -28,13 +32,18 @@ def run():
                 'email_verified': True,
             }
         )
-        admin_user.set_password('Admin@123456')
+        if admin_pwd:
+            admin_user.set_password(admin_pwd)
+        elif created_admin:
+            gen_admin = secrets.token_urlsafe(16)
+            admin_user.set_password(gen_admin)
+            print(f"⚠️ كلمة المرور المولدة لحساب المدير الجديد: {gen_admin}")
         admin_user.role = 'ADMIN'
         admin_user.is_staff = True
         admin_user.is_superuser = True
         admin_user.email_verified = True
         admin_user.save()
-        print(f"✓ حساب مدير النظام (Admin): {admin_user.email} (تم {'إنشاؤه' if created_admin else 'تحديثه وتأكيده'})")
+        print(f"✓ حساب مدير النظام (Admin): {admin_user.email} (تم {'إنشاؤه' if created_admin else 'تأكيد وجوده'})")
 
         # 2. Pre-requisite Skills
         skill_python, _ = Skill.objects.get_or_create(name='Python', defaults={'category': 'TECHNICAL'})
@@ -52,7 +61,8 @@ def run():
                 'email_verified': True,
             }
         )
-        grad1_user.set_password('Password@123')
+        if created_g1:
+            grad1_user.set_password(default_test_pwd)
         grad1_user.email_verified = True
         grad1_user.save()
 
@@ -83,7 +93,8 @@ def run():
                 'email_verified': True,
             }
         )
-        grad2_user.set_password('Password@123')
+        if created_g2:
+            grad2_user.set_password(default_test_pwd)
         grad2_user.email_verified = True
         grad2_user.save()
 
@@ -113,7 +124,8 @@ def run():
                 'email_verified': True,
             }
         )
-        comp1_user.set_password('Password@123')
+        if created_c1:
+            comp1_user.set_password(default_test_pwd)
         comp1_user.email_verified = True
         comp1_user.save()
 
@@ -138,7 +150,8 @@ def run():
                 'email_verified': True,
             }
         )
-        comp2_user.set_password('Password@123')
+        if created_c2:
+            comp2_user.set_password(default_test_pwd)
         comp2_user.email_verified = True
         comp2_user.save()
 

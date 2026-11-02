@@ -1,4 +1,5 @@
 import os
+import secrets
 from django.core.management.base import BaseCommand
 from rest_framework.authtoken.models import Token
 from accounts.models import User
@@ -9,6 +10,7 @@ class Command(BaseCommand):
     help = "بذر بيانات تجريبية معتمدة لسبرنت 1 (حسابات الخريجين والملف المهني) لتسهيل العرض والمناقشة"
 
     def handle(self, *args, **options):
+        seed_pwd = os.environ.get("SEED_DEFAULT_PASSWORD") or secrets.token_urlsafe(16)
         self.stdout.write(self.style.MIGRATE_HEADING("=== بذر بيانات سبرنت 1 (Sprint 1 Seed Data) ==="))
 
         # 1. إنشاء خريج رئيسي مكتمل البيانات ومؤكد البريد جاهز لتسجيل الدخول فوراً
@@ -23,7 +25,8 @@ class Command(BaseCommand):
                 "is_active": True,
             }
         )
-        user1.set_password("Password@2026")
+        if created1:
+            user1.set_password(seed_pwd)
         user1.email_verified = True
         user1.save()
         token1, _ = Token.objects.get_or_create(user=user1)
@@ -47,7 +50,7 @@ class Command(BaseCommand):
                 ),
             }
         )
-        self.stdout.write(self.style.SUCCESS(f"✔ تم تجهيز الحساب الموثق: {email1} (كلمة المرور: Password@2026)"))
+        self.stdout.write(self.style.SUCCESS(f"✔ تم تجهيز الحساب الموثق: {email1}"))
 
         # 2. إنشاء خريج تجريبي ثانٍ غير مؤكد البريد لتجربة شاشة تفعيل البريد الرقمي (OTP / FR-26)
         email2 = "unverified@manara.edu.ye"
@@ -61,7 +64,8 @@ class Command(BaseCommand):
                 "is_active": True,
             }
         )
-        user2.set_password("Password@2026")
+        if created2:
+            user2.set_password(seed_pwd)
         user2.email_verified = False
         user2.save()
         otp2 = user2.get_verification_code()
@@ -84,5 +88,5 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f"✔ تم تجهيز الحساب غير المؤكد: {email2} (رمز OTP: {otp2})"))
 
         self.stdout.write(self.style.MIGRATE_LABEL("\nبيانات الاعتماد الجاهزة للتجربة في المتصفح:"))
-        self.stdout.write(f"1) الدخول المباشر: البريد: {email1} | كلمة المرور: Password@2026")
-        self.stdout.write(f"2) تجربة التفعيل: البريد: {email2} | كلمة المرور: Password@2026 | رمز التفعيل: {otp2}\n")
+        self.stdout.write(f"1) الدخول المباشر: البريد: {email1} | كلمة المرور: {seed_pwd}")
+        self.stdout.write(f"2) تجربة التفعيل: البريد: {email2} | كلمة المرور: {seed_pwd} | رمز التفعيل: {otp2}\n")

@@ -74,11 +74,11 @@ from urllib.parse import urlparse
 
 is_vercel = bool(os.environ.get('VERCEL') or os.environ.get('VERCEL_ENV'))
 
-default_db_host = 'aws-0-eu-west-1.pooler.supabase.com' if is_vercel else 'localhost'
-default_db_port = '6543' if is_vercel else '5432'
-default_db_name = 'postgres' if is_vercel else 'manarah_db1'
-default_db_user = 'postgres.fkgyihcgkbumqanvmqvg' if is_vercel else 'postgres'
-default_db_password = ''
+default_db_host = config('DB_HOST', default='localhost')
+default_db_port = config('DB_PORT', default='6543' if is_vercel else '5432')
+default_db_name = config('DB_NAME', default='postgres' if is_vercel else 'manarah_db1')
+default_db_user = config('DB_USER', default='postgres')
+default_db_password = config('DB_PASSWORD', default='')
 default_conn_max_age = 0 if is_vercel else 60
 
 DATABASE_URL = config('DATABASE_URL', default='')

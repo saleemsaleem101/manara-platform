@@ -1,5 +1,6 @@
 import os
 import sys
+import secrets
 import django
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -187,19 +188,20 @@ def run_e2e_verification():
     # 7. Test Admin Approval (UC-08, FR-04, FR-23)
     print("\n--- 6. اختبار لوحة الأدمن واعتماد الشركة (UC-08, FR-04, FR-23) ---")
     admin_user = User.objects.filter(role="ADMIN").first()
+    admin_test_pwd = os.environ.get("TEST_ADMIN_PASSWORD") or secrets.token_urlsafe(16)
     if not admin_user:
         admin_user = User.objects.create_superuser(
             email="admin_e2e@test.com",
             name="مدير النظام الرئيسي",
-            password="AdminPassword123!"
+            password=admin_test_pwd
         )
     else:
-        admin_user.set_password("AdminPassword123!")
+        admin_user.set_password(admin_test_pwd)
         admin_user.save()
 
     admin_login = client.post('/api/auth/login/', {
         "email": admin_user.email,
-        "password": "AdminPassword123!"
+        "password": admin_test_pwd
     }, format='json')
     admin_token = admin_login.data.get('token')
     admin_client = APIClient()
