@@ -995,29 +995,25 @@ class GraduateVideoSettingsView(APIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            if parsed.netloc and url_host != request_host:
-                return Response(
-                    {'error': 'الروابط الخارجية غير مسموح بها. يجب أن يكون مسار الفيديو مسار بث داخلي من المنصة (stream/<id>).'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+            # السماح بمسارات البث الداخلية أو منصات الفيديو السحابية المعتمدة (Google Drive, YouTube, Vimeo, Loom, Direct Video)
+            allowed_external_domains = (
+                'drive.google.com', 'docs.google.com',
+                'youtube.com', 'www.youtube.com', 'youtu.be', 'm.youtube.com',
+                'vimeo.com', 'player.vimeo.com',
+                'loom.com', 'www.loom.com',
+            )
+            is_internal_stream = (not parsed.netloc or url_host == request_host) and bool(re.search(r'stream/\d+', parsed.path))
+            is_allowed_external = any(url_host == d or url_host.endswith('.' + d) for d in allowed_external_domains)
+            is_direct_video = parsed.path.lower().endswith(('.mp4', '.webm', '.mov'))
 
-            if parsed.query or parsed.fragment:
+            if not (is_internal_stream or is_allowed_external or is_direct_video):
                 return Response(
-                    {'error': 'لا يُسمح بمعاملات query أو fragment في رابط الفيديو.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            # التحقق الصارم من أن كامل المسار يطابق نمط stream/<id>
-            path_part = parsed.path.rstrip('/')
-            if not re.fullmatch(r'(?:.*/)?stream/\d+', path_part):
-                return Response(
-                    {'error': 'مسار الفيديو غير صالح. يجب أن يكون مسار بث داخلي ينتهي بـ stream/<id> (أرقام فقط للـ ID).'},
+                    {'error': 'الرابط غير مدعوم. يرجى استخدام مسار بث من المنصة، أو رابطاً من Google Drive أو YouTube أو Vimeo أو Loom أو رابط ملف فيديو مباشر (MP4/WebM).'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
             profile.video_cv_url = clean_url
             update_fields.append('video_cv_url')
-            # إجبار إعادة التحقق video_verified=False دائماً عند تعيين أو تغيير رابط الفيديو
             profile.video_verified = False
             update_fields.append('video_verified')
 

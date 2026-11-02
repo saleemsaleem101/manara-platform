@@ -6,6 +6,7 @@ import { ErrorState } from '../components/ErrorState'
 import { StatusBadge } from '../components/StatusBadge'
 import { api } from '../services/api'
 import type { CandidateProfile, ApplicationStatusHistoryItem } from '../types'
+import { getEmbedVideoInfo, getVideoSourceUrl } from '../utils/video'
 
 export const CompanyCandidateProfilePage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -17,17 +18,6 @@ export const CompanyCandidateProfilePage: React.FC = () => {
   const [statusHistory, setStatusHistory] = useState<ApplicationStatusHistoryItem[]>([])
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
   const [feedbackMsg, setFeedbackMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
-
-  const getVideoSourceUrl = (url?: string | null) => {
-    if (!url) return ''
-    const token =
-      (typeof localStorage !== 'undefined' ? localStorage.getItem('manarah_token') : null) ||
-      (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('manarah_token') : null)
-    if (!token || url.includes('token=')) return url
-    const cleanToken = token.replace(/^(Token|Bearer)\s+/, '').trim()
-    const sep = url.includes('?') ? '&' : '?'
-    return `${url}${sep}token=${cleanToken}`
-  }
 
   useEffect(() => {
     async function loadCandidateData() {
@@ -368,13 +358,31 @@ export const CompanyCandidateProfilePage: React.FC = () => {
               <h2 className="text-lg font-black text-[#0F172A] dark:text-white mb-4">الفيديو التعريفي (Video CV)</h2>
               {candidate.video_cv_url && candidate.video_visibility !== 'PRIVATE' ? (
                 <div>
-                  <video
-                    controls
-                    className="w-full max-h-80 rounded-2xl bg-black shadow-inner"
-                    src={getVideoSourceUrl(candidate.video_cv_url)}
-                  >
-                    متصفحك لا يدعم تشغيل الفيديو.
-                  </video>
+                  {(() => {
+                    const embedInfo = getEmbedVideoInfo(candidate.video_cv_url)
+                    if (embedInfo?.type === 'iframe') {
+                      return (
+                        <div className="w-full aspect-video max-h-80 rounded-2xl bg-black overflow-hidden shadow-inner">
+                          <iframe
+                            src={embedInfo.src}
+                            title="الفيديو التعريفي Video CV"
+                            className="w-full h-full border-0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                          />
+                        </div>
+                      )
+                    }
+                    return (
+                      <video
+                        controls
+                        className="w-full max-h-80 rounded-2xl bg-black shadow-inner object-cover"
+                        src={embedInfo?.src || getVideoSourceUrl(candidate.video_cv_url)}
+                      >
+                        متصفحك لا يدعم تشغيل الفيديو.
+                      </video>
+                    )
+                  })()}
                   <p className="text-[11px] text-[#6C4F3D] dark:text-slate-400 mt-2">
                     المدة: <bdi dir="ltr">{candidate.video_duration_seconds || 60} ثانية</bdi> • متاح للمنشآت المعتمدة
                   </p>

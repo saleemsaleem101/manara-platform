@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Navbar } from '../components/Navbar'
 import { api } from '../services/api'
 import type { Skill, GraduateSkill, ProjectItem, VideoCVInfo } from '../types'
+import { getEmbedVideoInfo, getVideoSourceUrl } from '../utils/video'
 
 export const SkillsPortfolioPage: React.FC = () => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -165,19 +166,9 @@ export const SkillsPortfolioPage: React.FC = () => {
   const [videoVisibilityInput, setVideoVisibilityInput] = useState<'PUBLIC' | 'COMPANIES_ONLY' | 'PRIVATE'>('COMPANIES_ONLY')
   const [videoDurationSecondsInput, setVideoDurationSecondsInput] = useState<number>(90)
   const [selectedVideoFile, setSelectedVideoFile] = useState<File | null>(null)
+  const [videoUploadTab, setVideoUploadTab] = useState<'URL' | 'FILE'>('URL')
   const [isUploadingVideo, setIsUploadingVideo] = useState(false)
   const [videoFileError, setVideoFileError] = useState<string | null>(null)
-
-  const getVideoSourceUrl = (url?: string | null) => {
-    if (!url) return ''
-    const token =
-      (typeof localStorage !== 'undefined' ? localStorage.getItem('manarah_token') : null) ||
-      (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('manarah_token') : null)
-    if (!token || url.includes('token=')) return url
-    const cleanToken = token.replace(/^(Token|Bearer)\s+/, '').trim()
-    const sep = url.includes('?') ? '&' : '?'
-    return `${url}${sep}token=${cleanToken}`
-  }
 
   const showNotification = (text: string, type: 'success' | 'error' = 'success') => {
     setFeedbackMsg({ text, type })
@@ -428,7 +419,7 @@ export const SkillsPortfolioPage: React.FC = () => {
     showNotification('تم فحص الملف: الحجم والصيغة مطابقة للشروط ✓')
   }
 
-  // Handle Video File Validation & Selection (50MB max, FR-27, P82)
+  // Handle Video File Validation & Selection (4.5MB limit for direct Vercel Serverless upload)
   const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     setVideoFileError(null)
@@ -436,9 +427,13 @@ export const SkillsPortfolioPage: React.FC = () => {
       setSelectedVideoFile(null)
       return
     }
-    const maxSizeBytes = 50 * 1024 * 1024 // 50MB
-    if (file.size > maxSizeBytes) {
-      setVideoFileError('حجم ملف الفيديو يتجاوز الحد المسموح به: 50 ميجابايت كحد أقصى.')
+    const maxDirectSizeBytes = 4.5 * 1024 * 1024 // 4.5 MB Vercel Serverless payload limit
+    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2)
+
+    if (file.size > maxDirectSizeBytes) {
+      setVideoFileError(
+        `حجم ملف الفيديو (${fileSizeMB} ميجابايت) يتجاوز الحد الأقصى للرفع المباشر عبر السحابة (4.5 ميجابايت). يمكنك إما ضغط الملف ليصبح أقل من 4.5 ميجابايت، أو الأفضل: التبديل إلى خيار "رابط سحابي" بالأعلى لرفعه عبر Google Drive أو YouTube بدون أي قيود وبدقة كاملة.`
+      )
       setSelectedVideoFile(null)
       e.target.value = ''
       return
@@ -451,7 +446,7 @@ export const SkillsPortfolioPage: React.FC = () => {
       return
     }
     setSelectedVideoFile(file)
-    showNotification(`تم فحص وتأكيد جاهزية الملف: ${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} MB) ✓`)
+    showNotification(`تم فحص وتأكيد جاهزية الملف: ${file.name} (${fileSizeMB} MB) ✓`)
   }
 
   // Handle Delete Project
@@ -473,8 +468,10 @@ export const SkillsPortfolioPage: React.FC = () => {
     setIsUploadingVideo(true)
     setVideoFileError(null)
     try {
-      if (selectedVideoFile) {
-        // 1. رفع ملف الفيديو المباشر إلى الخادم وتخزينه كـ FileField
+      if (videoUploadTab === 'FILE' && selectedVideoFile) {
+        if (selectedVideoFile.size > 4.5 * 1024 * 1024) {
+          throw new Error('حجم الملف يتجاوز الحد السحابي (4.5 MB). نوصي باستخدام رابط Google Drive أو YouTube.')
+        }
         const res = await api.uploadGraduateVideo(
           selectedVideoFile,
           videoDurationSecondsInput || 90,
@@ -487,10 +484,19 @@ export const SkillsPortfolioPage: React.FC = () => {
           video_verified: true,
         })
         showNotification('تم رفع وتخزين الفيديو التعريفي كملف موثق بنجاح ✓')
-      } else {
-        // 2. تحديث إعدادات الخصوصية والمدة في حال لم يتم اختيار ملف جديد
+      } else if (videoUploadTab === 'URL' && videoUrlInput.trim()) {
+        const cleanUrl = videoUrlInput.trim()
         const res = await api.updateGraduateVideo({
-          video_cv_url: videoUrlInput || videoInfo.video_cv_url || undefined,
+          video_cv_url: cleanUrl,
+          video_visibility: videoVisibilityInput,
+          video_duration_seconds: videoDurationSecondsInput || 90,
+        })
+        setVideoInfo(res)
+        showNotification('تم حفظ واعتماد رابط الفيديو التعريفي بنجاح ✓')
+      } else {
+        // Just updating privacy / duration
+        const res = await api.updateGraduateVideo({
+          video_cv_url: videoInfo.video_cv_url || undefined,
           video_visibility: videoVisibilityInput,
           video_duration_seconds: videoDurationSecondsInput || 90,
         })
@@ -501,8 +507,11 @@ export const SkillsPortfolioPage: React.FC = () => {
       setSelectedVideoFile(null)
       await fetchData()
     } catch (err: unknown) {
-      const msg = (err as { message?: string })?.message
-      setVideoFileError(msg || 'فشل رفع الفيديو أو تحديث الإعدادات')
+      let msg = (err as { message?: string })?.message || ''
+      if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('Load failed')) {
+        msg = 'تعذر الاتصال بالخادم السحابي بسبب تجاوز حجم الملف للحد المسموح للرفع المباشر (4.5 MB) أو ضعف الاتصال. نوصي بلصق رابط الفيديو من Google Drive أو YouTube لرفعه فوراً دون أي قيود على الحجم.'
+      }
+      setVideoFileError(msg || 'فشل حفظ إعدادات الفيديو')
       showNotification(msg || 'فشل حفظ إعدادات الفيديو', 'error')
     } finally {
       setIsUploadingVideo(false)
@@ -1012,13 +1021,29 @@ export const SkillsPortfolioPage: React.FC = () => {
               {/* Video Player Card Preview */}
               {videoInfo.video_cv_url ? (
                 <div className="w-full aspect-video rounded-2xl bg-black overflow-hidden mb-4 shadow-md border border-[#E8DEC8] dark:border-slate-800">
-                  <video
-                    controls
-                    className="w-full h-full object-cover"
-                    src={getVideoSourceUrl(videoInfo.video_cv_url)}
-                  >
-                    متصفحك لا يدعم تشغيل الفيديو.
-                  </video>
+                  {(() => {
+                    const embedInfo = getEmbedVideoInfo(videoInfo.video_cv_url)
+                    if (embedInfo?.type === 'iframe') {
+                      return (
+                        <iframe
+                          src={embedInfo.src}
+                          title="الفيديو التعريفي Video CV"
+                          className="w-full h-full border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      )
+                    }
+                    return (
+                      <video
+                        controls
+                        className="w-full h-full object-cover"
+                        src={embedInfo?.src || getVideoSourceUrl(videoInfo.video_cv_url)}
+                      >
+                        متصفحك لا يدعم تشغيل الفيديو.
+                      </video>
+                    )
+                  })()}
                 </div>
               ) : (
                 <div className="w-full aspect-video rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex flex-col items-center justify-center relative overflow-hidden mb-4 shadow-inner text-white text-center p-4 border border-slate-700/50">
@@ -1052,11 +1077,13 @@ export const SkillsPortfolioPage: React.FC = () => {
 
               <button
                 onClick={() => {
-                  setVideoUrlInput(videoInfo.video_cv_url || '')
+                  const currentUrl = videoInfo.video_cv_url || ''
+                  setVideoUrlInput(currentUrl)
                   setVideoVisibilityInput(videoInfo.video_visibility || 'COMPANIES_ONLY')
                   setVideoDurationSecondsInput(videoInfo.video_duration_seconds || 90)
                   setSelectedVideoFile(null)
                   setVideoFileError(null)
+                  setVideoUploadTab('URL')
                   setShowVideoModal(true)
                 }}
                 className="w-full h-11 bg-gradient-to-r from-[#0284C7] via-[#0EA5E9] to-[#38BDF8] hover:opacity-95 text-white font-bold text-[12px] rounded-xl transition shadow-sm cursor-pointer flex items-center justify-center gap-2"
@@ -1716,13 +1743,13 @@ export const SkillsPortfolioPage: React.FC = () => {
       {/* MODAL 3: Update / Upload Video */}
       {showVideoModal && (
         <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="glass-silk-card bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl max-w-[520px] w-full p-6 sm:p-7 shadow-2xl border border-[#E8DEC8] dark:border-slate-800 transition-all max-h-[90vh] overflow-y-auto">
+          <div className="glass-silk-card bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl max-w-[560px] w-full p-6 sm:p-7 shadow-2xl border border-[#E8DEC8] dark:border-slate-800 transition-all max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-[#E8DEC8]/60 dark:border-slate-800 mb-4">
               <div className="flex items-center gap-2.5">
                 <span className="text-2xl">🎥</span>
                 <div>
                   <h3 className="text-[17px] font-black text-[#0F172A] dark:text-white">إدارة ورفع الفيديو التعريفي (Video CV)</h3>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">تخزين آمن ومحمي عبر خادم المنصة مباشرة وفق المعيار P82</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">فيديو مدته 60-90 ثانية يقدمك بشكل مميز لأصحاب العمل</p>
                 </div>
               </div>
               <button
@@ -1739,51 +1766,100 @@ export const SkillsPortfolioPage: React.FC = () => {
             </div>
 
             {videoFileError && (
-              <div className="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-300 text-[12px] font-bold flex items-center gap-2">
-                <span>⚠️</span>
+              <div className="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-300 text-[12px] font-bold flex items-start gap-2">
+                <span className="mt-0.5">⚠️</span>
                 <span>{videoFileError}</span>
               </div>
             )}
 
+            {/* TAB SELECTOR */}
+            <div className="grid grid-cols-2 gap-2 p-1.5 bg-[#FAF7F2] dark:bg-slate-800 rounded-2xl mb-4 border border-[#E8DEC8] dark:border-slate-700">
+              <button
+                type="button"
+                onClick={() => setVideoUploadTab('URL')}
+                className={`py-2 px-3 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  videoUploadTab === 'URL'
+                    ? 'bg-white dark:bg-slate-900 text-[#0284C7] dark:text-sky-300 shadow-sm border border-sky-100 dark:border-slate-700'
+                    : 'text-[#6C4F3D] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white'
+                }`}
+              >
+                <span>🔗 رابط سحابي (موصى به)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setVideoUploadTab('FILE')}
+                className={`py-2 px-3 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  videoUploadTab === 'FILE'
+                    ? 'bg-white dark:bg-slate-900 text-[#0284C7] dark:text-sky-300 shadow-sm border border-sky-100 dark:border-slate-700'
+                    : 'text-[#6C4F3D] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white'
+                }`}
+              >
+                <span>📁 رفع ملف مباشر (&lt; 4.5 MB)</span>
+              </button>
+            </div>
+
             <form onSubmit={handleUpdateVideo} className="space-y-4">
-              {/* File Upload Box */}
-              <div className="p-4 rounded-2xl border-2 border-dashed border-[#BAE6FD] dark:border-sky-900/80 bg-[#F0F9FF]/70 dark:bg-sky-950/20 text-center">
-                <label className="block text-[13px] font-black text-[#0369A1] dark:text-sky-300 mb-1.5 cursor-pointer">
-                  اختر ملف الفيديو التعريفي من جهازك
-                </label>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-3">
-                  الصيغ المعتمدة: MP4 أو WebM • الحجم الأقصى: 50MB • المدة الموصى بها: 60 - 90 ثانية
-                </p>
+              {videoUploadTab === 'URL' ? (
+                <div className="p-4 rounded-2xl border border-sky-200 dark:border-sky-900/60 bg-[#F0F9FF]/60 dark:bg-sky-950/20 space-y-3">
+                  <div>
+                    <label className="block text-[13px] font-black text-[#0369A1] dark:text-sky-300 mb-1">
+                      رابط الفيديو السحابي (Google Drive, YouTube, Loom, Vimeo)
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://drive.google.com/file/d/... أو https://youtu.be/..."
+                      value={videoUrlInput}
+                      onChange={(e) => setVideoUrlInput(e.target.value)}
+                      disabled={isUploadingVideo}
+                      className="w-full h-11 px-3.5 rounded-xl border border-sky-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[13px] font-medium text-[#0F172A] dark:text-white focus:outline-none focus:border-[#38BDF8]"
+                      dir="ltr"
+                    />
+                  </div>
 
-                <input
-                  type="file"
-                  accept="video/mp4,video/webm,video/quicktime"
-                  onChange={handleVideoFileChange}
-                  disabled={isUploadingVideo}
-                  className="w-full text-[12px] text-slate-600 dark:text-slate-400 file:ms-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[11px] file:font-black file:bg-gradient-to-r file:from-[#0284C7] file:via-[#0EA5E9] file:to-[#38BDF8] file:text-white hover:file:opacity-90 cursor-pointer"
-                />
+                  <div className="p-3 rounded-xl bg-white/80 dark:bg-slate-900/70 border border-sky-100 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-300 space-y-1.5">
+                    <p className="font-bold text-[#0369A1] dark:text-sky-300">💡 تعليمات إضافة الرابط بسهولة وبدون أي حد للحجم:</p>
+                    <p>• <span className="font-bold">Google Drive:</span> ارفع الفيديو إلى Google Drive، ثم اضغط مشاركة (Share) واضبط الإذن على &quot;أي شخص لديه الرابط&quot; والصق الرابط هنا.</p>
+                    <p>• <span className="font-bold">YouTube:</span> يمكنك رفع الفيديو وضبط خياره كـ &quot;غير مدرج&quot; (Unlisted) ليظل خاصاً بالشركات دون ظهوره في نتائج البحث العامة.</p>
+                    <p>• يدعم أيضاً روابط Loom و Vimeo وملفات MP4 المباشرة.</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-4 rounded-2xl border-2 border-dashed border-[#BAE6FD] dark:border-sky-900/80 bg-[#F0F9FF]/70 dark:bg-sky-950/20 text-center">
+                  <label className="block text-[13px] font-black text-[#0369A1] dark:text-sky-300 mb-1.5 cursor-pointer">
+                    اختر ملف الفيديو التعريفي من جهازك
+                  </label>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-3">
+                    الصيغ المعتمدة: MP4 أو WebM • الحد الأقصى للرفع المباشر: 4.5MB
+                  </p>
 
-                {selectedVideoFile && (
-                  <div className="mt-3 p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-sky-200 dark:border-sky-800 text-start flex items-center justify-between text-[11px]">
-                    <div className="flex items-center gap-2">
-                      <span className="text-emerald-500 font-bold">✓</span>
-                      <div>
-                        <span className="font-bold text-[#0F172A] dark:text-white block truncate max-w-[240px]">{selectedVideoFile.name}</span>
-                        <span className="text-slate-500">{(selectedVideoFile.size / (1024 * 1024)).toFixed(2)} MB • جاهز للرفع</span>
+                  <input
+                    type="file"
+                    accept="video/mp4,video/webm,video/quicktime"
+                    onChange={handleVideoFileChange}
+                    disabled={isUploadingVideo}
+                    className="w-full text-[12px] text-slate-600 dark:text-slate-400 file:ms-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[11px] file:font-black file:bg-gradient-to-r file:from-[#0284C7] file:via-[#0EA5E9] file:to-[#38BDF8] file:text-white hover:file:opacity-90 cursor-pointer"
+                  />
+
+                  {selectedVideoFile && (
+                    <div className="mt-3 p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-sky-200 dark:border-sky-800 text-start flex items-center justify-between text-[11px]">
+                      <div className="flex items-center gap-2">
+                        <span className="text-emerald-500 font-bold">✓</span>
+                        <div>
+                          <span className="font-bold text-[#0F172A] dark:text-white block truncate max-w-[240px]">{selectedVideoFile.name}</span>
+                          <span className="text-slate-500">{(selectedVideoFile.size / (1024 * 1024)).toFixed(2)} MB • جاهز للرفع</span>
+                        </div>
                       </div>
+                      <span className="text-xs bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-md font-bold">
+                        محدد للرفع
+                      </span>
                     </div>
-                    <span className="text-xs bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-md font-bold">
-                      محدد للرفع
-                    </span>
-                  </div>
-                )}
+                  )}
 
-                {videoInfo.video_cv_url && !selectedVideoFile && (
-                  <div className="mt-2.5 text-[11px] text-slate-500 dark:text-slate-400 bg-white/70 dark:bg-slate-800/70 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
-                    ℹ️ يوجد فيديو محفوظ بالفعل في ملفك. إذا أردت استبداله اختر ملفاً جديداً، أو يمكنك فقط تعديل مستوى الخصوصية أدناه.
+                  <div className="mt-3 text-[11px] text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 p-2.5 rounded-xl border border-amber-200 dark:border-amber-900/60 text-start">
+                    ℹ️ <span className="font-bold">ملاحظة هامة:</span> نظراً لقيود خوادم Vercel السحابية (4.5 MB كحد أقصى للرفع المباشر)، إذا كان ملفك عالي الدقة وتجاوز 4.5 MB، يرجى التبديل لتبويب &quot;رابط سحابي&quot; بالأعلى واستخدام Google Drive لرفعه بدقة كاملة.
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
               {/* Video Duration Input */}
               <div>
@@ -1842,12 +1918,17 @@ export const SkillsPortfolioPage: React.FC = () => {
                   {isUploadingVideo ? (
                     <>
                       <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>جاري رفع وتخزين الفيديو...</span>
+                      <span>جاري معالجة وحفظ الفيديو...</span>
                     </>
-                  ) : selectedVideoFile ? (
+                  ) : videoUploadTab === 'FILE' && selectedVideoFile ? (
                     <>
                       <span>🚀</span>
                       <span>رفع وحفظ الفيديو الآن</span>
+                    </>
+                  ) : videoUploadTab === 'URL' && videoUrlInput.trim() ? (
+                    <>
+                      <span>💾</span>
+                      <span>حفظ واعتماد رابط الفيديو</span>
                     </>
                   ) : (
                     <>
